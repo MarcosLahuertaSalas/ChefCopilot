@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: chefcopilot-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: RootPassword123! # En un entorno real esto irá en un archivo .env
+      MYSQL_DATABASE: chefcopilot
+      MYSQL_USER: chef
+      MYSQL_PASSWORD: ChefPassword123!
+    ports:
+      - "3307:3306" # Mapeamos al 3307 en tu PC para no chocar con otro MySQL
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

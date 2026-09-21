@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ChefCopilot.Application/ChefCopilot.Application.csproj" />
+  <Project Path="ChefCopilot.Domain/ChefCopilot.Domain.csproj" />
+  <Project Path="ChefCopilot.Infrastructure/ChefCopilot.Infrastructure.csproj" />
+  <Project Path="ChefCopilot.WebApi/ChefCopilot.WebApi.csproj" />
+</Solution>
