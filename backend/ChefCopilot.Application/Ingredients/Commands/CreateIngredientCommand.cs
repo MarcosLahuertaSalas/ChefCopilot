@@ -11,6 +11,8 @@ public class CreateIngredientCommand : IRequest<Guid>
     public string Name { get; set; } = string.Empty;
     public string UnitOfMeasure { get; set; } = string.Empty;
     public decimal WastePercentage { get; set; }
+    public bool IsVegetarian { get; set; } = false;
+    public bool IsVegan { get; set; } = false;
 }
 
 // 2. EL HANDLER (El Trabajador)
@@ -35,8 +37,8 @@ public class CreateIngredientCommandHandler : IRequestHandler<CreateIngredientCo
             WastePercentage = request.WastePercentage,
             // Ponemos defaults para lo que no venga
             DefaultProvider = "Sin asignar",
-            IsVegetarian = true, // asume que todo es vegetariano hasta que digan lo contrario
-            IsVegan = true
+            IsVegetarian = request.IsVegetarian,
+            IsVegan = request.IsVegan
         };
 
         // Lo mandamos a la base de datos
