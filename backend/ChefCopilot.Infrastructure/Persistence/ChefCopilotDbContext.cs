@@ -19,8 +19,12 @@ public class ChefCopilotDbContext : DbContext, IApplicationDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        // Aquí podríamos añadir reglas especiales (ej. que el nombre del ingrediente sea único)
-        // pero por ahora dejaremos que EF Core haga su magia con las convenciones por defecto.
+
+        // Relación muchos a muchos: Un evento tiene varios platos en su menú, 
+        // y un plato del catálogo puede formar parte de varios eventos.
+        modelBuilder.Entity<Event>()
+            .HasMany(e => e.MenuDishes)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("EventDishes"));
     }
 }
