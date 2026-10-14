@@ -49,4 +49,15 @@ public class EventsController : BaseController
         await Mediator.Send(new DeleteEventCommand { Id = id });
         return NoContent();
     }
+
+    [HttpGet("{id}/shopping-list")]
+    public async Task<ActionResult<EventShoppingListDto>> GetShoppingList(Guid id)
+    {
+        var shoppingList = await Mediator.Send(new GetEventShoppingListQuery { EventId = id });
+        if (shoppingList == null)
+        {
+            return NotFound($"No se encontró ningún evento con el ID: {id}");
+        }
+        return Ok(shoppingList);
+    }
 }

@@ -1,5 +1,6 @@
 using ChefCopilot.Infrastructure;
 using ChefCopilot.Application;
+using ChefCopilot.WebApi.Common.Middleware;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,13 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 // AQUÍ INYECTAMOS TODA NUESTRA INFRAESTRUCTURA DE GOLPE
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Y AQUÍ NUESTRA CAPA DE APLICACIÓN (MediatR)
+// Y AQUÍ NUESTRA CAPA DE APLICACIÓN (MediatR y FluentValidation)
 builder.Services.AddApplication();
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+// Middleware global para captura de excepciones y errores de validación
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
