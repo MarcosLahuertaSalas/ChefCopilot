@@ -273,11 +273,13 @@ export const IngredientsView: React.FC = () => {
 
                       {/* Stock Actual vs Mínimo */}
                       <td className="py-3.5 px-4">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className={`font-mono font-bold ${isLow ? 'text-rose-400' : 'text-[#ffedd7]'}`}>
-                            {item.currentStock.toFixed(2)}
+                        <div className="flex items-baseline gap-1.5 flex-wrap">
+                          <span className={`font-mono font-bold text-sm ${isLow ? 'text-rose-400' : 'text-[#ffedd7]'}`}>
+                            {Number.isInteger(item.currentStock) ? item.currentStock : item.currentStock.toFixed(2)} {item.unitOfMeasure}
                           </span>
-                          <span className="text-xs text-[#a89988]">/ mín {item.minimumStock.toFixed(2)} {item.unitOfMeasure}</span>
+                          <span className="text-xs text-[#a89988]">
+                            (mín. {Number.isInteger(item.minimumStock) ? item.minimumStock : item.minimumStock.toFixed(2)} {item.unitOfMeasure})
+                          </span>
                         </div>
                         <div className="w-28 h-1.5 bg-[#100904] rounded-full overflow-hidden mt-1.5 border border-[#40372e]">
                           <div 
@@ -322,7 +324,7 @@ export const IngredientsView: React.FC = () => {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-[#a89988] italic">A granel ({item.unitOfMeasure})</span>
+                          <span className="text-xs text-[#a89988] italic">Al peso continuo ({item.unitOfMeasure})</span>
                         )}
                       </td>
 

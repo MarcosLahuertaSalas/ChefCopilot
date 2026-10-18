@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import type { Ingredient, CreateIngredientRequest, UpdateIngredientRequest } from '../../types/ingredient'
-import { X, Sparkles, Scale, AlertTriangle } from 'lucide-react'
+import { X, Sparkles, Scale, AlertTriangle, Check } from 'lucide-react'
 
 interface IngredientModalProps {
   isOpen: boolean
@@ -8,6 +8,23 @@ interface IngredientModalProps {
   onClose: () => void
   onSave: (data: CreateIngredientRequest | UpdateIngredientRequest) => Promise<void>
 }
+
+const COMMON_ALLERGENS = [
+  'Gluten',
+  'Crustáceos',
+  'Huevos',
+  'Pescado',
+  'Cacahuetes',
+  'Soja',
+  'Lácteos',
+  'Frutos de cáscara',
+  'Apio',
+  'Mostaza',
+  'Sésamo',
+  'Sulfitos',
+  'Altramuces',
+  'Moluscos',
+]
 
 export const IngredientModal: React.FC<IngredientModalProps> = ({
   isOpen,
@@ -17,13 +34,13 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
 }) => {
   const [name, setName] = useState('')
   const [unitOfMeasure, setUnitOfMeasure] = useState('Kg')
-  const [wastePercentage, setWastePercentage] = useState<number>(0)
-  const [reusableWastePercentage, setReusableWastePercentage] = useState<number>(0)
-  const [currentStock, setCurrentStock] = useState<number>(0)
-  const [minimumStock, setMinimumStock] = useState<number>(0)
+  const [wastePercentage, setWastePercentage] = useState<string>('')
+  const [reusableWastePercentage, setReusableWastePercentage] = useState<string>('')
+  const [currentStock, setCurrentStock] = useState<string>('')
+  const [minimumStock, setMinimumStock] = useState<string>('')
   const [isPurchasedByPiece, setIsPurchasedByPiece] = useState(false)
-  const [minPortionsPerPiece, setMinPortionsPerPiece] = useState<number | undefined>(undefined)
-  const [maxPortionsPerPiece, setMaxPortionsPerPiece] = useState<number | undefined>(undefined)
+  const [minPortionsPerPiece, setMinPortionsPerPiece] = useState<string>('')
+  const [maxPortionsPerPiece, setMaxPortionsPerPiece] = useState<string>('')
   const [defaultProvider, setDefaultProvider] = useState('')
   const [isVegetarian, setIsVegetarian] = useState(false)
   const [isVegan, setIsVegan] = useState(false)
@@ -35,15 +52,22 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
   useEffect(() => {
     if (ingredient) {
       setName(ingredient.name)
-      setUnitOfMeasure(ingredient.unitOfMeasure)
+      setUnitOfMeasure(ingredient.unitOfMeasure || 'Kg')
       // Normalizamos si venía como decimal (ej: 0.15 -> 15%)
-      setWastePercentage(ingredient.wastePercentage <= 1 && ingredient.wastePercentage > 0 ? ingredient.wastePercentage * 100 : ingredient.wastePercentage)
-      setReusableWastePercentage(ingredient.reusableWastePercentage <= 1 && ingredient.reusableWastePercentage > 0 ? ingredient.reusableWastePercentage * 100 : ingredient.reusableWastePercentage)
-      setCurrentStock(ingredient.currentStock)
-      setMinimumStock(ingredient.minimumStock)
+      const wasteNum = ingredient.wastePercentage <= 1 && ingredient.wastePercentage > 0
+        ? ingredient.wastePercentage * 100
+        : ingredient.wastePercentage
+      const reWasteNum = ingredient.reusableWastePercentage <= 1 && ingredient.reusableWastePercentage > 0
+        ? ingredient.reusableWastePercentage * 100
+        : ingredient.reusableWastePercentage
+
+      setWastePercentage(wasteNum ? String(wasteNum) : '')
+      setReusableWastePercentage(reWasteNum ? String(reWasteNum) : '')
+      setCurrentStock(ingredient.currentStock ? String(ingredient.currentStock) : '')
+      setMinimumStock(ingredient.minimumStock ? String(ingredient.minimumStock) : '')
       setIsPurchasedByPiece(ingredient.isPurchasedByPiece)
-      setMinPortionsPerPiece(ingredient.minPortionsPerPiece ?? undefined)
-      setMaxPortionsPerPiece(ingredient.maxPortionsPerPiece ?? undefined)
+      setMinPortionsPerPiece(ingredient.minPortionsPerPiece ? String(ingredient.minPortionsPerPiece) : '')
+      setMaxPortionsPerPiece(ingredient.maxPortionsPerPiece ? String(ingredient.maxPortionsPerPiece) : '')
       setDefaultProvider(ingredient.defaultProvider || '')
       setIsVegetarian(ingredient.isVegetarian)
       setIsVegan(ingredient.isVegan)
@@ -51,13 +75,13 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
     } else {
       setName('')
       setUnitOfMeasure('Kg')
-      setWastePercentage(0)
-      setReusableWastePercentage(0)
-      setCurrentStock(0)
-      setMinimumStock(0)
+      setWastePercentage('')
+      setReusableWastePercentage('')
+      setCurrentStock('')
+      setMinimumStock('')
       setIsPurchasedByPiece(false)
-      setMinPortionsPerPiece(undefined)
-      setMaxPortionsPerPiece(undefined)
+      setMinPortionsPerPiece('')
+      setMaxPortionsPerPiece('')
       setDefaultProvider('')
       setIsVegetarian(false)
       setIsVegan(false)
@@ -68,7 +92,15 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
 
   if (!isOpen) return null
 
-  const handleAddAllergen = () => {
+  const handleToggleCommonAllergen = (item: string) => {
+    if (allergens.includes(item)) {
+      setAllergens(allergens.filter(a => a !== item))
+    } else {
+      setAllergens([...allergens, item])
+    }
+  }
+
+  const handleAddCustomAllergen = () => {
     const trimmed = allergenInput.trim()
     if (trimmed && !allergens.includes(trimmed)) {
       setAllergens([...allergens, trimmed])
@@ -89,12 +121,15 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
       return
     }
 
+    const minPieces = parseInt(minPortionsPerPiece, 10)
+    const maxPieces = parseInt(maxPortionsPerPiece, 10)
+
     if (isPurchasedByPiece) {
-      if (!minPortionsPerPiece || minPortionsPerPiece <= 0) {
+      if (!minPieces || minPieces <= 0) {
         setError('Debes especificar el rendimiento mínimo garantizado de raciones por pieza.')
         return
       }
-      if (maxPortionsPerPiece && maxPortionsPerPiece < minPortionsPerPiece) {
+      if (maxPieces && maxPieces < minPieces) {
         setError('El rendimiento máximo no puede ser menor que el mínimo.')
         return
       }
@@ -103,8 +138,10 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
     setLoading(true)
     try {
       // Convertir porcentajes a decimal 0..1 para la API
-      const wasteDecimal = wastePercentage / 100
-      const reusableWasteDecimal = reusableWastePercentage / 100
+      const parsedWaste = parseFloat(wastePercentage) || 0
+      const parsedReusableWaste = parseFloat(reusableWastePercentage) || 0
+      const wasteDecimal = parsedWaste / 100
+      const reusableWasteDecimal = parsedReusableWaste / 100
 
       if (ingredient) {
         await onSave({
@@ -113,11 +150,11 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           unitOfMeasure: unitOfMeasure.trim(),
           wastePercentage: wasteDecimal,
           reusableWastePercentage: reusableWasteDecimal,
-          currentStock: Number(currentStock) || 0,
-          minimumStock: Number(minimumStock) || 0,
+          currentStock: parseFloat(currentStock) || 0,
+          minimumStock: parseFloat(minimumStock) || 0,
           isPurchasedByPiece,
-          minPortionsPerPiece: isPurchasedByPiece ? Number(minPortionsPerPiece) : null,
-          maxPortionsPerPiece: isPurchasedByPiece ? (maxPortionsPerPiece ? Number(maxPortionsPerPiece) : Number(minPortionsPerPiece)) : null,
+          minPortionsPerPiece: isPurchasedByPiece ? minPieces : null,
+          maxPortionsPerPiece: isPurchasedByPiece ? (maxPieces || minPieces) : null,
           defaultProvider: defaultProvider.trim() || 'Sin asignar',
           allergens,
           isVegetarian,
@@ -129,11 +166,11 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           unitOfMeasure: unitOfMeasure.trim(),
           wastePercentage: wasteDecimal,
           reusableWastePercentage: reusableWasteDecimal,
-          currentStock: Number(currentStock) || 0,
-          minimumStock: Number(minimumStock) || 0,
+          currentStock: parseFloat(currentStock) || 0,
+          minimumStock: parseFloat(minimumStock) || 0,
           isPurchasedByPiece,
-          minPortionsPerPiece: isPurchasedByPiece ? Number(minPortionsPerPiece) : null,
-          maxPortionsPerPiece: isPurchasedByPiece ? (maxPortionsPerPiece ? Number(maxPortionsPerPiece) : Number(minPortionsPerPiece)) : null,
+          minPortionsPerPiece: isPurchasedByPiece ? minPieces : null,
+          maxPortionsPerPiece: isPurchasedByPiece ? (maxPieces || minPieces) : null,
           defaultProvider: defaultProvider.trim() || 'Sin asignar',
           allergens,
           isVegetarian,
@@ -152,7 +189,9 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
     }
   }
 
-  const totalWaste = Number(wastePercentage || 0) + Number(reusableWastePercentage || 0)
+  const numWaste = parseFloat(wastePercentage) || 0
+  const numReusable = parseFloat(reusableWastePercentage) || 0
+  const totalWaste = numWaste + numReusable
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
@@ -195,7 +234,7 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="Ej: Solomillo de Ternera, Patata Monalisa..."
+                placeholder="Ej: Solomillo de Ternera, Pechuga de pollo..."
                 className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-amber-500 transition-colors"
               />
             </div>
@@ -241,9 +280,10 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                   min="0"
                   max="100"
                   step="0.1"
+                  placeholder="0"
                   value={wastePercentage}
-                  onChange={e => setWastePercentage(parseFloat(e.target.value) || 0)}
-                  className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                  onChange={e => setWastePercentage(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -257,9 +297,10 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                   min="0"
                   max="100"
                   step="0.1"
+                  placeholder="0"
                   value={reusableWastePercentage}
-                  onChange={e => setReusableWastePercentage(parseFloat(e.target.value) || 0)}
-                  className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] focus:outline-none focus:border-emerald-500"
+                  onChange={e => setReusableWastePercentage(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-emerald-500"
                 />
               </div>
             </div>
@@ -279,9 +320,10 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 type="number"
                 min="0"
                 step="0.01"
+                placeholder="0"
                 value={currentStock}
-                onChange={e => setCurrentStock(parseFloat(e.target.value) || 0)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                onChange={e => setCurrentStock(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
               />
             </div>
 
@@ -293,9 +335,10 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 type="number"
                 min="0"
                 step="0.01"
+                placeholder="0"
                 value={minimumStock}
-                onChange={e => setMinimumStock(parseFloat(e.target.value) || 0)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                onChange={e => setMinimumStock(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
               />
             </div>
           </div>
@@ -324,9 +367,9 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                     type="number"
                     min="1"
                     placeholder="Ej: 8 raciones (pesimista)"
-                    value={minPortionsPerPiece ?? ''}
-                    onChange={e => setMinPortionsPerPiece(parseInt(e.target.value) || undefined)}
-                    className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                    value={minPortionsPerPiece}
+                    onChange={e => setMinPortionsPerPiece(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
                   />
                   <span className="text-[10px] text-[#a89988]">Chef Copilot comprará basándose en este mínimo para que nunca falte.</span>
                 </div>
@@ -339,9 +382,9 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                     type="number"
                     min="1"
                     placeholder="Ej: 10 raciones (ideal)"
-                    value={maxPortionsPerPiece ?? ''}
-                    onChange={e => setMaxPortionsPerPiece(parseInt(e.target.value) || undefined)}
-                    className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                    value={maxPortionsPerPiece}
+                    onChange={e => setMaxPortionsPerPiece(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
                   />
                   <span className="text-[10px] text-[#a89988]">Permite calcular el colchón de seguridad sobrante.</span>
                 </div>
@@ -391,44 +434,80 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
             </div>
           </div>
 
-          {/* Alérgenos */}
-          <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
-              Alérgenos
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={allergenInput}
-                onChange={e => setAllergenInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddAllergen())}
-                placeholder="Ej: Gluten, Lácteos, Sulfitos..."
-                className="flex-1 px-3 py-2 bg-[#100904] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
-              />
-              <button
-                type="button"
-                onClick={handleAddAllergen}
-                className="px-4 py-2 bg-[#40372e] hover:bg-[#40372e]/80 text-[#ffedd7] rounded-lg text-xs font-semibold cursor-pointer"
-              >
-                Añadir
-              </button>
+          {/* Alérgenos con Selector Rápido de los 14 Oficiales + Personalizados */}
+          <div className="space-y-3 p-4 rounded-xl bg-[#100904] border border-[#40372e]">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#ffedd7]">
+                Alérgenos (14 Oficiales UE & Personalizados)
+              </label>
+              <span className="text-[11px] text-[#a89988]">
+                {allergens.length} {allergens.length === 1 ? 'seleccionado' : 'seleccionados'}
+              </span>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {allergens.map(a => (
-                <span
-                  key={a}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-amber-500/10 text-amber-300 border border-amber-500/20"
-                >
-                  {a}
+
+            {/* Pills de selección rápida */}
+            <div className="flex flex-wrap gap-1.5">
+              {COMMON_ALLERGENS.map(allergen => {
+                const isSelected = allergens.includes(allergen)
+                return (
                   <button
+                    key={allergen}
                     type="button"
-                    onClick={() => handleRemoveAllergen(a)}
-                    className="hover:text-rose-400"
+                    onClick={() => handleToggleCommonAllergen(allergen)}
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer select-none ${
+                      isSelected
+                        ? 'bg-amber-500 text-slate-950 font-bold shadow-sm shadow-amber-500/30'
+                        : 'bg-[#1c120c] border border-[#40372e] text-[#a89988] hover:text-[#ffedd7] hover:border-[#a89988]/50'
+                    }`}
                   >
-                    ×
+                    {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    {allergen}
                   </button>
-                </span>
-              ))}
+                )
+              })}
+            </div>
+
+            {/* Añadir alérgeno personalizado */}
+            <div className="pt-2 border-t border-[#40372e]/60 space-y-2">
+              <span className="text-[11px] text-[#a89988] block">¿Otro alérgeno o intolerancia que no esté en la lista?</span>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={allergenInput}
+                  onChange={e => setAllergenInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCustomAllergen())}
+                  placeholder="Ej: Fructosa, Histamina, Cilantro..."
+                  className="flex-1 px-3 py-1.5 bg-[#1c120c] border border-[#40372e] rounded-lg text-xs text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-amber-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddCustomAllergen}
+                  className="px-3 py-1.5 bg-[#40372e] hover:bg-[#40372e]/80 text-[#ffedd7] rounded-lg text-xs font-semibold cursor-pointer"
+                >
+                  Añadir
+                </button>
+              </div>
+
+              {/* Lista de alérgenos activos adicionales (si no son de los 14 oficiales) */}
+              {allergens.some(a => !COMMON_ALLERGENS.includes(a)) && (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {allergens.filter(a => !COMMON_ALLERGENS.includes(a)).map(a => (
+                    <span
+                      key={a}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                    >
+                      {a}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAllergen(a)}
+                        className="hover:text-rose-400 font-bold ml-0.5 cursor-pointer"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </form>

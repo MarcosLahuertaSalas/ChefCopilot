@@ -21,6 +21,9 @@ public static class DependencyInjection
         services.AddScoped<ChefCopilot.Application.Common.Interfaces.IApplicationDbContext>(provider => 
             provider.GetRequiredService<ChefCopilotDbContext>());
 
+        // 4. Servicio criptográfico de hashing de contraseñas
+        services.AddSingleton<ChefCopilot.Application.Common.Interfaces.IPasswordHasher, ChefCopilot.Infrastructure.Services.PasswordHasher>();
+
         return services;
     }
 }

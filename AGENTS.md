@@ -90,17 +90,24 @@
 - Estética culinaria cálida (Walnut Shadow `#100904`, Warm Cream `#ffedd7`, Ember `#dc5000`, Cork Border `#40372e`).
 - Probado y verificado en navegador con `browser_subagent`.
 
+### Módulo de Autenticación & Usuarios (Backend Completo)
+- `User`: Id, Email (único), PasswordHash, FullName, RestaurantName, Role, CreatedAt.
+- **Hashing Criptográfico**: `PasswordHasher.cs` con PBKDF2 SHA-256 (100.000 iteraciones, salt de 128 bits) y comparación en tiempo constante (*fixed-time*) para prevenir timing attacks.
+- **CQRS**: `RegisterUserCommand`, `RegisterUserCommandValidator`, `LoginUserCommand`, `LoginUserCommandValidator`.
+- **Endpoints**: `POST /api/auth/register`, `POST /api/auth/login` en `AuthController.cs`.
+- Migración aplicada: `20261018191500_AddUserEntity` en MySQL.
+
 ---
 
 ## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Inmediato) 🎯
 
-1. **Excepciones Dietéticas por Banquete**:
+1. **Pantalla de Bienvenida / Auth en Frontend**:
+   - Crear la pantalla de login/registro y bienvenida cuando el usuario pase la referencia de diseño.
+2. **Excepciones Dietéticas por Banquete**:
    - Registrar comensales vegetarianos, celíacos o alérgicos en un evento (ej: 80 pax estándar, 5 celíacos, 3 veganos).
    - Sustituir automáticamente platos o recalcular ingredientes según restricciones.
-2. **Histórico y Registro de Mermas Reales tras el Evento**:
+3. **Histórico y Registro de Mermas Reales tras el Evento**:
    - Tras terminar el banquete, registrar cuánto se reutilizó realmente (ej: "Se obtuvieron 3.8 Kg de carne para albóndigas") para afinar los porcentajes de merma histórica.
-3. **Autenticación Multi-Restaurante**:
-   - Separación de almacenes y cartas por restaurante / usuario.
 
 ---
 
