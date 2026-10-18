@@ -11,6 +11,14 @@ public class CreateIngredientCommand : IRequest<Guid>
     public string Name { get; set; } = string.Empty;
     public string UnitOfMeasure { get; set; } = string.Empty;
     public decimal WastePercentage { get; set; }
+    public decimal ReusableWastePercentage { get; set; }
+    public decimal CurrentStock { get; set; }
+    public decimal MinimumStock { get; set; }
+    public bool IsPurchasedByPiece { get; set; }
+    public int? MinPortionsPerPiece { get; set; }
+    public int? MaxPortionsPerPiece { get; set; }
+    public string DefaultProvider { get; set; } = string.Empty;
+    public List<string> Allergens { get; set; } = new();
     public bool IsVegetarian { get; set; } = false;
     public bool IsVegan { get; set; } = false;
 }
@@ -35,8 +43,14 @@ public class CreateIngredientCommandHandler : IRequestHandler<CreateIngredientCo
             Name = request.Name,
             UnitOfMeasure = request.UnitOfMeasure,
             WastePercentage = request.WastePercentage,
-            // Ponemos defaults para lo que no venga
-            DefaultProvider = "Sin asignar",
+            ReusableWastePercentage = request.ReusableWastePercentage,
+            CurrentStock = request.CurrentStock,
+            MinimumStock = request.MinimumStock,
+            IsPurchasedByPiece = request.IsPurchasedByPiece,
+            MinPortionsPerPiece = request.MinPortionsPerPiece,
+            MaxPortionsPerPiece = request.MaxPortionsPerPiece,
+            DefaultProvider = string.IsNullOrWhiteSpace(request.DefaultProvider) ? "Sin asignar" : request.DefaultProvider,
+            Allergens = request.Allergens ?? new List<string>(),
             IsVegetarian = request.IsVegetarian,
             IsVegan = request.IsVegan
         };

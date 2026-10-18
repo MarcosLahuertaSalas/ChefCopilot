@@ -3,6 +3,12 @@ export interface Ingredient {
   name: string
   unitOfMeasure: string
   wastePercentage: number
+  reusableWastePercentage: number
+  currentStock: number
+  minimumStock: number
+  isPurchasedByPiece: boolean
+  minPortionsPerPiece?: number | null
+  maxPortionsPerPiece?: number | null
   defaultProvider: string
   allergens: string[]
   isVegetarian: boolean
@@ -13,6 +19,14 @@ export interface CreateIngredientRequest {
   name: string
   unitOfMeasure: string
   wastePercentage: number
+  reusableWastePercentage?: number
+  currentStock?: number
+  minimumStock?: number
+  isPurchasedByPiece?: boolean
+  minPortionsPerPiece?: number | null
+  maxPortionsPerPiece?: number | null
+  defaultProvider?: string
+  allergens?: string[]
   isVegetarian?: boolean
   isVegan?: boolean
 }
@@ -22,7 +36,14 @@ export interface UpdateIngredientRequest {
   name: string
   unitOfMeasure: string
   wastePercentage: number
+  reusableWastePercentage?: number
+  currentStock?: number
+  minimumStock?: number
+  isPurchasedByPiece?: boolean
+  minPortionsPerPiece?: number | null
+  maxPortionsPerPiece?: number | null
   defaultProvider?: string
+  allergens?: string[]
   isVegetarian?: boolean
   isVegan?: boolean
 }

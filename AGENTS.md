@@ -63,30 +63,44 @@
 - Permite vincular N platos del catálogo al menú de un banquete.
 - Endpoints en `EventsController`: `GET`, `GET /{id}`, `POST`, `PUT`, `DELETE`.
 
-### La Calculadora de Escandallos y Compras de Eventos
-- Endpoint: `GET /api/events/{id}/shopping-list` (`GetEventShoppingListQuery.cs`).
-- Consolida ingredientes repetidos entre platos distintos del menú.
-- Multiplica ración $\times$ número de comensales.
-- Aplica la fórmula técnica de hostelería: $\text{Cantidad Bruta a Comprar} = \frac{\text{Cantidad Neta}}{1 - \text{Porcentaje de Merma}}$.
+### Módulo de Ingredientes & Inventario Técnico (CRUD Completo)
+- `Ingredient`: Nombre, unidad de medida, proveedor y alérgenos.
+- **Doble Merma Culinaria**: Desperdicio técnico neto (`WastePercentage`, basura inútil) y merma técnica aprovechable (`ReusableWastePercentage`, recortes de carne para albóndigas, espinas/huesos para fondos y caldos).
+- **Control de Inventario**: Stock físico en cámara (`CurrentStock`) y stock mínimo de seguridad (`MinimumStock`).
+- **Compra por Piezas Enteras**: Rendimiento mínimo garantizado (`MinPortionsPerPiece`, cálculo pesimista del chef) y rendimiento máximo (`MaxPortionsPerPiece`).
+- Migración aplicada: `20261018174459_AddInventoryAndPieceYield` en MySQL.
 
-### Frontend Inicializado
-- Proyecto en `frontend/` funcional, con Tailwind v4 y probado en navegador con `browser_subagent`.
+### Módulo de Platos y Recetas (CRUD Completo)
+- Composición de platos con ingredientes y porciones individuales (`DishIngredients`).
+- Gestión completa de altas, modificaciones y bajas en `DishesController` y `DishesView.tsx`.
+
+### Módulo de Eventos & Calculadora de Escandallos en Vivo
+- Endpoint: `GET /api/events/{id}/shopping-list` (`GetEventShoppingListQuery.cs`).
+- Consolida ingredientes repetidos entre platos del menú para los $N$ comensales.
+- **Fórmula de Mermas Reales**: $\text{Bruto} = \frac{\text{Neto}}{1 - (\text{Waste} + \text{ReusableWaste})}$.
+- **Cálculo de Subproducto Reutilizable**: Cuantifica en Kg la carne/recortes disponibles para albóndigas/caldos.
+- **Deducción de Stock en Cámara**: $\text{A Pedir} = \max(0, \text{Bruto Requerido} - \text{Stock Actual})$.
+- **Alertas de Stock Crítico**: Detecta si el stock actual o el proyectado tras el evento cae por debajo del stock mínimo.
+- **Regla del Chef para Piezas Enteras**: Calcula las piezas a pedir usando el rendimiento mínimo garantizado ($\lceil \frac{\text{Raciones}}{\text{MinPortionsPerPiece}} \rceil$), y calcula el colchón de seguridad de raciones extra para tranquilidad de la cocina.
+
+### Frontend Completo por Features (React 19 + Tailwind v4 + Gooey Toast)
+- `src/features/ingredients/`: Despensa con tabla de stock, avisos de bajo mínimo, desglose de mermas y modal reactivo.
+- `src/features/dishes/`: Recetario interactivo con asignación de porciones y fichas técnicas.
+- `src/features/events/`: Planificador de banquetes y visor de la lista de compra en tiempo real con alertas, botón para copiar pedido formateado y opción de imprimir.
+- Estética culinaria cálida (Walnut Shadow `#100904`, Warm Cream `#ffedd7`, Ember `#dc5000`, Cork Border `#40372e`).
+- Probado y verificado en navegador con `browser_subagent`.
 
 ---
 
 ## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Inmediato) 🎯
 
-1. **Estructurar el Frontend por Features**:
-   - Organizar `frontend/src/` en:
-     - `src/api/` (cliente HTTP para comunicarse con el backend .NET).
-     - `src/features/ingredients/` (vista, tabla y formulario modal para alta/edición de ingredientes).
-     - `src/features/dishes/` (recetario visual con selector dinámico de ingredientes y cantidades).
-     - `src/features/events/` (planificador de banquetes y visor de la lista de la compra calculada con opción de exportar/imprimir).
-2. **Conectar Pantallas con la API**:
-   - Consumir los endpoints reales de .NET desde los componentes de React, disparando notificaciones con `goey-toast` ante cada acción.
-3. **Casos Avanzados de Negocio (Backend)**:
-   - Excepciones dietéticas por evento (ej: 5 veganos, 2 celíacos en un banquete).
-   - Autenticación de usuarios / restaurantes.
+1. **Excepciones Dietéticas por Banquete**:
+   - Registrar comensales vegetarianos, celíacos o alérgicos en un evento (ej: 80 pax estándar, 5 celíacos, 3 veganos).
+   - Sustituir automáticamente platos o recalcular ingredientes según restricciones.
+2. **Histórico y Registro de Mermas Reales tras el Evento**:
+   - Tras terminar el banquete, registrar cuánto se reutilizó realmente (ej: "Se obtuvieron 3.8 Kg de carne para albóndigas") para afinar los porcentajes de merma histórica.
+3. **Autenticación Multi-Restaurante**:
+   - Separación de almacenes y cartas por restaurante / usuario.
 
 ---
 

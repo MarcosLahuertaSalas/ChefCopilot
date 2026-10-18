@@ -33,7 +33,25 @@ export interface ShoppingListItem {
   unitOfMeasure: string
   totalNetQuantity: number
   wastePercentage: number
-  totalGrossQuantityToBuy: number
+  reusableWastePercentage: number
+  totalWastePercentage: number
+  totalGrossQuantityRequired: number
+  currentStock: number
+  minimumStock: number
+  quantityToBuy: number
+  projectedStockAfterEvent: number
+  isLowStockAlert: boolean
+  lowStockMessage?: string | null
+  estimatedReusableQuantity: number
+  estimatedNetTrashQuantity: number
+  isPurchasedByPiece: boolean
+  minPortionsPerPiece?: number | null
+  maxPortionsPerPiece?: number | null
+  totalPortionsRequired: number
+  piecesToBuy?: number | null
+  estimatedMinPortionsYield?: number | null
+  estimatedMaxPortionsYield?: number | null
+  estimatedSurplusPortions?: number | null
   defaultProvider: string
   allergens: string[]
   isVegetarian: boolean
@@ -47,5 +65,7 @@ export interface EventShoppingList {
   eventDate: string
   guests: number
   totalDishes: number
+  totalStockAlerts: number
+  totalEstimatedReusableTrimmings: number
   items: ShoppingListItem[]
 }

@@ -100,9 +100,15 @@ namespace ChefCopilot.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<decimal>("CurrentStock")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<string>("DefaultProvider")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("IsPurchasedByPiece")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsVegan")
                         .HasColumnType("tinyint(1)");
@@ -110,9 +116,21 @@ namespace ChefCopilot.Infrastructure.Migrations
                     b.Property<bool>("IsVegetarian")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int?>("MaxPortionsPerPiece")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MinPortionsPerPiece")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MinimumStock")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<decimal>("ReusableWastePercentage")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("UnitOfMeasure")
                         .IsRequired()

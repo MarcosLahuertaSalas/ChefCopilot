@@ -9,7 +9,14 @@ public class UpdateIngredientCommand : IRequest
     public string Name { get; set; } = string.Empty;
     public string UnitOfMeasure { get; set; } = string.Empty;
     public decimal WastePercentage { get; set; }
+    public decimal ReusableWastePercentage { get; set; }
+    public decimal CurrentStock { get; set; }
+    public decimal MinimumStock { get; set; }
+    public bool IsPurchasedByPiece { get; set; }
+    public int? MinPortionsPerPiece { get; set; }
+    public int? MaxPortionsPerPiece { get; set; }
     public string DefaultProvider { get; set; } = string.Empty;
+    public List<string> Allergens { get; set; } = new();
     public bool IsVegetarian { get; set; }
     public bool IsVegan { get; set; }
 }
@@ -38,7 +45,14 @@ public class UpdateIngredientCommandHandler : IRequestHandler<UpdateIngredientCo
         entity.Name = request.Name;
         entity.UnitOfMeasure = request.UnitOfMeasure;
         entity.WastePercentage = request.WastePercentage;
+        entity.ReusableWastePercentage = request.ReusableWastePercentage;
+        entity.CurrentStock = request.CurrentStock;
+        entity.MinimumStock = request.MinimumStock;
+        entity.IsPurchasedByPiece = request.IsPurchasedByPiece;
+        entity.MinPortionsPerPiece = request.MinPortionsPerPiece;
+        entity.MaxPortionsPerPiece = request.MaxPortionsPerPiece;
         entity.DefaultProvider = request.DefaultProvider;
+        entity.Allergens = request.Allergens ?? new List<string>();
         entity.IsVegetarian = request.IsVegetarian;
         entity.IsVegan = request.IsVegan;
 
