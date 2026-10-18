@@ -21,10 +21,18 @@
 
 ### Frontend (React 19)
 - **Entorno**: Vite 8 + TypeScript + React 19.
-- **Estilos**: Tailwind CSS v4 + Tipografías *Space Grotesk* (titulares) y *Plus Jakarta Sans* (cuerpo).
+- **Estilos**: Tailwind CSS v4 con paleta editorial gastronómica cálida:
+  - *Walnut Shadow* (`#100904`), *Superficie Nogal* (`#1c120c`), *Borde Corcho* (`#40372e`).
+  - *Warm Cream* (`#ffedd7`) para tipografía cálida, *Ember/Ascua* (`#dc5000`) y *Ámbar* (`#d97706`).
+- **Tipografías**: *Space Grotesk* (titulares) y *Plus Jakarta Sans* (cuerpo).
 - **Animaciones y Micro-interacciones**:
   - **React Bits**: Componentes animados en código fuente (ej: `SplitText.tsx` con GSAP). Registro configurado en `components.json`.
   - **Gooey Toast**: Notificaciones con físicas líquidas orgánicas (*blob morphing* con Framer Motion).
+- **Arquitectura de Frontend**:
+  - `src/types/`: DTOs TypeScript sincronizados con C# (`ingredient.ts`, `dish.ts`, `event.ts`).
+  - `src/api/`: Cliente HTTP base con gestión de errores RFC 7807 (`client.ts`, `ingredients.ts`, `dishes.ts`, `events.ts`).
+  - `src/components/`: Componentes UI y animados (`ui/`, `animated/`).
+  - `src/features/`: Módulos de negocio (`features/ingredients`, `features/dishes`, `features/events`).
 - **Proxy de Desarrollo**: `frontend/vite.config.ts` redirige automáticamente `/api` a `http://localhost:5236`.
 
 ### MCP Servers y Skills

@@ -19,20 +19,24 @@ Evitar estrictamente los siguientes vicios habituales:
 
 ---
 
-## 2. Paleta de Color Culinaria y Materiales
+## 2. Paleta de Color Culinaria Editorial & Materiales
 
-ChefCopilot se inspira en una cocina profesional de estrella Michelin: carbón, hierro fundido, sartenes de cobre y producto fresco.
+ChefCopilot se inspira en una cocina profesional de estrella Michelin y un estudio editorial gastronómico: madera tostada, hierro fundido, encimeras cálidas, corcho y brasas vivas.
 
-- **Fondos (Base)**:
-  - Primario: `#070a10` (Negro carbón profundo con matiz frío).
-  - Tarjetas y Contenedores: `#0f172a` / `slate-900/90` con bordes sutiles `border-slate-800/80`.
+- **Fondos (Base & Void)**:
+  - **Walnut Shadow** (`#100904` / `--color-walnut`): Lienzo oscuro cálido, el vacío acogedor detrás de la comida. Reemplaza al negro puro `#000000`.
+  - **Superficie Elevada** (`#1c120c` / `--color-walnut-surface`): Tarjetas, paneles y modales elevados sobre el lienzo.
+  - **Bordes & Separadores** (`#382416` a `#40372e` / `--color-cork-border`): Líneas de separación sutiles y elegantes, evitando bordes grises de plástico.
+- **Tipografía y Contraste**:
+  - **Warm Cream** (`#ffedd7` / `--color-warm-cream`): Color principal de texto sobre superficies oscuras. Da un tono cálido y orgánico; se prohíbe el blanco frío `#ffffff`.
+  - **Driftwood** (`#a89988` / `--color-driftwood`): Texto secundario, unidades de medida y etiquetas complementarias.
 - **Acentos Gastronómicos**:
-  - **Cobre / Ámbar Cálido**: `amber-500` / `amber-400` para llamadas a la acción primarias, métricas clave y fuego/calor de cocina.
-  - **Verde Fresco / Oliva**: `emerald-400` / `emerald-500` para éxito, validaciones y productos aptos/veganos.
-  - **Pizarra Neutra**: `slate-400` para textos secundarios y etiquetas técnicas.
+  - **Ember Accent / Ascua** (`#dc5000` / `--color-ember`): Naranja fuego para alertas críticas, detalles y datos de mermas. Usar con moderación y respeto para no saturar.
+  - **Cobre / Ámbar Cálido** (`#d97706` / `amber-500`): Botones de acción principal (CTA), totales calculados y estado activo.
+  - **Verde Oliva / Hoja** (`#16a34a` / `emerald-500`): Validaciones de escandallos, ingredientes aptos y éxito.
 - **Tipografía**:
   - Titulares e impacto numérico: **`Space Grotesk`** (`font-heading`).
-  - Textos de lectura y tablas: **`Plus Jakarta Sans`** (`font-sans`).
+  - Textos de lectura, formularios y tablas: **`Plus Jakarta Sans`** (`font-sans`).
 
 ---
 
