@@ -1,20 +1,71 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { GooeyToaster } from 'goey-toast'
+import { LandingPage } from './features/landing/LandingPage'
 import { IngredientsView } from './features/ingredients/IngredientsView'
 import { DishesView } from './features/dishes/DishesView'
 import { EventsView } from './features/events/EventsView'
+import { JuankiAChatWidget } from './components/JuankiAChatWidget'
+import { AuthModal } from './features/auth/AuthModal'
+import type { User } from './types/auth'
 import { 
-  ChefHat, 
   Scale, 
   UtensilsCrossed, 
-  Calendar 
+  Calendar,
+  Home,
+  LogOut,
+  LogIn
 } from 'lucide-react'
 
-type TabType = 'ingredients' | 'dishes' | 'events'
+type TabType = 'events' | 'dishes' | 'ingredients'
+type ViewMode = 'landing' | 'app'
 
 export default function App() {
+  const [viewMode, setViewMode] = useState<ViewMode>('landing')
   const [activeTab, setActiveTab] = useState<TabType>('events')
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
 
+  // Cargar usuario guardado en localStorage al iniciar
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('chefcopilot_user')
+      if (stored) {
+        const parsed = JSON.parse(stored) as User
+        setCurrentUser(parsed)
+      }
+    } catch {
+      // Ignorar error de parsing
+    }
+  }, [])
+
+  const handleUserLoggedIn = (user: User) => {
+    setCurrentUser(user)
+    try {
+      localStorage.setItem('chefcopilot_user', JSON.stringify(user))
+    } catch {
+      // Ignorar error de storage
+    }
+  }
+
+  const handleLogout = () => {
+    setCurrentUser(null)
+    localStorage.removeItem('chefcopilot_user')
+  }
+
+  // Vista de Landing Page según el diseño de Figma
+  if (viewMode === 'landing') {
+    return (
+      <>
+        <GooeyToaster position="bottom-right" />
+        <LandingPage
+          onEnterApp={() => setViewMode('app')}
+          onUserLoggedIn={handleUserLoggedIn}
+        />
+      </>
+    )
+  }
+
+  // Vista de Espacio de Trabajo Profesional (Darkroom Gastronómico)
   return (
     <div className="min-h-screen bg-[#100904] text-[#ffedd7] flex flex-col selection:bg-amber-500/30">
       {/* Sistema de notificaciones líquidas Gooey Toast */}
@@ -23,17 +74,29 @@ export default function App() {
       {/* Barra superior artesanal gastronómica */}
       <header className="border-b border-[#2e2118] bg-[#0c0704]/90 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Logo y Branding */}
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#dc5000] via-[#ea580c] to-amber-500 flex items-center justify-center shadow-lg shadow-amber-900/40 ring-1 ring-[#dc5000]/40">
-              <ChefHat className="w-6 h-6 text-[#0c0704] stroke-[2.4]" />
-            </div>
+          
+          {/* Logo y Botón para volver al Inicio / Landing */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setViewMode('landing')}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#160e09] hover:bg-[#2e2118] border border-[#2e2118] text-xs font-bold text-[#ffedd7] transition-all cursor-pointer group shadow-sm"
+              title="Volver a la portada de inicio"
+            >
+              <div className="w-6 h-6 rounded-lg overflow-hidden border border-amber-500/40">
+                <img src="/juankia.jpg" alt="JuankiA" className="w-full h-full object-cover" />
+              </div>
+              <Home className="w-3.5 h-3.5 text-amber-500 group-hover:-translate-x-0.5 transition-transform" />
+              <span className="hidden sm:inline">Inicio</span>
+            </button>
+
+            <div className="h-6 w-px bg-[#2e2118]" />
+
             <div>
-              <span className="text-xl font-bold tracking-tight font-heading text-[#ffedd7] flex items-center gap-1">
+              <span className="text-lg font-bold tracking-tight font-heading text-[#ffedd7] flex items-center gap-1">
                 CHEF<span className="text-[#dc5000]">COPILOT</span>
               </span>
-              <p className="text-[9.5px] text-[#a89988] font-bold tracking-[0.2em] uppercase">
-                Ingeniería Gastronómica & Escandallos
+              <p className="text-[9px] text-[#a89988] font-bold tracking-[0.2em] uppercase">
+                {currentUser?.restaurantName || 'Taller Culinario Profesional'}
               </p>
             </div>
           </div>
@@ -77,13 +140,40 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Indicador de Estado del Sistema */}
-          <div className="hidden sm:flex items-center gap-2">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/40 text-emerald-400 border border-emerald-800/40">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              .NET 9 + MySQL 8.0 Activos
-            </span>
+          {/* Perfil del Chef / Autenticación */}
+          <div className="flex items-center gap-3">
+            {currentUser ? (
+              <div className="flex items-center gap-2.5 bg-[#160e09] border border-[#2e2118] px-3 py-1.5 rounded-xl">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm">
+                  {currentUser.fullName.charAt(0).toUpperCase()}
+                </div>
+                <div className="hidden md:block text-left">
+                  <span className="text-xs font-bold text-[#ffedd7] block leading-none">
+                    {currentUser.fullName}
+                  </span>
+                  <span className="text-[9px] text-amber-400/90 font-medium tracking-wider">
+                    {currentUser.role}
+                  </span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="text-[#a89988] hover:text-rose-400 p-1 rounded-lg hover:bg-[#2e2118] transition-colors cursor-pointer"
+                  title="Cerrar sesión"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#dc5000]/10 hover:bg-[#dc5000]/20 border border-[#dc5000]/30 text-xs font-bold text-amber-300 transition-all cursor-pointer shadow-sm"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Acceso Chef</span>
+              </button>
+            )}
           </div>
+
         </div>
       </header>
 
@@ -94,6 +184,9 @@ export default function App() {
         {activeTab === 'ingredients' && <IngredientsView />}
       </main>
 
+      {/* Mascota y Asistente IA Flotante JuankiA */}
+      <JuankiAChatWidget />
+
       {/* Footer Editorial Gastronómico */}
       <footer className="border-t border-[#40372e] bg-[#100904] py-6 px-6 text-center text-xs text-[#a89988]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -101,6 +194,13 @@ export default function App() {
           <span className="text-[11px] text-[#a89988]/80">Fórmula de Mermas Reutilizables & Deducción de Stock Cámara</span>
         </div>
       </footer>
+
+      {/* Modal de Autenticación */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handleUserLoggedIn}
+      />
     </div>
   )
 }

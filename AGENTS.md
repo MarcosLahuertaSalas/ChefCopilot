@@ -97,17 +97,28 @@
 - **Endpoints**: `POST /api/auth/register`, `POST /api/auth/login` en `AuthController.cs`.
 - Migración aplicada: `20261018191500_AddUserEntity` en MySQL.
 
+### Módulo de Portada, Mascota JuankiA & Asistente IA (Frontend Completo) ✅
+- **Mascota JuankiA**: Cazuela tradicional de hierro con gorro de chef y ojos animados expresivos (`frontend/src/components/JuankiAMascot.tsx`).
+  - **Seguimiento Ocular 2.5D**: Pupilas procedurales con traslación matemática (`atan2` + distancia acotada) que siguen el cursor del ratón en tiempo real.
+  - **Efecto Parallax 3D**: Inclinación reactiva mediante perspectiva CSS (`perspective(1000px) rotateX/rotateY`) que da volumen 3D real sin necesidad de modelos pesados Three.js ni suscripciones de pago.
+  - **Pestañeo Orgánico**: Intervalo natural cada 4.5s con brillos especulares duales en la pupila.
+- **Página de Inicio (Figma Replica)**: `frontend/src/features/landing/LandingPage.tsx`.
+  - Réplica exacta de la composición de Figma Make: fondo lino alabastro cálido (`#f4efe6`), titulares monumentales `CHEF` (`#18251e`) / `COPILOT` (`#5a341e`), separador con indicador `01`, tarjeta de JuankiA con etiquetas "TU COPILOTO" y "Siempre atento a tu cocina", margen derecho vertical "TU COCINA · EN ORDEN" y botón flotante "DESCUBRE".
+- **Widget Flotante de Asistente IA JuankiA**: `frontend/src/components/JuankiAChatWidget.tsx`.
+  - Asistente flotante permanente en el espacio de trabajo culinario. Permite al chef consultar dudas de escandallos, rendimientos de solomillo para 80 comensales y gestión de subproductos reutilizables con respuestas instantáneas.
+- **Autenticación en Frontend**: `frontend/src/features/auth/AuthModal.tsx` integrado en la cabecera y la landing, conectado a los endpoints `/api/auth/login` y `/api/auth/register`, con persistencia en `localStorage` y selector de roles.
+
 ---
 
 ## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Inmediato) 🎯
 
-1. **Pantalla de Bienvenida / Auth en Frontend**:
-   - Crear la pantalla de login/registro y bienvenida cuando el usuario pase la referencia de diseño.
-2. **Excepciones Dietéticas por Banquete**:
+1. **Excepciones Dietéticas por Banquete**:
    - Registrar comensales vegetarianos, celíacos o alérgicos en un evento (ej: 80 pax estándar, 5 celíacos, 3 veganos).
    - Sustituir automáticamente platos o recalcular ingredientes según restricciones.
-3. **Histórico y Registro de Mermas Reales tras el Evento**:
+2. **Histórico y Registro de Mermas Reales tras el Evento**:
    - Tras terminar el banquete, registrar cuánto se reutilizó realmente (ej: "Se obtuvieron 3.8 Kg de carne para albóndigas") para afinar los porcentajes de merma histórica.
+3. **Conexión de JuankiA con LLM en Streaming**:
+   - Conectar el widget de chat de JuankiA con una API de lenguaje en streaming para responder cualquier duda técnica de cocina en tiempo real.
 
 ---
 
