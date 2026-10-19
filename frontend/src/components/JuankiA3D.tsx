@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo, Suspense } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 import { Sparkles, MessageCircle, ArrowDown, X, RefreshCw } from 'lucide-react'
@@ -29,6 +29,7 @@ function JuankiAPotModel({
   jumpTrigger?: number
   onPotClick?: () => void
 }) {
+  const { gl } = useThree()
   const groupRef = useRef<THREE.Group>(null)
   const leftPupilRef = useRef<THREE.Mesh>(null)
   const rightPupilRef = useRef<THREE.Mesh>(null)
@@ -103,14 +104,14 @@ function JuankiAPotModel({
     []
   )
 
-  // Seguimiento global del ratón por toda la pantalla
+  // Seguimiento global del ratón por toda la pantalla con centro en JuankiA
   const globalMouseRef = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
     if (!interactive) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      const canvasEl = document.querySelector('canvas')
+      const canvasEl = gl?.domElement
       if (canvasEl) {
         const rect = canvasEl.getBoundingClientRect()
         const centerX = rect.left + rect.width / 2
@@ -123,16 +124,12 @@ function JuankiAPotModel({
           x: Math.max(-1.3, Math.min(1.3, dx)),
           y: Math.max(-1.3, Math.min(1.3, dy)),
         }
-      } else {
-        const x = (e.clientX / window.innerWidth) * 2 - 1
-        const y = -(e.clientY / window.innerHeight) * 2 + 1
-        globalMouseRef.current = { x, y }
       }
     }
 
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [interactive])
+  }, [interactive, gl])
 
   // Posición base de los ojos sobre la curvatura frontal de la cazuela
   const leftEyeBase = useMemo(() => new THREE.Vector3(-0.175, -0.30, 0.575), [])

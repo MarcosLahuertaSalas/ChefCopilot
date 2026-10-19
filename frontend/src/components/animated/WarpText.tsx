@@ -528,6 +528,18 @@ export const WarpText = ({
       if (disposed || contextLost) return;
 
       const elapsed = (now - startTime) * 0.001;
+
+      // Efecto cinemático de entrada líquida en los primeros 1.8 segundos
+      const entranceDuration = 1.8;
+      let entranceWarpBoost = 0;
+      let entranceActiveBoost = 0;
+      if (elapsed < entranceDuration) {
+        const progress = Math.min(1, elapsed / entranceDuration);
+        const wave = Math.sin(progress * Math.PI);
+        entranceWarpBoost = wave * 0.085;
+        entranceActiveBoost = wave * 0.85;
+      }
+
       const idleX = 0.5 + Math.sin(elapsed * 0.33) * 0.12;
       const idleY = 0.5 + Math.cos(elapsed * 0.27) * 0.1;
       const targetX = pointer.activeTarget > 0 ? pointer.tx : idleX;
@@ -540,7 +552,9 @@ export const WarpText = ({
 
       program.uniforms.uPointer.value[0] = pointer.x;
       program.uniforms.uPointer.value[1] = pointer.y;
-      program.uniforms.uPointerActive.value = reduceMotion ? pointer.active * 0.35 : pointer.active;
+      program.uniforms.uWarpStrength.value = propsRef.current.warpStrength + entranceWarpBoost;
+      const effectiveActive = Math.max(pointer.active, entranceActiveBoost);
+      program.uniforms.uPointerActive.value = reduceMotion ? effectiveActive * 0.35 : effectiveActive;
       program.uniforms.uTime.value = reduceMotion ? 0 : elapsed;
 
       renderOnce();
@@ -604,7 +618,7 @@ export const WarpText = ({
   return (
     <div
       ref={containerRef}
-      className={`warp-text ${className}`.trim()}
+      className={`warp-text warp-text-entrance ${className}`.trim()}
       style={style}
       role="img"
       aria-label={text}
