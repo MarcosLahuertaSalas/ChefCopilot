@@ -84,9 +84,9 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
     return () => clearInterval(blinkInterval)
   }, [])
 
-  // Posición base de los ojos sobre la curvatura frontal de la cazuela
-  const leftEyeBase = useMemo(() => new THREE.Vector3(-0.165, -0.30, 0.585), [])
-  const rightEyeBase = useMemo(() => new THREE.Vector3(0.165, -0.30, 0.585), [])
+  // Posición base de los ojos sobre la curvatura frontal de la cazuela (proporciones grandes estilo anime)
+  const leftEyeBase = useMemo(() => new THREE.Vector3(-0.175, -0.30, 0.575), [])
+  const rightEyeBase = useMemo(() => new THREE.Vector3(0.175, -0.30, 0.575), [])
 
   // Animación en cada frame: seguimiento suave del ratón
   useFrame((state, delta) => {
@@ -118,8 +118,8 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
       )
     }
 
-    // Traslación matemática de las pupilas dentro del globo ocular
-    const maxPupilOffset = 0.026
+    // Traslación matemática de las pupilas dentro del globo ocular agrandado
+    const maxPupilOffset = 0.032
     const pupilTargetX = state.pointer.x * maxPupilOffset
     const pupilTargetY = state.pointer.y * maxPupilOffset
 
@@ -181,11 +181,11 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
         />
       )}
 
-      {/* 3. Ojos estilo JuankiA original: cuenca crema + gran pupila negra brillante con 2 destellos */}
+      {/* 3. Ojos grandes estilo JuankiA original: cuenca crema + gran pupila negra brillante con 2 destellos */}
       <group ref={eyesGroupRef}>
-        {/* Ojo Izquierdo: Fondo/borde crema sutil */}
+        {/* Ojo Izquierdo: Fondo/borde crema sutil ampliado */}
         <mesh position={leftEyeBase.toArray()} castShadow>
-          <sphereGeometry args={[0.084, 32, 32]} />
+          <sphereGeometry args={[0.116, 32, 32]} />
           <meshStandardMaterial
             color="#faf4ea"
             roughness={0.25}
@@ -193,32 +193,32 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
           />
         </mesh>
 
-        {/* Pupila Izquierda: Gran pupila negra brillante dominante con destellos */}
+        {/* Pupila Izquierda: Gran pupila negra brillante dominante con destellos ampliados */}
         <mesh
           ref={leftPupilRef}
-          position={[leftEyeBase.x, leftEyeBase.y, leftEyeBase.z + 0.038]}
+          position={[leftEyeBase.x, leftEyeBase.y, leftEyeBase.z + 0.046]}
         >
-          <sphereGeometry args={[0.074, 32, 32]} />
+          <sphereGeometry args={[0.104, 32, 32]} />
           <meshStandardMaterial
             color="#0c0908"
             roughness={0.05}
             metalness={0.1}
           />
           {/* Brillo especular grande (arriba izquierda) */}
-          <mesh position={[0.022, 0.024, 0.065]}>
-            <sphereGeometry args={[0.022, 16, 16]} />
+          <mesh position={[0.030, 0.032, 0.092]}>
+            <sphereGeometry args={[0.030, 16, 16]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
           {/* Brillo especular pequeño (abajo derecha) */}
-          <mesh position={[-0.016, -0.018, 0.065]}>
-            <sphereGeometry args={[0.011, 14, 14]} />
+          <mesh position={[-0.022, -0.025, 0.092]}>
+            <sphereGeometry args={[0.015, 14, 14]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
         </mesh>
 
-        {/* Ojo Derecho: Fondo/borde crema sutil */}
+        {/* Ojo Derecho: Fondo/borde crema sutil ampliado */}
         <mesh position={rightEyeBase.toArray()} castShadow>
-          <sphereGeometry args={[0.084, 32, 32]} />
+          <sphereGeometry args={[0.116, 32, 32]} />
           <meshStandardMaterial
             color="#faf4ea"
             roughness={0.25}
@@ -226,25 +226,25 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
           />
         </mesh>
 
-        {/* Pupila Derecha: Gran pupila negra brillante dominante con destellos */}
+        {/* Pupila Derecha: Gran pupila negra brillante dominante con destellos ampliados */}
         <mesh
           ref={rightPupilRef}
-          position={[rightEyeBase.x, rightEyeBase.y, rightEyeBase.z + 0.038]}
+          position={[rightEyeBase.x, rightEyeBase.y, rightEyeBase.z + 0.046]}
         >
-          <sphereGeometry args={[0.074, 32, 32]} />
+          <sphereGeometry args={[0.104, 32, 32]} />
           <meshStandardMaterial
             color="#0c0908"
             roughness={0.05}
             metalness={0.1}
           />
           {/* Brillo especular grande (arriba izquierda) */}
-          <mesh position={[0.022, 0.024, 0.065]}>
-            <sphereGeometry args={[0.022, 16, 16]} />
+          <mesh position={[0.030, 0.032, 0.092]}>
+            <sphereGeometry args={[0.030, 16, 16]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
           {/* Brillo especular pequeño (abajo derecha) */}
-          <mesh position={[-0.016, -0.018, 0.065]}>
-            <sphereGeometry args={[0.011, 14, 14]} />
+          <mesh position={[-0.022, -0.025, 0.092]}>
+            <sphereGeometry args={[0.015, 14, 14]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
         </mesh>
