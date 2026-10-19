@@ -106,11 +106,18 @@
   - **Ojos y Pupilas Procedurales 3D Agrandados**: Ojos grandes, expresivos y tiernos con cuenca crema sutil (`radius: 0.116`), gran pupila negra brillante (`radius: 0.104`) y destellos especulares duales ampliados.
   - **Seguimiento Global en Toda la Pantalla (`window.mousemove` + `useFrame`)**: La orientación 3D del cuerpo y las pupilas siguen matemáticamente el cursor por cualquier rincón del monitor, sin limitarse al recuadro del canvas.
   - **Ojos Siempre Abiertos**: Mirada siempre atenta, fija y nítida (sin parpadeos).
+  - **Burbuja de Diálogo Interactiva y Salto Físico**:
+    - JuankiA saluda con *"¡Hola Chef! 👨‍🍳🔥"* en un bocadillo flotante cálido, cicla consejos y cálculos técnicos culinarios con botón interactivo, y salta alegremente con física elástica de rebote al hacer click sobre el modelo 3D.
   - **Integración sin Recuadros**: El modelo 3D flota limpiamente y sin recuadros sobre el fondo lino de la landing page con sombra de contacto natural (`ContactShadows`).
+- **Página de Inicio & Storytelling por Scroll**: `frontend/src/features/landing/LandingPage.tsx`.
+  - **Tipografía Cinética React Bits (`SplitText.tsx`)**: Titulares monumentales `CHEF` y `COPILOT` con animación de entrada staggered letra a letra mediante GSAP.
+  - **Sección Narrativa "¿Para qué sirve ChefCopilot?"**: 3 pilares técnicos fundamentales (Doble Merma Técnica con rescate de subproducto, Regla del Chef por Piezas con colchón de seguridad para banquetes, y Deducción de Stock Físico en Cámara con alertas de stock crítico).
+  - **Flujo de Trabajo Culinario en 3 Pasos**: Despensa Técnica -> Ficha de Recetas -> Banquetes & Lista de Compras en Vivo.
+  - **Botón Flotante Reactivo al Scroll**: Transiciona entre `DESCUBRE ↘` (scroll suave hacia la historia) y `SUBIR ↑` (regreso al Hero con JuankiA).
 - **Mascota JuankiA 2D Transparente**: Recorte limpio en `public/juankia-logo.png` sin fondos grises para el encabezado y avatares.
-- **Página de Inicio (Figma Replica)**: `frontend/src/features/landing/LandingPage.tsx` con titulares monumentales `CHEF` / `COPILOT`, separador `01` y modelo 3D integrado exclusivamente.
 - **Widget Flotante de Asistente IA JuankiA**: `frontend/src/components/JuankiAChatWidget.tsx`.
 - **Autenticación en Frontend**: `frontend/src/features/auth/AuthModal.tsx` conectado a .NET 9 + MySQL.
+
 
 ---
 
