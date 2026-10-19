@@ -323,14 +323,6 @@ export const JuankiA3D: React.FC<JuankiA3DProps> = ({
   const [dialogueIdx, setDialogueIdx] = useState(0)
   const [jumpCount, setJumpCount] = useState(0)
 
-  // Abrir el bocadillo automáticamente a los 1.2 segundos con el saludo inicial
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setBubbleOpen(true)
-    }, 1200)
-    return () => clearTimeout(timer)
-  }, [])
-
   const handleNextDialogue = () => {
     setDialogueIdx(prev => (prev + 1) % JUANKIA_DIALOGUES.length)
     setJumpCount(c => c + 1)
@@ -398,17 +390,20 @@ export const JuankiA3D: React.FC<JuankiA3DProps> = ({
         </div>
       )}
 
-      {/* Botón flotante para reabrir el saludo si se cierra */}
+      {/* Botón flotante para abrir el saludo cuando el bocadillo está cerrado */}
       {!bubbleOpen && (
         <button
           onClick={() => {
             setBubbleOpen(true)
             setJumpCount(c => c + 1)
           }}
-          className="absolute top-2 right-4 z-30 px-3 py-1.5 rounded-full bg-[#fffcf7] hover:bg-white text-[#18251e] border border-[#18251e]/15 shadow-md text-[11px] font-bold flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 active:scale-95"
+          className="absolute top-2 left-4 sm:left-6 z-30 px-3.5 py-1.5 rounded-full bg-[#fffcf7] hover:bg-white text-[#18251e] border border-[#18251e]/15 shadow-md text-[11px] font-bold flex items-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95 group"
+          title="Haz clic para hablar con JuankiA"
         >
-          <MessageCircle className="w-3.5 h-3.5 text-amber-600" />
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <MessageCircle className="w-3.5 h-3.5 text-[#5a341e] group-hover:rotate-12 transition-transform" />
           <span>¡Hola Chef!</span>
+          <span className="text-[10px] text-[#726e66] font-normal hidden sm:inline">· Toca aquí</span>
         </button>
       )}
 

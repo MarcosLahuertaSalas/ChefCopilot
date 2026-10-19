@@ -106,13 +106,16 @@
   - **Ojos y Pupilas Procedurales 3D Agrandados**: Ojos grandes, expresivos y tiernos con cuenca crema sutil (`radius: 0.116`), gran pupila negra brillante (`radius: 0.104`) y destellos especulares duales ampliados.
   - **Seguimiento Global en Toda la Pantalla (`window.mousemove` + `useFrame`)**: La orientación 3D del cuerpo y las pupilas siguen matemáticamente el cursor por cualquier rincón del monitor, sin limitarse al recuadro del canvas.
   - **Ojos Siempre Abiertos**: Mirada siempre atenta, fija y nítida (sin parpadeos).
-  - **Burbuja de Diálogo Interactiva y Salto Físico**:
-    - JuankiA saluda con *"¡Hola Chef! 👨‍🍳🔥"* en un bocadillo flotante cálido, cicla consejos y cálculos técnicos culinarios con botón interactivo, y salta alegremente con física elástica de rebote al hacer click sobre el modelo 3D.
+  - **Burbuja de Diálogo On-Demand y Salto Físico**:
+    - JuankiA carga completamente despejado para admirar el modelo 3D y su gorro de chef, acompañado de una discreta insignia interactiva *"¡Hola Chef! · Toca aquí"*.
+    - Al hacer clic en JuankiA o en la insignia, salta elásticamente con amortiguación y balanceo, y despliega el bocadillo de consejos técnicos culinarios.
   - **Integración sin Recuadros**: El modelo 3D flota limpiamente y sin recuadros sobre el fondo lino de la landing page con sombra de contacto natural (`ContactShadows`).
 - **Página de Inicio & Storytelling por Scroll**: `frontend/src/features/landing/LandingPage.tsx`.
-  - **Tipografía Cinética React Bits (`SplitText.tsx`)**: Titulares monumentales `CHEF` y `COPILOT` con animación de entrada staggered letra a letra mediante GSAP.
+  - **Titular WebGL Interactivo React Bits (`WarpText.tsx` + `ogl`)**: Titular monumental `CHEF COPILOT` con shader WebGL de refracción óptica, curvatura dinámica al paso del puntero y ondas de choque líquidas.
+  - **Revelado por Scroll React Bits (`AnimatedContent.tsx` + GSAP ScrollTrigger)**: Entradas cinematográficas con traslación vertical y suave inclinación 3D (*tilt*) en los 3 pilares de ingeniería gastronómica y en las tarjetas del flujo de trabajo.
   - **Sección Narrativa "¿Para qué sirve ChefCopilot?"**: 3 pilares técnicos fundamentales (Doble Merma Técnica con rescate de subproducto, Regla del Chef por Piezas con colchón de seguridad para banquetes, y Deducción de Stock Físico en Cámara con alertas de stock crítico).
   - **Flujo de Trabajo Culinario en 3 Pasos**: Despensa Técnica -> Ficha de Recetas -> Banquetes & Lista de Compras en Vivo.
+  - **Armonización de Estilos**: Botón del banner CTA final integrado en paleta *Warm Cream* (`#ffedd7`) sobre carbón/verde bosque (`#18241d`), eliminando degradados estridentes.
   - **Botón Flotante Reactivo al Scroll**: Transiciona entre `DESCUBRE ↘` (scroll suave hacia la historia) y `SUBIR ↑` (regreso al Hero con JuankiA).
 - **Mascota JuankiA 2D Transparente**: Recorte limpio en `public/juankia-logo.png` sin fondos grises para el encabezado y avatares.
 - **Widget Flotante de Asistente IA JuankiA**: `frontend/src/components/JuankiAChatWidget.tsx`.

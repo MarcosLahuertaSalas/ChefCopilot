@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import SplitText from '../../components/SplitText'
+import { WarpText } from '../../components/animated/WarpText'
+import { AnimatedContent } from '../../components/animated/AnimatedContent'
 import { JuankiA3D } from '../../components/JuankiA3D'
 import { AuthModal } from '../auth/AuthModal'
 import type { User } from '../../types/auth'
-import { 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  Scale, 
-  UtensilsCrossed, 
-  Calendar, 
-  ShieldCheck, 
-  Package, 
+import {
+  ArrowUpRight,
+  ArrowDownRight,
+  Scale,
+  UtensilsCrossed,
+  Calendar,
+  ShieldCheck,
+  Package,
   ArrowUp,
   CheckCircle2
 } from 'lucide-react'
@@ -70,10 +71,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Logo Izquierda: 2D JuankiA transparente sin recuadro ni fondo */}
         <div className="flex items-center gap-3.5">
           <div className="w-11 h-11 flex items-center justify-center">
-            <img 
-              src="/juankia-logo.png" 
-              alt="ChefCopilot Logo" 
-              className="w-full h-full object-contain filter drop-shadow-sm transition-transform hover:scale-105" 
+            <img
+              src="/juankia-logo.png"
+              alt="ChefCopilot Logo"
+              className="w-full h-full object-contain filter drop-shadow-sm transition-transform hover:scale-105"
             />
           </div>
           <div>
@@ -122,10 +123,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* HERO SECTION idéntico a Figma con titular animado SplitText y JuankiA 3D */}
       <section className="max-w-[1720px] mx-auto w-full px-8 sm:px-12 py-8 min-h-[calc(100vh-90px)] flex flex-col justify-center relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* Columna Izquierda: Tipografía Editorial Monumental con SplitText */}
           <div className="lg:col-span-7 space-y-8 pr-0 lg:pr-6">
-            
+
             <div className="space-y-4">
               <span className="text-[10px] sm:text-[11px] font-extrabold tracking-[0.25em] uppercase text-[#18251e]/60 block animate-in fade-in slide-in-from-top-2 duration-500">
                 CREADO PARA COCINEROS
@@ -135,27 +136,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 IDEAS, RECETAS Y SERVICIO EN UN MISMO LUGAR
               </span>
 
-              {/* Titular Masivo CHEF COPILOT con animación SplitText de React Bits */}
-              <div className="leading-[0.88] select-none">
-                <SplitText
-                  text="CHEF"
-                  className="text-7xl sm:text-8xl md:text-9xl lg:text-[132px] font-extrabold font-heading text-[#18251e] tracking-tight block leading-[0.88]"
-                  delay={55}
-                  duration={0.85}
-                  ease="power3.out"
-                  splitType="chars"
-                  tag="h1"
+              {/* Titular Masivo CHEF COPILOT con animación interactiva WarpText de React Bits */}
+              <div className="select-none py-1">
+                <h1 className="sr-only">CHEF COPILOT</h1>
+                <WarpText
+                  text={'CHEF\nCOPILOT'}
+                  color={['#18251e', '#5a341e']}
+                  warpStrength={0.065}
+                  warpScale={1.65}
+                  speed={0.45}
+                  pointerInfluence={0.42}
+                  pointerStrength={0.38}
+                  refraction={0.016}
+                  ripple={true}
+                  fontSize="clamp(3.8rem, 8.8vw, 7.8rem)"
+                  fontWeight={800}
+                  fontFamily="'Space Grotesk', sans-serif"
+                  letterSpacing="-0.04em"
+                  lineHeight={0.88}
                   textAlign="left"
-                />
-                <SplitText
-                  text="COPILOT"
-                  className="text-7xl sm:text-8xl md:text-9xl lg:text-[132px] font-extrabold font-heading text-[#5a341e] tracking-tight block leading-[0.88]"
-                  delay={55}
-                  duration={0.85}
-                  ease="power3.out"
-                  splitType="chars"
-                  tag="h1"
-                  textAlign="left"
+                  style={{ height: '240px', maxWidth: '640px' }}
                 />
               </div>
             </div>
@@ -185,7 +185,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   onClick={scrollToStory}
                   className="px-4 py-3 rounded-xl border border-[#18251e]/20 hover:bg-[#18251e]/5 text-xs font-bold text-[#18251e] transition-colors cursor-pointer"
                 >
-                  Ver Cómo Funciona 👇
+                  Ver Cómo Funciona
                 </button>
               </div>
             </div>
@@ -208,7 +208,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Texto vertical rotado en el margen derecho */}
         <div className="hidden xl:block absolute right-3 top-1/2 -translate-y-1/2">
-          <span 
+          <span
             className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#18251e]/40 select-none block"
             style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           >
@@ -218,183 +218,199 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* SECCIÓN 01: ¿POR QUÉ CHEFCOPILOT? (STORYTELLING DE PROBLEMAS REALES EN COCINA) */}
-      <section 
+      <section
         id="por-que-chefcopilot"
         className="max-w-[1720px] mx-auto w-full px-8 sm:px-12 py-24 border-t border-[#18251e]/15 scroll-mt-20"
       >
-        <div className="max-w-4xl space-y-4">
-          <span className="text-xs font-mono font-bold tracking-[0.25em] uppercase text-[#5a341e]">
-            01 · INGENIERÍA GASTRONÓMICA
-          </span>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-heading text-[#18251e] tracking-tight leading-[1.05]">
-            Una cocina profesional no se gestiona con intuición, sino con precisión milimétrica.
-          </h2>
-          <p className="text-base sm:text-lg text-[#524d45] leading-relaxed pt-2">
-            El caos de las mermas no controladas y los pedidos calculados "a ojo" suponen miles de euros perdidos cada temporada. ChefCopilot automatiza las tres reglas de oro del chef ejecutivo:
-          </p>
-        </div>
+        <AnimatedContent distance={45} direction="vertical" duration={0.8} ease="power3.out">
+          <div className="max-w-4xl space-y-4">
+            <span className="text-xs font-mono font-bold tracking-[0.25em] uppercase text-[#5a341e]">
+              01 · INGENIERÍA GASTRONÓMICA
+            </span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-heading text-[#18251e] tracking-tight leading-[1.05]">
+              Una cocina profesional no se gestiona con intuición, sino con precisión milimétrica.
+            </h2>
+            <p className="text-base sm:text-lg text-[#524d45] leading-relaxed pt-2">
+              El caos de las mermas no controladas y los pedidos calculados "a ojo" suponen miles de euros perdidos cada temporada. ChefCopilot automatiza las tres reglas de oro del chef ejecutivo:
+            </p>
+          </div>
+        </AnimatedContent>
 
-        {/* Rejilla de los 3 Grandes Dolores de Cocina Resueltos */}
+        {/* Rejilla de los 3 Grandes Dolores de Cocina Resueltos con AnimatedContent */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          
-          {/* Pilar 1: Mermas Técnicas vs Subproducto */}
-          <div className="bg-[#ebe4d5]/60 hover:bg-[#ebe4d5] p-8 rounded-3xl border border-[#18251e]/10 shadow-sm transition-all duration-300 flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#5a341e] text-[#f4efe6] flex items-center justify-center shadow-md">
-                <Scale className="w-6 h-6 stroke-[2]" />
+          <AnimatedContent distance={50} direction="vertical" duration={0.8} delay={0.05} tilt={4}>
+            {/* Pilar 1: Mermas Técnicas vs Subproducto */}
+            <div className="bg-[#ebe4d5]/60 hover:bg-[#ebe4d5] p-8 rounded-3xl border border-[#18251e]/10 shadow-sm transition-all duration-300 flex flex-col justify-between group h-full">
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#5a341e] text-[#f4efe6] flex items-center justify-center shadow-md">
+                  <Scale className="w-6 h-6 stroke-[2]" />
+                </div>
+                <h3 className="text-xl font-extrabold font-heading text-[#18251e]">
+                  Doble Merma Técnica
+                </h3>
+                <p className="text-xs sm:text-sm text-[#4a463e] leading-relaxed">
+                  Diferenciamos la <strong>basura inútil</strong> (grasa y nervios no aptos) de la <strong>merma reutilizable</strong> (recortes limpios de solomillo para albóndigas o espinas para fondos). Deja de tirar producto que tiene valor económico.
+                </p>
               </div>
-              <h3 className="text-xl font-extrabold font-heading text-[#18251e]">
-                Doble Merma Técnica
-              </h3>
-              <p className="text-xs sm:text-sm text-[#4a463e] leading-relaxed">
-                Diferenciamos la <strong>basura inútil</strong> (grasa y nervios no aptos) de la <strong>merma reutilizable</strong> (recortes limpios de solomillo para albóndigas o espinas para fondos). Deja de tirar producto que tiene valor económico.
-              </p>
-            </div>
-            <div className="mt-8 pt-4 border-t border-[#18251e]/10 flex items-center justify-between text-xs font-bold text-[#5a341e]">
-              <span>+18% Materia Rescatada</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-            </div>
-          </div>
-
-          {/* Pilar 2: La Regla del Chef por Piezas Enteras */}
-          <div className="bg-[#ebe4d5]/60 hover:bg-[#ebe4d5] p-8 rounded-3xl border border-[#18251e]/10 shadow-sm transition-all duration-300 flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#18241d] text-[#f4efe6] flex items-center justify-center shadow-md">
-                <UtensilsCrossed className="w-6 h-6 stroke-[2]" />
+              <div className="mt-8 pt-4 border-t border-[#18251e]/10 flex items-center justify-between text-xs font-bold text-[#5a341e]">
+                <span>+18% Materia Rescatada</span>
+                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
               </div>
-              <h3 className="text-xl font-extrabold font-heading text-[#18251e]">
-                La Regla del Chef por Piezas
-              </h3>
-              <p className="text-xs sm:text-sm text-[#4a463e] leading-relaxed">
-                El solomillo o pescado entero se compra por piezas, no por gramos sueltos. Calculamos la orden usando el <strong>rendimiento mínimo garantizado</strong> (cálculo pesimista). Para 80 pax pides 10 piezas y tienes hasta 20 raciones de colchón de seguridad.
-              </p>
             </div>
-            <div className="mt-8 pt-4 border-t border-[#18251e]/10 flex items-center justify-between text-xs font-bold text-[#18241d]">
-              <span>Cero Faltas en Sala</span>
-              <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            </div>
-          </div>
+          </AnimatedContent>
 
-          {/* Pilar 3: Deducción Automática de Stock en Cámara */}
-          <div className="bg-[#ebe4d5]/60 hover:bg-[#ebe4d5] p-8 rounded-3xl border border-[#18251e]/10 shadow-sm transition-all duration-300 flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#8c4b26] text-[#f4efe6] flex items-center justify-center shadow-md">
-                <Calendar className="w-6 h-6 stroke-[2]" />
+          <AnimatedContent distance={50} direction="vertical" duration={0.8} delay={0.15} tilt={4}>
+            {/* Pilar 2: La Regla del Chef por Piezas Enteras */}
+            <div className="bg-[#ebe4d5]/60 hover:bg-[#ebe4d5] p-8 rounded-3xl border border-[#18251e]/10 shadow-sm transition-all duration-300 flex flex-col justify-between group h-full">
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#18241d] text-[#f4efe6] flex items-center justify-center shadow-md">
+                  <UtensilsCrossed className="w-6 h-6 stroke-[2]" />
+                </div>
+                <h3 className="text-xl font-extrabold font-heading text-[#18251e]">
+                  La Regla del Chef por Piezas
+                </h3>
+                <p className="text-xs sm:text-sm text-[#4a463e] leading-relaxed">
+                  El solomillo o pescado entero se compra por piezas, no por gramos sueltos. Calculamos la orden usando el <strong>rendimiento mínimo garantizado</strong> (cálculo pesimista). Para 80 pax pides 10 piezas y tienes hasta 20 raciones de colchón de seguridad.
+                </p>
               </div>
-              <h3 className="text-xl font-extrabold font-heading text-[#18251e]">
-                Deducción de Stock Cámara
-              </h3>
-              <p className="text-xs sm:text-sm text-[#4a463e] leading-relaxed">
-                Antes de emitir el pedido al proveedor, ChefCopilot comprueba tus existencias reales en cámara, deduce lo que ya tienes y emite <strong>alertas críticas</strong> si tras el banquete el stock cae por debajo del umbral mínimo de seguridad.
-              </p>
+              <div className="mt-8 pt-4 border-t border-[#18251e]/10 flex items-center justify-between text-xs font-bold text-[#18241d]">
+                <span>Cero Faltas en Sala</span>
+                <ShieldCheck className="w-4 h-4 text-emerald-700" />
+              </div>
             </div>
-            <div className="mt-8 pt-4 border-t border-[#18251e]/10 flex items-center justify-between text-xs font-bold text-[#8c4b26]">
-              <span>Cero Pedidos Duplicados</span>
-              <Package className="w-4 h-4 text-emerald-700" />
-            </div>
-          </div>
+          </AnimatedContent>
 
+          <AnimatedContent distance={50} direction="vertical" duration={0.8} delay={0.25} tilt={4}>
+            {/* Pilar 3: Deducción Automática de Stock en Cámara */}
+            <div className="bg-[#ebe4d5]/60 hover:bg-[#ebe4d5] p-8 rounded-3xl border border-[#18251e]/10 shadow-sm transition-all duration-300 flex flex-col justify-between group h-full">
+              <div className="space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#8c4b26] text-[#f4efe6] flex items-center justify-center shadow-md">
+                  <Calendar className="w-6 h-6 stroke-[2]" />
+                </div>
+                <h3 className="text-xl font-extrabold font-heading text-[#18251e]">
+                  Deducción de Stock Cámara
+                </h3>
+                <p className="text-xs sm:text-sm text-[#4a463e] leading-relaxed">
+                  Antes de emitir el pedido al proveedor, ChefCopilot comprueba tus existencias reales en cámara, deduce lo que ya tienes y emite <strong>alertas críticas</strong> si tras el banquete el stock cae por debajo del umbral mínimo de seguridad.
+                </p>
+              </div>
+              <div className="mt-8 pt-4 border-t border-[#18251e]/10 flex items-center justify-between text-xs font-bold text-[#8c4b26]">
+                <span>Cero Pedidos Duplicados</span>
+                <Package className="w-4 h-4 text-emerald-700" />
+              </div>
+            </div>
+          </AnimatedContent>
         </div>
       </section>
 
       {/* SECCIÓN 02: EL FLUJO DE TRABAJO DEL CHEF (EN 3 PASOS) */}
       <section className="max-w-[1720px] mx-auto w-full px-8 sm:px-12 py-20 border-t border-[#18251e]/15">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-xs font-mono font-bold tracking-[0.25em] uppercase text-[#5a341e]">
-            02 · EL FLUJO DE TRABAJO
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-heading text-[#18251e]">
-            Del recetario al proveedor en 3 pasos directos
-          </h2>
-          <p className="text-sm text-[#524d45]">
-            Sin perder horas sumando ingredientes repetidos en libretas o Excel.
-          </p>
-        </div>
+        <AnimatedContent distance={40} direction="vertical" duration={0.8}>
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="text-xs font-mono font-bold tracking-[0.25em] uppercase text-[#5a341e]">
+              02 · EL FLUJO DE TRABAJO
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-heading text-[#18251e]">
+              Del recetario al proveedor en 3 pasos directos
+            </h2>
+            <p className="text-sm text-[#524d45]">
+              Sin perder horas sumando ingredientes repetidos en libretas o Excel.
+            </p>
+          </div>
+        </AnimatedContent>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-14">
-          <div className="p-8 rounded-3xl bg-[#fffcf7] border border-[#18251e]/10 relative shadow-sm">
-            <span className="text-4xl font-extrabold font-mono text-[#5a341e]/30 block">
-              01
-            </span>
-            <h4 className="text-lg font-bold font-heading text-[#18251e] mt-4">
-              Despensa & Stock Técnico
-            </h4>
-            <p className="text-xs sm:text-sm text-[#524d45] mt-2 leading-relaxed">
-              Registra tus ingredientes con sus mermas reales, alérgenos oficiales y umbrales mínimos de stock en cámara.
-            </p>
-          </div>
+          <AnimatedContent distance={45} direction="vertical" duration={0.8} delay={0.08}>
+            <div className="p-8 rounded-3xl bg-[#fffcf7] border border-[#18251e]/10 relative shadow-sm h-full">
+              <span className="text-4xl font-extrabold font-mono text-[#5a341e]/30 block">
+                01
+              </span>
+              <h4 className="text-lg font-bold font-heading text-[#18251e] mt-4">
+                Despensa & Stock Técnico
+              </h4>
+              <p className="text-xs sm:text-sm text-[#524d45] mt-2 leading-relaxed">
+                Registra tus ingredientes con sus mermas reales, alérgenos oficiales y umbrales mínimos de stock en cámara.
+              </p>
+            </div>
+          </AnimatedContent>
 
-          <div className="p-8 rounded-3xl bg-[#fffcf7] border border-[#18251e]/10 relative shadow-sm">
-            <span className="text-4xl font-extrabold font-mono text-[#5a341e]/30 block">
-              02
-            </span>
-            <h4 className="text-lg font-bold font-heading text-[#18251e] mt-4">
-              Recetario & Fichas Técnicas
-            </h4>
-            <p className="text-xs sm:text-sm text-[#524d45] mt-2 leading-relaxed">
-              Diseña tus platos fijando gramajes netos por ración individual. Los alérgenos y las mermas se calculan en cascada.
-            </p>
-          </div>
+          <AnimatedContent distance={45} direction="vertical" duration={0.8} delay={0.18}>
+            <div className="p-8 rounded-3xl bg-[#fffcf7] border border-[#18251e]/10 relative shadow-sm h-full">
+              <span className="text-4xl font-extrabold font-mono text-[#5a341e]/30 block">
+                02
+              </span>
+              <h4 className="text-lg font-bold font-heading text-[#18251e] mt-4">
+                Recetario & Fichas Técnicas
+              </h4>
+              <p className="text-xs sm:text-sm text-[#524d45] mt-2 leading-relaxed">
+                Diseña tus platos fijando gramajes netos por ración individual. Los alérgenos y las mermas se calculan en cascada.
+              </p>
+            </div>
+          </AnimatedContent>
 
-          <div className="p-8 rounded-3xl bg-[#fffcf7] border border-[#18251e]/10 relative shadow-sm">
-            <span className="text-4xl font-extrabold font-mono text-[#5a341e]/30 block">
-              03
-            </span>
-            <h4 className="text-lg font-bold font-heading text-[#18251e] mt-4">
-              Banquetes & Hoja de Pedido
-            </h4>
-            <p className="text-xs sm:text-sm text-[#524d45] mt-2 leading-relaxed">
-              Introduce los comensales (ej: 80 pax) y obtén la lista consolidada lista para copiar al proveedor o imprimir para partida.
-            </p>
-          </div>
+          <AnimatedContent distance={45} direction="vertical" duration={0.8} delay={0.28}>
+            <div className="p-8 rounded-3xl bg-[#fffcf7] border border-[#18251e]/10 relative shadow-sm h-full">
+              <span className="text-4xl font-extrabold font-mono text-[#5a341e]/30 block">
+                03
+              </span>
+              <h4 className="text-lg font-bold font-heading text-[#18251e] mt-4">
+                Banquetes & Hoja de Pedido
+              </h4>
+              <p className="text-xs sm:text-sm text-[#524d45] mt-2 leading-relaxed">
+                Introduce los comensales (ej: 80 pax) y obtén la lista consolidada lista para copiar al proveedor o imprimir para partida.
+              </p>
+            </div>
+          </AnimatedContent>
         </div>
       </section>
 
       {/* SECCIÓN 03: LLAMADA A LA ACCIÓN CON JUANKIA */}
       <section className="max-w-[1720px] mx-auto w-full px-8 sm:px-12 py-20 border-t border-[#18251e]/15 mb-12">
-        <div className="p-10 sm:p-14 rounded-3xl bg-[#18241d] text-[#ffedd7] flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
-          
-          <div className="space-y-4 max-w-2xl relative z-10">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">
-                Tu Copiloto Culinario 24/7
-              </span>
+        <AnimatedContent distance={50} direction="vertical" duration={0.9} scale={0.98}>
+          <div className="p-10 sm:p-14 rounded-3xl bg-[#18241d] text-[#ffedd7] flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
+
+            <div className="space-y-4 max-w-2xl relative z-10">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-bold uppercase tracking-widest text-emerald-300">
+                  Tu Copiloto Culinario 24/7
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-heading text-white">
+                Lleva el control de tu cocina al siguiente nivel.
+              </h2>
+              <p className="text-sm text-[#d4c6b6] leading-relaxed">
+                Prueba la calculadora de escandallos en vivo de ChefCopilot o accede a tu espacio personal con la asistencia de JuankiA.
+              </p>
+              <div className="pt-4 flex flex-wrap items-center gap-4">
+                <button
+                  onClick={onEnterApp}
+                  className="px-6 py-3.5 rounded-xl bg-[#ffedd7] hover:bg-white text-[#18241d] font-bold text-xs shadow-lg shadow-black/25 flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  <span>Entrar al Taller de Cocina</span>
+                  <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+                </button>
+
+                <button
+                  onClick={handleOpenRegister}
+                  className="px-6 py-3.5 rounded-xl border border-white/20 hover:bg-white/10 text-white font-bold text-xs transition-colors cursor-pointer"
+                >
+                  Crear Cuenta de Chef
+                </button>
+              </div>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-heading text-white">
-              Lleva el control de tu cocina al siguiente nivel.
-            </h2>
-            <p className="text-sm text-[#d4c6b6] leading-relaxed">
-              Prueba la calculadora de escandallos en vivo de ChefCopilot o accede a tu espacio personal con la asistencia de JuankiA.
-            </p>
-            <div className="pt-4 flex flex-wrap items-center gap-4">
-              <button
-                onClick={onEnterApp}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#dc5000] to-amber-500 hover:opacity-95 text-slate-950 font-bold text-xs shadow-lg shadow-amber-900/30 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
-              >
-                <span>Entrar al Taller de Cocina</span>
-                <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
-              </button>
 
-              <button
-                onClick={handleOpenRegister}
-                className="px-6 py-3 rounded-xl border border-white/20 hover:bg-white/10 text-white font-bold text-xs transition-colors cursor-pointer"
-              >
-                Crear Cuenta de Chef
-              </button>
+            {/* Mini Avatar JuankiA de muestra */}
+            <div className="w-40 h-40 sm:w-48 sm:h-48 relative flex items-center justify-center">
+              <img
+                src="/juankia-logo.png"
+                alt="JuankiA Mascot"
+                className="w-full h-full object-contain filter drop-shadow-2xl hover:scale-105 transition-transform"
+              />
             </div>
-          </div>
 
-          {/* Mini Avatar JuankiA de muestra */}
-          <div className="w-40 h-40 sm:w-48 sm:h-48 relative flex items-center justify-center">
-            <img 
-              src="/juankia-logo.png" 
-              alt="JuankiA Mascot" 
-              className="w-full h-full object-contain filter drop-shadow-2xl hover:scale-105 transition-transform" 
-            />
           </div>
-
-        </div>
+        </AnimatedContent>
       </section>
 
       {/* Botón flotante circular inferior derecho "DESCUBRE ↘" o "SUBIR ↑" */}
