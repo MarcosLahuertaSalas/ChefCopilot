@@ -104,9 +104,8 @@
     - **Olla**: `MeshStandardMaterial` color carbón/barro cálido (`#2b2623`), rugosidad `roughness: 0.68`, metalicidad `metalness: 0.08`, con textura de micro-relieve procedimental (`bumpMap` táctil) y luz de brasa/fuego ámbar cálido (`#ff8c1a`) en el lateral izquierdo.
     - **Gorro**: `MeshStandardMaterial` marfil/masa horneada cálida (`#ede3d1`), rugosidad `roughness: 0.88` (algodón textil de cocina).
   - **Ojos y Pupilas Procedurales 3D Agrandados**: Ojos grandes, expresivos y tiernos con cuenca crema sutil (`radius: 0.116`), gran pupila negra brillante (`radius: 0.104`) y destellos especulares duales ampliados.
-  - **Seguimiento con `useFrame`**: Las pupilas se deslizan dinámicamente con interpolación `MathUtils.lerp` siguiendo `state.pointer` en tiempo real.
-  - **Inclinación Tridimensional del Cuerpo**: El grupo de la olla rota suavemente en X e Y según la posición del cursor para dar sensación de vida y volumen.
-  - **Pestañeo Orgánico 3D**: Ciclo natural cada 4.5s escalando el grupo ocular en el eje Y.
+  - **Seguimiento Global en Toda la Pantalla (`window.mousemove` + `useFrame`)**: La orientación 3D del cuerpo y las pupilas siguen matemáticamente el cursor por cualquier rincón del monitor, sin limitarse al recuadro del canvas.
+  - **Ojos Siempre Abiertos**: Mirada siempre atenta, fija y nítida (sin parpadeos).
   - **Integración sin Recuadros**: El modelo 3D flota limpiamente y sin recuadros sobre el fondo lino de la landing page con sombra de contacto natural (`ContactShadows`).
 - **Mascota JuankiA 2D Transparente**: Recorte limpio en `public/juankia-logo.png` sin fondos grises para el encabezado y avatares.
 - **Página de Inicio (Figma Replica)**: `frontend/src/features/landing/LandingPage.tsx` con titulares monumentales `CHEF` / `COPILOT`, separador `01` y modelo 3D integrado exclusivamente.

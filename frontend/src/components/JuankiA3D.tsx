@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo, Suspense } from 'react'
+import React, { useRef, useEffect, useMemo, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
@@ -74,65 +74,80 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
     []
   )
 
-  // Pestañeo orgánico cada 4.5 segundos
-  const [isBlinking, setIsBlinking] = useState(false)
+  // Seguimiento global del ratón por toda la pantalla (no solo dentro del canvas)
+  const globalMouseRef = useRef({ x: 0, y: 0 })
+
   useEffect(() => {
-    const blinkInterval = setInterval(() => {
-      setIsBlinking(true)
-      setTimeout(() => setIsBlinking(false), 160)
-    }, 4500)
-    return () => clearInterval(blinkInterval)
-  }, [])
+    if (!interactive) return
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Calculamos la dirección del ratón respecto al centro del contenedor 3D de JuankiA
+      const canvasEl = document.querySelector('canvas')
+      if (canvasEl) {
+        const rect = canvasEl.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        // Normalizamos con escala suave para abarcar toda la pantalla
+        const spanX = Math.max(window.innerWidth * 0.45, 320)
+        const spanY = Math.max(window.innerHeight * 0.45, 320)
+        const dx = (e.clientX - centerX) / spanX
+        const dy = -(e.clientY - centerY) / spanY
+        globalMouseRef.current = {
+          x: Math.max(-1.3, Math.min(1.3, dx)),
+          y: Math.max(-1.3, Math.min(1.3, dy)),
+        }
+      } else {
+        const x = (e.clientX / window.innerWidth) * 2 - 1
+        const y = -(e.clientY / window.innerHeight) * 2 + 1
+        globalMouseRef.current = { x, y }
+      }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [interactive])
 
   // Posición base de los ojos sobre la curvatura frontal de la cazuela (proporciones grandes estilo anime)
   const leftEyeBase = useMemo(() => new THREE.Vector3(-0.175, -0.30, 0.575), [])
   const rightEyeBase = useMemo(() => new THREE.Vector3(0.175, -0.30, 0.575), [])
 
-  // Animación en cada frame: seguimiento suave del ratón
-  useFrame((state, delta) => {
-    // Pestañeo animado
-    if (eyesGroupRef.current) {
-      const targetScaleY = isBlinking ? 0.08 : 1.0
-      eyesGroupRef.current.scale.y = THREE.MathUtils.lerp(
-        eyesGroupRef.current.scale.y,
-        targetScaleY,
-        delta * 30
-      )
-    }
-
+  // Animación en cada frame: seguimiento suave del ratón por toda la pantalla
+  useFrame((_state, delta) => {
     if (!interactive) return
 
-    // Inclinación suave del cuerpo (Parallax 3D) hacia el puntero
+    const mouse = globalMouseRef.current
+
+    // Inclinación suave del cuerpo (Parallax 3D) hacia el cursor en cualquier parte de la pantalla
     if (groupRef.current) {
-      const targetRotY = state.pointer.x * 0.32
-      const targetRotX = -state.pointer.y * 0.18
+      const targetRotY = mouse.x * 0.38
+      const targetRotX = -mouse.y * 0.22
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
         targetRotY,
-        delta * 5
+        delta * 6
       )
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
         targetRotX,
-        delta * 5
+        delta * 6
       )
     }
 
     // Traslación matemática de las pupilas dentro del globo ocular agrandado
-    const maxPupilOffset = 0.032
-    const pupilTargetX = state.pointer.x * maxPupilOffset
-    const pupilTargetY = state.pointer.y * maxPupilOffset
+    const maxPupilOffset = 0.034
+    const pupilTargetX = mouse.x * maxPupilOffset
+    const pupilTargetY = mouse.y * maxPupilOffset
 
     if (leftPupilRef.current) {
       leftPupilRef.current.position.x = THREE.MathUtils.lerp(
         leftPupilRef.current.position.x,
         leftEyeBase.x + pupilTargetX,
-        delta * 12
+        delta * 14
       )
       leftPupilRef.current.position.y = THREE.MathUtils.lerp(
         leftPupilRef.current.position.y,
         leftEyeBase.y + pupilTargetY,
-        delta * 12
+        delta * 14
       )
     }
 
@@ -140,12 +155,12 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
       rightPupilRef.current.position.x = THREE.MathUtils.lerp(
         rightPupilRef.current.position.x,
         rightEyeBase.x + pupilTargetX,
-        delta * 12
+        delta * 14
       )
       rightPupilRef.current.position.y = THREE.MathUtils.lerp(
         rightPupilRef.current.position.y,
         rightEyeBase.y + pupilTargetY,
-        delta * 12
+        delta * 14
       )
     }
   })
