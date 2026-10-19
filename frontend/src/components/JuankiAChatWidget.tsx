@@ -82,8 +82,8 @@ export const JuankiAChatWidget: React.FC = () => {
           className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#1c120c] border border-amber-500/40 shadow-2xl shadow-black/80 hover:border-amber-400 hover:scale-105 active:scale-95 transition-all cursor-pointer"
         >
           {/* Mini Avatar JuankiA */}
-          <div className="w-10 h-10 rounded-xl overflow-hidden border border-amber-500/50 relative shadow-md">
-            <img src="/juankia.jpg" alt="JuankiA" className="w-full h-full object-cover" />
+          <div className="w-10 h-10 relative flex items-center justify-center">
+            <img src="/juankia-logo.png" alt="JuankiA" className="w-full h-full object-contain filter drop-shadow-md" />
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-[#100904] animate-pulse" />
           </div>
 

@@ -37,10 +37,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     <div className="min-h-screen bg-[#f4efe6] text-[#18251e] flex flex-col justify-between selection:bg-[#5a341e]/20 relative overflow-hidden font-sans">
       {/* Barra de navegación superior idéntica a Figma */}
       <header className="px-8 sm:px-12 py-6 flex items-center justify-between max-w-[1720px] mx-auto w-full">
-        {/* Logo Izquierda */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full overflow-hidden bg-[#ebe5d8] border border-[#18251e]/15 shadow-sm">
-            <img src="/juankia.jpg" alt="ChefCopilot Logo" className="w-full h-full object-cover" />
+        {/* Logo Izquierda: 2D JuankiA transparente sin recuadro ni fondo */}
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 flex items-center justify-center">
+            <img src="/juankia-logo.png" alt="ChefCopilot Logo" className="w-full h-full object-contain filter drop-shadow-sm transition-transform hover:scale-105" />
           </div>
           <div>
             <span className="text-sm font-extrabold tracking-tight font-heading text-[#18251e] block leading-none">
@@ -130,17 +130,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           </div>
 
-          {/* Columna Derecha: Tarjeta de JuankiA con 3D Real (Three.js) y Eye Tracking */}
+          {/* Columna Derecha: JuankiA 3D flotando libremente sin recuadro ni fondo */}
           <div className="lg:col-span-5 flex flex-col items-center lg:items-end relative">
-            <div className="w-full max-w-md sm:max-w-lg relative">
-              {/* Selector sutil de modo 3D / Clásico */}
-              <div className="absolute top-3 right-3 z-20 flex items-center bg-[#18251e]/80 backdrop-blur-md p-1 rounded-full border border-white/10 shadow-lg text-[10px]">
+            <div className="w-full max-w-md sm:max-w-lg relative flex flex-col items-center">
+              {/* Selector sutil de modo 3D / 2.5D flotante */}
+              <div className="self-end mb-2 z-20 flex items-center bg-[#18251e]/8 backdrop-blur-md p-1 rounded-full border border-[#18251e]/15 shadow-sm text-[10px]">
                 <button
                   onClick={() => setMascotMode('3d')}
                   className={`px-3 py-1 rounded-full font-bold transition-all flex items-center gap-1 cursor-pointer ${
                     mascotMode === '3d'
-                      ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
-                      : 'text-[#ffedd7]/70 hover:text-white'
+                      ? 'bg-[#18251e] text-white shadow-sm font-extrabold'
+                      : 'text-[#18251e]/60 hover:text-[#18251e]'
                   }`}
                 >
                   <Box className="w-3 h-3" />
@@ -150,8 +150,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   onClick={() => setMascotMode('classic')}
                   className={`px-3 py-1 rounded-full font-bold transition-all flex items-center gap-1 cursor-pointer ${
                     mascotMode === 'classic'
-                      ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
-                      : 'text-[#ffedd7]/70 hover:text-white'
+                      ? 'bg-[#18251e] text-white shadow-sm font-extrabold'
+                      : 'text-[#18251e]/60 hover:text-[#18251e]'
                   }`}
                 >
                   <Sparkles className="w-3 h-3" />
@@ -161,7 +161,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               {mascotMode === '3d' ? (
                 <JuankiA3D
-                  className="w-full border border-[#18251e]/10 shadow-2xl"
+                  className="w-full"
                   interactive={true}
                   showBadge={true}
                 />

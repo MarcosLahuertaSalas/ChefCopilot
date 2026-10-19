@@ -82,8 +82,8 @@ export default function App() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#160e09] hover:bg-[#2e2118] border border-[#2e2118] text-xs font-bold text-[#ffedd7] transition-all cursor-pointer group shadow-sm"
               title="Volver a la portada de inicio"
             >
-              <div className="w-6 h-6 rounded-lg overflow-hidden border border-amber-500/40">
-                <img src="/juankia.jpg" alt="JuankiA" className="w-full h-full object-cover" />
+              <div className="w-7 h-7 flex items-center justify-center">
+                <img src="/juankia-logo.png" alt="JuankiA" className="w-full h-full object-contain" />
               </div>
               <Home className="w-3.5 h-3.5 text-amber-500 group-hover:-translate-x-0.5 transition-transform" />
               <span className="hidden sm:inline">Inicio</span>

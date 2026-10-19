@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF } from '@react-three/drei'
+import { useGLTF, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface JuankiA3DProps {
@@ -9,7 +9,7 @@ interface JuankiA3DProps {
   showBadge?: boolean
 }
 
-// Subcomponente que carga el modelo 3D y maneja la lógica de animación
+// Subcomponente que carga el modelo 3D y maneja la lógica de animación y materiales PBR
 function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
   const groupRef = useRef<THREE.Group>(null)
   const leftPupilRef = useRef<THREE.Mesh>(null)
@@ -25,29 +25,56 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
     }
   }
 
-  // Material de la Olla: Color oscuro casi negro (#1a1a1a) con rugosidad 0.8
+  // Generador de textura táctil procedimental de micro-relieve (barro cocido / hierro fundido)
+  const bumpTexture = useMemo(() => {
+    const canvas = document.createElement('canvas')
+    canvas.width = 256
+    canvas.height = 256
+    const ctx = canvas.getContext('2d')
+    if (ctx) {
+      const imgData = ctx.createImageData(256, 256)
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        // Ruido orgánico sutil para simular la porosidad de la cazuela de barro
+        const noise = 110 + Math.floor(Math.random() * 45)
+        imgData.data[i] = noise
+        imgData.data[i + 1] = noise
+        imgData.data[i + 2] = noise
+        imgData.data[i + 3] = 255
+      }
+      ctx.putImageData(imgData, 0, 0)
+    }
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.wrapS = THREE.RepeatWrapping
+    tex.wrapT = THREE.RepeatWrapping
+    tex.repeat.set(8, 8)
+    return tex
+  }, [])
+
+  // Material de la Olla: Tono carbón/barro cálido (#2c2724) con textura y rugosidad artesanal
   const potMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: '#1a1a1a',
-        roughness: 0.8,
-        metalness: 0.15,
+        color: '#2b2623',
+        roughness: 0.68,
+        metalness: 0.08,
+        bumpMap: bumpTexture,
+        bumpScale: 0.012,
       }),
-    []
+    [bumpTexture]
   )
 
-  // Material del Gorro: Blanco puro
+  // Material del Gorro: Masa/algodón marfil cálido (#ede3d1) idéntico al logo original
   const hatMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: '#ffffff',
-        roughness: 0.85,
+        color: '#ede3d1',
+        roughness: 0.88,
         metalness: 0.02,
       }),
     []
   )
 
-  // Pestañeo orgánico
+  // Pestañeo orgánico cada 4.5 segundos
   const [isBlinking, setIsBlinking] = useState(false)
   useEffect(() => {
     const blinkInterval = setInterval(() => {
@@ -77,8 +104,8 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
 
     // Inclinación suave del cuerpo (Parallax 3D) hacia el puntero
     if (groupRef.current) {
-      const targetRotY = state.pointer.x * 0.35 // Rotación lateral
-      const targetRotX = -state.pointer.y * 0.2 // Rotación vertical
+      const targetRotY = state.pointer.x * 0.32
+      const targetRotX = -state.pointer.y * 0.18
       groupRef.current.rotation.y = THREE.MathUtils.lerp(
         groupRef.current.rotation.y,
         targetRotY,
@@ -91,8 +118,8 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
       )
     }
 
-    // Traslación matemática de las pupilas dentro del globo ocular blanco
-    const maxPupilOffset = 0.038
+    // Traslación matemática de las pupilas dentro del globo ocular
+    const maxPupilOffset = 0.026
     const pupilTargetX = state.pointer.x * maxPupilOffset
     const pupilTargetY = state.pointer.y * maxPupilOffset
 
@@ -125,7 +152,7 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
 
   return (
     <group ref={groupRef} position={[0, 0.05, 0]}>
-      {/* 1. Malla de la Olla con MeshStandardMaterial #1a1a1a roughness: 0.8 */}
+      {/* 1. Malla de la Olla con textura de barro y color cálido */}
       {nodes.olla && (
         <mesh
           geometry={nodes.olla.geometry}
@@ -135,7 +162,7 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
         />
       )}
 
-      {/* 2. Malla del Gorro con MeshStandardMaterial Blanco Puro */}
+      {/* 2. Malla del Gorro con tono marfil cálido */}
       {nodes.gorro && (
         <mesh
           geometry={nodes.gorro.geometry}
@@ -145,7 +172,6 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
         />
       )}
 
-      {/* En caso de que se cargue un mesh único sin separar como fallback */}
       {!nodes.olla && nodes.mesh_node && (
         <mesh
           geometry={nodes.mesh_node.geometry}
@@ -155,60 +181,70 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
         />
       )}
 
-      {/* 3. Ojos y Pupilas añadidos por código */}
+      {/* 3. Ojos estilo JuankiA original: cuenca crema + gran pupila negra brillante con 2 destellos */}
       <group ref={eyesGroupRef}>
-        {/* Ojo Izquierdo: Fondo Blanco */}
+        {/* Ojo Izquierdo: Fondo/borde crema sutil */}
         <mesh position={leftEyeBase.toArray()} castShadow>
-          <sphereGeometry args={[0.088, 32, 32]} />
+          <sphereGeometry args={[0.084, 32, 32]} />
           <meshStandardMaterial
-            color="#ffffff"
-            roughness={0.15}
-            metalness={0.05}
+            color="#faf4ea"
+            roughness={0.25}
+            metalness={0.02}
           />
         </mesh>
 
-        {/* Pupila Izquierda: Negra con Brillo Especular */}
+        {/* Pupila Izquierda: Gran pupila negra brillante dominante con destellos */}
         <mesh
           ref={leftPupilRef}
-          position={[leftEyeBase.x, leftEyeBase.y, leftEyeBase.z + 0.065]}
+          position={[leftEyeBase.x, leftEyeBase.y, leftEyeBase.z + 0.038]}
         >
-          <sphereGeometry args={[0.045, 24, 24]} />
-          <meshBasicMaterial color="#080504" />
-          {/* Brillos oculares especulares */}
-          <mesh position={[0.016, 0.016, 0.038]}>
-            <sphereGeometry args={[0.014, 16, 16]} />
+          <sphereGeometry args={[0.074, 32, 32]} />
+          <meshStandardMaterial
+            color="#0c0908"
+            roughness={0.05}
+            metalness={0.1}
+          />
+          {/* Brillo especular grande (arriba izquierda) */}
+          <mesh position={[0.022, 0.024, 0.065]}>
+            <sphereGeometry args={[0.022, 16, 16]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
-          <mesh position={[-0.012, -0.014, 0.038]}>
-            <sphereGeometry args={[0.007, 12, 12]} />
+          {/* Brillo especular pequeño (abajo derecha) */}
+          <mesh position={[-0.016, -0.018, 0.065]}>
+            <sphereGeometry args={[0.011, 14, 14]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
         </mesh>
 
-        {/* Ojo Derecho: Fondo Blanco */}
+        {/* Ojo Derecho: Fondo/borde crema sutil */}
         <mesh position={rightEyeBase.toArray()} castShadow>
-          <sphereGeometry args={[0.088, 32, 32]} />
+          <sphereGeometry args={[0.084, 32, 32]} />
           <meshStandardMaterial
-            color="#ffffff"
-            roughness={0.15}
-            metalness={0.05}
+            color="#faf4ea"
+            roughness={0.25}
+            metalness={0.02}
           />
         </mesh>
 
-        {/* Pupila Derecha: Negra con Brillo Especular */}
+        {/* Pupila Derecha: Gran pupila negra brillante dominante con destellos */}
         <mesh
           ref={rightPupilRef}
-          position={[rightEyeBase.x, rightEyeBase.y, rightEyeBase.z + 0.065]}
+          position={[rightEyeBase.x, rightEyeBase.y, rightEyeBase.z + 0.038]}
         >
-          <sphereGeometry args={[0.045, 24, 24]} />
-          <meshBasicMaterial color="#080504" />
-          {/* Brillos oculares especulares */}
-          <mesh position={[0.016, 0.016, 0.038]}>
-            <sphereGeometry args={[0.014, 16, 16]} />
+          <sphereGeometry args={[0.074, 32, 32]} />
+          <meshStandardMaterial
+            color="#0c0908"
+            roughness={0.05}
+            metalness={0.1}
+          />
+          {/* Brillo especular grande (arriba izquierda) */}
+          <mesh position={[0.022, 0.024, 0.065]}>
+            <sphereGeometry args={[0.022, 16, 16]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
-          <mesh position={[-0.012, -0.014, 0.038]}>
-            <sphereGeometry args={[0.007, 12, 12]} />
+          {/* Brillo especular pequeño (abajo derecha) */}
+          <mesh position={[-0.016, -0.018, 0.065]}>
+            <sphereGeometry args={[0.011, 14, 14]} />
             <meshBasicMaterial color="#ffffff" />
           </mesh>
         </mesh>
@@ -220,7 +256,7 @@ function JuankiAPotModel({ interactive = true }: { interactive?: boolean }) {
 // Pre-carga del modelo para respuesta instantánea
 useGLTF.preload('/olla.glb')
 
-// Componente Contenedor con Canvas de Three.js
+// Componente Contenedor con Canvas de Three.js (Sin recuadro, fondo transparente, sombra suave)
 export const JuankiA3D: React.FC<JuankiA3DProps> = ({
   className = '',
   interactive = true,
@@ -228,7 +264,7 @@ export const JuankiA3D: React.FC<JuankiA3DProps> = ({
 }) => {
   return (
     <div
-      className={`relative select-none overflow-hidden rounded-2xl bg-[#ebe5d8] shadow-2xl aspect-[4/3] flex items-center justify-center ${className}`}
+      className={`relative select-none w-full h-[450px] flex flex-col items-center justify-center ${className}`}
     >
       <Suspense
         fallback={
@@ -239,28 +275,52 @@ export const JuankiA3D: React.FC<JuankiA3DProps> = ({
       >
         <Canvas
           shadows
-          camera={{ position: [0, 0, 2.55], fov: 42 }}
+          gl={{ alpha: true, antialias: true }}
+          camera={{ position: [0, 0, 2.5], fov: 42 }}
           className="w-full h-full cursor-grab active:cursor-grabbing"
           style={{ pointerEvents: interactive ? 'auto' : 'none' }}
         >
-          {/* Iluminación Culinaria Boutique */}
-          <ambientLight intensity={1.4} color="#fffcf5" />
+          {/* Iluminación Culinaria Fiel al Logo Original */}
+          {/* 1. Luz ambiente cálida y suave */}
+          <ambientLight intensity={1.3} color="#fff6ed" />
+
+          {/* 2. Luz de fuego/brasa culinaria (Ember glow) en el lateral izquierdo */}
+          <pointLight
+            position={[-2.2, -0.3, 1.3]}
+            intensity={4.8}
+            color="#ff8c1a"
+            distance={5}
+          />
           <directionalLight
-            position={[4, 5, 4]}
+            position={[-3, 0.5, 2]}
             intensity={2.2}
-            color="#ffffff"
+            color="#ff9922"
+          />
+
+          {/* 3. Luz principal superior derecha */}
+          <directionalLight
+            position={[3.5, 4.5, 3]}
+            intensity={2.4}
+            color="#fff8f0"
             castShadow
             shadow-mapSize={[1024, 1024]}
           />
+
+          {/* 4. Luz de relleno suave trasera */}
           <directionalLight
-            position={[-4, 3, -2]}
-            intensity={0.9}
-            color="#ffe8d6"
-          />
-          <pointLight
-            position={[0, -0.2, 1.8]}
+            position={[0, 2, -3]}
             intensity={0.6}
-            color="#ffffff"
+            color="#ffd6ba"
+          />
+
+          {/* Sombra de contacto suave sobre el fondo de la página */}
+          <ContactShadows
+            position={[0, -0.76, 0]}
+            opacity={0.38}
+            scale={3.6}
+            blur={2.4}
+            far={3}
+            color="#3a2215"
           />
 
           {/* El Modelo de JuankiA */}
@@ -268,13 +328,13 @@ export const JuankiA3D: React.FC<JuankiA3DProps> = ({
         </Canvas>
       </Suspense>
 
-      {/* Textos de Figma: "TU COPILOTO" y "Siempre atento a tu cocina" */}
+      {/* Leyenda limpia sin recuadro */}
       {showBadge && (
-        <div className="absolute bottom-4 left-5 right-5 flex items-center justify-between text-xs text-[#1c2826]/75 font-semibold tracking-wider pointer-events-none z-10">
-          <span className="text-[10px] tracking-[0.2em] font-bold uppercase text-[#1c2826]/60">
+        <div className="w-full flex items-center justify-between px-2 pt-2 text-xs text-[#1c2826]/75 font-semibold tracking-wider pointer-events-none">
+          <span className="text-[10px] tracking-[0.2em] font-bold uppercase text-[#1c2826]/50">
             TU COPILOTO 3D
           </span>
-          <span className="text-[11px] font-medium italic text-[#1c2826]/85">
+          <span className="text-[11px] font-medium italic text-[#1c2826]/80">
             Siempre atento a tu cocina
           </span>
         </div>
