@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { JuankiAMascot } from '../../components/JuankiAMascot'
+import { JuankiA3D } from '../../components/JuankiA3D'
 import { AuthModal } from '../auth/AuthModal'
 import type { User } from '../../types/auth'
-import { ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { ArrowUpRight, ArrowDownRight, Box, Sparkles } from 'lucide-react'
 
 interface LandingPageProps {
   onEnterApp: () => void
@@ -15,6 +16,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
+  const [mascotMode, setMascotMode] = useState<'3d' | 'classic'>('3d')
 
   const handleOpenLogin = () => {
     setAuthMode('login')
@@ -128,14 +130,48 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           </div>
 
-          {/* Columna Derecha: Tarjeta de JuankiA con Eye Tracking */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
-            <div className="w-full max-w-md sm:max-w-lg">
-              <JuankiAMascot
-                className="w-full border border-[#18251e]/10 shadow-2xl"
-                interactive={true}
-                showBadge={true}
-              />
+          {/* Columna Derecha: Tarjeta de JuankiA con 3D Real (Three.js) y Eye Tracking */}
+          <div className="lg:col-span-5 flex flex-col items-center lg:items-end relative">
+            <div className="w-full max-w-md sm:max-w-lg relative">
+              {/* Selector sutil de modo 3D / Clásico */}
+              <div className="absolute top-3 right-3 z-20 flex items-center bg-[#18251e]/80 backdrop-blur-md p-1 rounded-full border border-white/10 shadow-lg text-[10px]">
+                <button
+                  onClick={() => setMascotMode('3d')}
+                  className={`px-3 py-1 rounded-full font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                    mascotMode === '3d'
+                      ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
+                      : 'text-[#ffedd7]/70 hover:text-white'
+                  }`}
+                >
+                  <Box className="w-3 h-3" />
+                  <span>3D Real</span>
+                </button>
+                <button
+                  onClick={() => setMascotMode('classic')}
+                  className={`px-3 py-1 rounded-full font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                    mascotMode === 'classic'
+                      ? 'bg-amber-500 text-slate-950 shadow-md font-extrabold'
+                      : 'text-[#ffedd7]/70 hover:text-white'
+                  }`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>2.5D</span>
+                </button>
+              </div>
+
+              {mascotMode === '3d' ? (
+                <JuankiA3D
+                  className="w-full border border-[#18251e]/10 shadow-2xl"
+                  interactive={true}
+                  showBadge={true}
+                />
+              ) : (
+                <JuankiAMascot
+                  className="w-full border border-[#18251e]/10 shadow-2xl"
+                  interactive={true}
+                  showBadge={true}
+                />
+              )}
             </div>
           </div>
 

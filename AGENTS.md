@@ -98,15 +98,20 @@
 - Migración aplicada: `20261018191500_AddUserEntity` en MySQL.
 
 ### Módulo de Portada, Mascota JuankiA & Asistente IA (Frontend Completo) ✅
-- **Mascota JuankiA**: Cazuela tradicional de hierro con gorro de chef y ojos animados expresivos (`frontend/src/components/JuankiAMascot.tsx`).
-  - **Seguimiento Ocular 2.5D**: Pupilas procedurales con traslación matemática (`atan2` + distancia acotada) que siguen el cursor del ratón en tiempo real.
-  - **Efecto Parallax 3D**: Inclinación reactiva mediante perspectiva CSS (`perspective(1000px) rotateX/rotateY`) que da volumen 3D real sin necesidad de modelos pesados Three.js ni suscripciones de pago.
-  - **Pestañeo Orgánico**: Intervalo natural cada 4.5s con brillos especulares duales en la pupila.
-- **Página de Inicio (Figma Replica)**: `frontend/src/features/landing/LandingPage.tsx`.
-  - Réplica exacta de la composición de Figma Make: fondo lino alabastro cálido (`#f4efe6`), titulares monumentales `CHEF` (`#18251e`) / `COPILOT` (`#5a341e`), separador con indicador `01`, tarjeta de JuankiA con etiquetas "TU COPILOTO" y "Siempre atento a tu cocina", margen derecho vertical "TU COCINA · EN ORDEN" y botón flotante "DESCUBRE".
+- **Mascota JuankiA 3D (React Three Fiber + Three.js)**: `frontend/src/components/JuankiA3D.tsx`.
+  - Carga el modelo 3D optimizado `public/olla.glb` (2.1 MB de geometría pura sin texturas pesadas).
+  - **Materiales PBR Asignados por Código**:
+    - **Olla**: `MeshStandardMaterial` color oscuro casi negro (`#1a1a1a`), rugosidad `roughness: 0.8`, metalicidad `metalness: 0.15` (acabado hierro fundido / barro cocido).
+    - **Gorro**: `MeshStandardMaterial` blanco puro (`#ffffff`), rugosidad `roughness: 0.85` (algodón textil de cocina).
+  - **Ojos y Pupilas Procedurales 3D**: Esferas de fondo blanco y pupilas oscuras con brillos especulares duales creadas por código.
+  - **Seguimiento con `useFrame`**: Las pupilas se deslizan dinámicamente con interpolación `MathUtils.lerp` siguiendo `state.pointer` en tiempo real.
+  - **Inclinación Tridimensional del Cuerpo**: El grupo de la olla rota suavemente en X e Y según la posición del cursor para dar sensación de vida y volumen.
+  - **Pestañeo Orgánico 3D**: Ciclo natural cada 4.5s escalando el grupo ocular en el eje Y.
+  - **Selector de Modo en Portada**: Píldora interactiva para alternar al vuelo entre **3D Real** (Three.js) y **2.5D** (Parallax CSS).
+- **Mascota JuankiA 2.5D**: `frontend/src/components/JuankiAMascot.tsx` con física CSS ligera.
+- **Página de Inicio (Figma Replica)**: `frontend/src/features/landing/LandingPage.tsx` con titulares monumentales `CHEF` / `COPILOT`, separador `01`, selector 3D y diseño editorial lino.
 - **Widget Flotante de Asistente IA JuankiA**: `frontend/src/components/JuankiAChatWidget.tsx`.
-  - Asistente flotante permanente en el espacio de trabajo culinario. Permite al chef consultar dudas de escandallos, rendimientos de solomillo para 80 comensales y gestión de subproductos reutilizables con respuestas instantáneas.
-- **Autenticación en Frontend**: `frontend/src/features/auth/AuthModal.tsx` integrado en la cabecera y la landing, conectado a los endpoints `/api/auth/login` y `/api/auth/register`, con persistencia en `localStorage` y selector de roles.
+- **Autenticación en Frontend**: `frontend/src/features/auth/AuthModal.tsx` conectado a .NET 9 + MySQL.
 
 ---
 
