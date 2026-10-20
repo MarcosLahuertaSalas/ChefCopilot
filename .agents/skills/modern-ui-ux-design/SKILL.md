@@ -21,19 +21,21 @@ Evitar estrictamente los siguientes vicios habituales:
 
 ## 2. Paleta de Color Culinaria Editorial & Materiales
 
-ChefCopilot se inspira en una cocina profesional de estrella Michelin y un estudio editorial gastronómico: madera tostada, hierro fundido, encimeras cálidas, corcho y brasas vivas.
+ChefCopilot se inspira en una cocina profesional boutique y una revista editorial gastronómica de alta gama: lino orgánico cálido, madera de nogal, hierro fundido, terracota/coñac y hierbas frescas.
 
-- **Fondos (Base & Void)**:
-  - **Walnut Shadow** (`#100904` / `--color-walnut`): Lienzo oscuro cálido, el vacío acogedor detrás de la comida. Reemplaza al negro puro `#000000`.
-  - **Superficie Elevada** (`#1c120c` / `--color-walnut-surface`): Tarjetas, paneles y modales elevados sobre el lienzo.
-  - **Bordes & Separadores** (`#382416` a `#40372e` / `--color-cork-border`): Líneas de separación sutiles y elegantes, evitando bordes grises de plástico.
+- **Fondos & Superficies (Lienzo Culinario Lino)**:
+  - **Linen Base** (`#f4efe6` / `--color-linen`): Lienzo claro y cálido que emula el papel artesanal de un cuaderno de recetas o mandil de lino. Reemplaza tanto al blanco clínico `#ffffff` como al negro genérico.
+  - **Superficie Elevada / Lino Tostado** (`#ebe4d5` / `--color-linen-surface`): Cabeceras de tablas, barras de navegación secundarias y contenedores técnicos agrupados.
+  - **Tarjetas & Paneles** (`#ffffff` / `--color-linen-card` o `#fdfbf7`): Tarjetas limpias de alto contraste con sombras suaves (`shadow-sm`) y bordes orgánicos sutiles.
+  - **Bordes & Separadores** (`rgba(24, 37, 30, 0.10)` a `0.15` / `--color-cork-border`): Líneas de separación sutiles y elegantes.
 - **Tipografía y Contraste**:
-  - **Warm Cream** (`#ffedd7` / `--color-warm-cream`): Color principal de texto sobre superficies oscuras. Da un tono cálido y orgánico; se prohíbe el blanco frío `#ffffff`.
-  - **Driftwood** (`#a89988` / `--color-driftwood`): Texto secundario, unidades de medida y etiquetas complementarias.
+  - **Culinary Ink / Carbón de Brasa** (`#18251e` / `--color-ink`): Color principal de texto y titulares. Un negro carbón boscoso de altísima legibilidad y suavidad visual.
+  - **Muted Stone / Madera Seca** (`#524d45` y `#726e66` / `--color-ink-muted`): Texto secundario, unidades de medida y etiquetas complementarias.
 - **Acentos Gastronómicos**:
-  - **Ember Accent / Ascua** (`#dc5000` / `--color-ember`): Naranja fuego para alertas críticas, detalles y datos de mermas. Usar con moderación y respeto para no saturar.
-  - **Cobre / Ámbar Cálido** (`#d97706` / `amber-500`): Botones de acción principal (CTA), totales calculados y estado activo.
-  - **Verde Oliva / Hoja** (`#16a34a` / `emerald-500`): Validaciones de escandallos, ingredientes aptos y éxito.
+  - **Terracota / Coñac Culinario** (`#5a341e` / `--color-terracotta`): Botones de acción principal (CTA), totales calculados, iconos de impacto y estado activo en recetario.
+  - **Verde Hoja / Fresh Herb** (`text-emerald-800` / `bg-emerald-50` / `border-emerald-200`): Subproductos aprovechables para caldos/albóndigas, dietas veganas/vegetarianas y estados cubiertos en stock.
+  - **Alerta Técnica / Basura** (`text-rose-700` / `bg-rose-50` / `border-rose-200`): Desperdicio técnico neto y avisos de stock bajo mínimo de seguridad.
+  - **Bosque Chef Profundo** (`#18241d` / `--color-forest`): Botones oscuros institucionales y pestañas activas de alta jerarquía.
 - **Tipografía**:
   - Titulares e impacto numérico: **`Space Grotesk`** (`font-heading`).
   - Textos de lectura, formularios y tablas: **`Plus Jakarta Sans`** (`font-sans`).

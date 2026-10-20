@@ -21,9 +21,10 @@
 
 ### Frontend (React 19)
 - **Entorno**: Vite 8 + TypeScript + React 19.
-- **Estilos**: Tailwind CSS v4 con paleta editorial gastronómica cálida:
-  - *Walnut Shadow* (`#100904`), *Superficie Nogal* (`#1c120c`), *Borde Corcho* (`#40372e`).
-  - *Warm Cream* (`#ffedd7`) para tipografía cálida, *Ember/Ascua* (`#dc5000`) y *Ámbar* (`#d97706`).
+- **Estilos**: Tailwind CSS v4 con paleta editorial gastronómica unificada (idéntica a la Landing Page):
+  - *Lino Culinario Base* (`#f4efe6`), *Superficie Lino Tostado* (`#ebe4d5`), *Tarjetas Blancas Cálidas* (`#ffffff` / `#fdfbf7`).
+  - *Tinta Carbón de Brasa* (`#18251e`) para máxima legibilidad tipográfica y contraste suave.
+  - *Terracota / Coñac Culinario* (`#5a341e` / hover `#472917`) y *Verde Bosque Chef* (`#18241d`).
 - **Tipografías**: *Space Grotesk* (titulares) y *Plus Jakarta Sans* (cuerpo).
 - **Animaciones y Micro-interacciones**:
   - **React Bits**: Componentes animados en código fuente (ej: `SplitText.tsx` con GSAP). Registro configurado en `components.json`.
@@ -87,7 +88,7 @@
 - `src/features/ingredients/`: Despensa con tabla de stock, avisos de bajo mínimo, desglose de mermas y modal reactivo.
 - `src/features/dishes/`: Recetario interactivo con asignación de porciones y fichas técnicas.
 - `src/features/events/`: Planificador de banquetes y visor de la lista de compra en tiempo real con alertas, botón para copiar pedido formateado y opción de imprimir.
-- Estética culinaria cálida (Walnut Shadow `#100904`, Warm Cream `#ffedd7`, Ember `#dc5000`, Cork Border `#40372e`).
+- Estética gastronómica boutique unificada con la Landing Page (Lino Culinario `#f4efe6`, Tinta Carbón `#18251e`, Terracota `#5a341e`, Verde Bosque `#18241d`, Superficies `#ebe4d5`).
 - Probado y verificado en navegador con `browser_subagent`.
 
 ### Módulo de Autenticación & Usuarios (Backend Completo)
@@ -124,15 +125,27 @@
 
 ---
 
-## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Inmediato) 🎯
+## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Prioritario) 🎯
 
-1. **Excepciones Dietéticas por Banquete**:
-   - Registrar comensales vegetarianos, celíacos o alérgicos en un evento (ej: 80 pax estándar, 5 celíacos, 3 veganos).
-   - Sustituir automáticamente platos o recalcular ingredientes según restricciones.
-2. **Histórico y Registro de Mermas Reales tras el Evento**:
-   - Tras terminar el banquete, registrar cuánto se reutilizó realmente (ej: "Se obtuvieron 3.8 Kg de carne para albóndigas") para afinar los porcentajes de merma histórica.
-3. **Conexión de JuankiA con LLM en Streaming**:
-   - Conectar el widget de chat de JuankiA con una API de lenguaje en streaming para responder cualquier duda técnica de cocina en tiempo real.
+1. **Gestión de Excepciones Dietéticas & Menús Especiales por Banquete** *(Valor Clave de Negocio)*:
+   - Desglose de los $N$ comensales en el banquete (ej: *80 total: 72 menú estándar, 5 celíacos, 3 veganos*).
+   - Asignación de platos sustitutos / alternativos por comensal especial.
+   - Recálculo inteligente del escandallo y la lista de compra en vivo considerando exclusiones y reemplazos de ingredientes.
+
+2. **Cierre de Evento & Registro de Mermas Reales (Post-Mortem Culinario)**:
+   - Marcar eventos como "Finalizado/Ejecutado" tras el banquete.
+   - Formulario de auditoría post-servicio: registrar kilos reales de merma bruta descartada y subproducto limpio rescatado (ej: "Se obtuvieron 3.8 Kg de carne para croquetas/fondos").
+   - Comparativa Previsión vs. Realidad con desviación porcentual y alimentación del coeficiente histórico de merma técnica de la despensa.
+
+3. **Ciclo Completo de Autenticación, JWT & Sesión Multi-restaurante en Frontend**:
+   - Backend ya listo con PBKDF2 SHA-256 (`AuthController.cs`, `User`, MySQL).
+   - Generación de token JWT en el backend y persistencia en React.
+   - Protección de vistas y aislamiento de datos por `RestaurantId`.
+   - Asignación y gestión de roles culinarios (Chef Ejecutivo, Sous-Chef, Encargado de Compras).
+
+4. **Conexión de JuankiA con Asistente LLM en Streaming**:
+   - Conectar el widget interactivo `JuankiAChatWidget.tsx` a un endpoint de streaming en tiempo real (Server-Sent Events / SSE o WebSockets).
+   - Prompt de sistema especializado como Sous-Chef Ejecutivo: experto en conversiones de unidades culinarias, puntos de cocción, sustitución de alérgenos y rescate de mermas.
 
 ---
 

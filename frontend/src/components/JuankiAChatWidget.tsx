@@ -79,49 +79,49 @@ export const JuankiAChatWidget: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#1c120c] border border-amber-500/40 shadow-2xl shadow-black/80 hover:border-amber-400 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-[#18251e]/15 shadow-xl shadow-[#18251e]/10 hover:border-[#5a341e]/50 hover:scale-105 active:scale-95 transition-all cursor-pointer"
         >
           {/* Mini Avatar JuankiA */}
           <div className="w-10 h-10 relative flex items-center justify-center">
-            <img src="/juankia-logo.png" alt="JuankiA" className="w-full h-full object-contain filter drop-shadow-md" />
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-[#100904] animate-pulse" />
+            <img src="/juankia-logo.png" alt="JuankiA" className="w-full h-full object-contain filter drop-shadow-sm" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white animate-pulse" />
           </div>
 
           <div className="text-left">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-extrabold text-[#ffedd7] tracking-wide font-heading">
+              <span className="text-xs font-extrabold text-[#18251e] tracking-wide font-heading">
                 JuankiA
               </span>
-              <span className="px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-bold">
+              <span className="px-1.5 py-0.5 rounded-full bg-[#5a341e]/10 text-[#5a341e] text-[9px] font-bold">
                 IA
               </span>
             </div>
-            <p className="text-[10px] text-[#a89988]">Asistente de Cocina</p>
+            <p className="text-[10px] text-[#726e66]">Asistente de Cocina</p>
           </div>
 
-          <Sparkles className="w-4 h-4 text-amber-400 group-hover:rotate-12 transition-transform" />
+          <Sparkles className="w-4 h-4 text-[#5a341e] group-hover:rotate-12 transition-transform" />
         </button>
       )}
 
       {/* Ventana de Conversación con JuankiA */}
       {isOpen && (
-        <div className="w-80 sm:w-96 h-[540px] bg-[#160e09] border border-[#2e2118] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <div className="w-80 sm:w-96 h-[540px] bg-[#fdfbf7] border border-[#18251e]/15 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
           {/* Encabezado con JuankiA animado */}
-          <div className="p-4 bg-[#0c0704] border-b border-[#2e2118] flex items-center justify-between">
+          <div className="p-4 bg-[#ebe4d5]/70 border-b border-[#18251e]/10 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-2xl overflow-hidden border border-amber-500/40 shadow-lg">
+              <div className="w-11 h-11 rounded-2xl overflow-hidden border border-[#5a341e]/30 shadow-md bg-white">
                 <JuankiAMascot interactive={true} showBadge={false} className="w-full h-full" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <h4 className="text-sm font-extrabold font-heading text-[#ffedd7]">
+                  <h4 className="text-sm font-extrabold font-heading text-[#18251e]">
                     JuankiA
                   </h4>
-                  <span className="px-1.5 py-0.2 rounded-full bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 text-[9px] font-bold">
+                  <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-[9px] font-bold">
                     Online
                   </span>
                 </div>
-                <p className="text-[10px] text-[#a89988]">
+                <p className="text-[10px] text-[#726e66]">
                   Tu copiloto en la cocina
                 </p>
               </div>
@@ -129,14 +129,14 @@ export const JuankiAChatWidget: React.FC = () => {
 
             <button
               onClick={() => setIsOpen(false)}
-              className="text-[#a89988] hover:text-[#ffedd7] p-1.5 rounded-lg hover:bg-[#2e2118]/60 transition-colors cursor-pointer"
+              className="text-[#726e66] hover:text-[#18251e] p-1.5 rounded-lg hover:bg-[#18251e]/5 transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Mensajes */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 scrollbar-thin scrollbar-thumb-[#2e2118]">
+          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-[#fdfbf7]">
             {messages.map(m => (
               <div
                 key={m.id}
@@ -145,13 +145,13 @@ export const JuankiAChatWidget: React.FC = () => {
                 <div
                   className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed ${
                     m.sender === 'chef'
-                      ? 'bg-gradient-to-r from-[#dc5000] to-amber-600 text-slate-950 font-medium rounded-tr-none shadow-md shadow-amber-900/20'
-                      : 'bg-[#1f150f] border border-[#2e2118] text-[#ffedd7] rounded-tl-none shadow-sm'
+                      ? 'bg-[#5a341e] text-white font-medium rounded-tr-none shadow-sm'
+                      : 'bg-white border border-[#18251e]/10 text-[#18251e] rounded-tl-none shadow-sm'
                   }`}
                 >
                   {m.text}
                 </div>
-                <span className="text-[9px] text-[#a89988]/70 mt-1 px-1">
+                <span className="text-[9px] text-[#726e66] mt-1 px-1">
                   {m.time}
                 </span>
               </div>
@@ -160,12 +160,12 @@ export const JuankiAChatWidget: React.FC = () => {
           </div>
 
           {/* Sugerencias Rápidas */}
-          <div className="px-3 py-2 border-t border-[#2e2118] bg-[#120a06]/80 flex gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="px-3 py-2 border-t border-[#18251e]/10 bg-[#ebe4d5]/50 flex gap-1.5 overflow-x-auto no-scrollbar">
             {quickPrompts.map((prompt, i) => (
               <button
                 key={i}
                 onClick={() => handleSend(prompt)}
-                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-[#1c120c] hover:bg-[#2e2118] border border-[#2e2118] text-[10px] text-amber-300/90 font-medium cursor-pointer transition-colors"
+                className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white hover:bg-[#ebe4d5] border border-[#18251e]/12 text-[10px] text-[#5a341e] font-bold cursor-pointer transition-colors shadow-sm"
               >
                 {prompt}
               </button>
@@ -173,18 +173,18 @@ export const JuankiAChatWidget: React.FC = () => {
           </div>
 
           {/* Input de Envío */}
-          <div className="p-3 bg-[#0c0704] border-t border-[#2e2118] flex items-center gap-2">
+          <div className="p-3 bg-[#ebe4d5]/70 border-t border-[#18251e]/10 flex items-center gap-2">
             <input
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
               placeholder="Pregúntale a JuankiA..."
-              className="flex-1 bg-[#160e09] border border-[#2e2118] rounded-xl px-3 py-2 text-xs text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-amber-500"
+              className="flex-1 bg-white border border-[#18251e]/15 rounded-xl px-3 py-2 text-xs text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
             />
             <button
               onClick={() => handleSend()}
-              className="p-2 rounded-xl bg-[#dc5000] hover:bg-amber-600 text-slate-950 cursor-pointer transition-all active:scale-95"
+              className="p-2 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white cursor-pointer transition-all active:scale-95 shadow-sm"
             >
               <Send className="w-4 h-4" />
             </button>

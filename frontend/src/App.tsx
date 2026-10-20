@@ -65,50 +65,50 @@ export default function App() {
     )
   }
 
-  // Vista de Espacio de Trabajo Profesional (Darkroom Gastronómico)
+  // Vista de Espacio de Trabajo Profesional (Paleta Culinaria Editorial Lino & Terracota)
   return (
-    <div className="min-h-screen bg-[#100904] text-[#ffedd7] flex flex-col selection:bg-amber-500/30">
+    <div className="min-h-screen bg-[#f4efe6] text-[#18251e] flex flex-col selection:bg-[#5a341e]/20 font-sans">
       {/* Sistema de notificaciones líquidas Gooey Toast */}
       <GooeyToaster position="bottom-right" />
 
       {/* Barra superior artesanal gastronómica */}
-      <header className="border-b border-[#2e2118] bg-[#0c0704]/90 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5">
+      <header className="border-b border-[#18251e]/10 bg-[#f4efe6]/90 backdrop-blur-md sticky top-0 z-40 px-6 py-3.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Logo y Botón para volver al Inicio / Landing */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setViewMode('landing')}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#160e09] hover:bg-[#2e2118] border border-[#2e2118] text-xs font-bold text-[#ffedd7] transition-all cursor-pointer group shadow-sm"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white hover:bg-[#ebe4d5] border border-[#18251e]/15 text-xs font-bold text-[#18251e] transition-all cursor-pointer group shadow-sm active:scale-95"
               title="Volver a la portada de inicio"
             >
               <div className="w-7 h-7 flex items-center justify-center">
                 <img src="/juankia-logo.png" alt="JuankiA" className="w-full h-full object-contain" />
               </div>
-              <Home className="w-3.5 h-3.5 text-amber-500 group-hover:-translate-x-0.5 transition-transform" />
+              <Home className="w-3.5 h-3.5 text-[#5a341e] group-hover:-translate-x-0.5 transition-transform" />
               <span className="hidden sm:inline">Inicio</span>
             </button>
 
-            <div className="h-6 w-px bg-[#2e2118]" />
+            <div className="h-6 w-px bg-[#18251e]/15" />
 
             <div>
-              <span className="text-lg font-bold tracking-tight font-heading text-[#ffedd7] flex items-center gap-1">
-                CHEF<span className="text-[#dc5000]">COPILOT</span>
+              <span className="text-lg font-extrabold tracking-tight font-heading text-[#18251e] flex items-center gap-1">
+                CHEF<span className="text-[#5a341e]">COPILOT</span>
               </span>
-              <p className="text-[9px] text-[#a89988] font-bold tracking-[0.2em] uppercase">
+              <p className="text-[9px] text-[#726e66] font-bold tracking-[0.2em] uppercase">
                 {currentUser?.restaurantName || 'Taller Culinario Profesional'}
               </p>
             </div>
           </div>
 
           {/* Navegación por Pestañas */}
-          <nav className="flex items-center p-1 bg-[#160e09] border border-[#2e2118] rounded-xl shadow-2xl">
+          <nav className="flex items-center p-1 bg-[#ebe4d5]/70 border border-[#18251e]/10 rounded-2xl shadow-inner">
             <button
               onClick={() => setActiveTab('events')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'events'
-                  ? 'bg-gradient-to-r from-[#dc5000] to-amber-600 text-slate-950 shadow-md shadow-amber-900/30 font-extrabold'
-                  : 'text-[#a89988] hover:text-[#ffedd7] hover:bg-[#2e2118]/40'
+                  ? 'bg-[#18241d] text-white shadow-md font-extrabold'
+                  : 'text-[#524d45] hover:text-[#18251e] hover:bg-[#18251e]/5'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
@@ -117,10 +117,10 @@ export default function App() {
 
             <button
               onClick={() => setActiveTab('dishes')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'dishes'
-                  ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-slate-950 shadow-md shadow-emerald-950/40 font-extrabold'
-                  : 'text-[#a89988] hover:text-[#ffedd7] hover:bg-[#2e2118]/40'
+                  ? 'bg-[#5a341e] text-white shadow-md font-extrabold'
+                  : 'text-[#524d45] hover:text-[#18251e] hover:bg-[#18251e]/5'
               }`}
             >
               <UtensilsCrossed className="w-3.5 h-3.5" />
@@ -129,10 +129,10 @@ export default function App() {
 
             <button
               onClick={() => setActiveTab('ingredients')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'ingredients'
-                  ? 'bg-gradient-to-r from-[#dc5000] to-amber-600 text-slate-950 shadow-md shadow-amber-900/30 font-extrabold'
-                  : 'text-[#a89988] hover:text-[#ffedd7] hover:bg-[#2e2118]/40'
+                  ? 'bg-[#18241d] text-white shadow-md font-extrabold'
+                  : 'text-[#524d45] hover:text-[#18251e] hover:bg-[#18251e]/5'
               }`}
             >
               <Scale className="w-3.5 h-3.5" />
@@ -143,21 +143,21 @@ export default function App() {
           {/* Perfil del Chef / Autenticación */}
           <div className="flex items-center gap-3">
             {currentUser ? (
-              <div className="flex items-center gap-2.5 bg-[#160e09] border border-[#2e2118] px-3 py-1.5 rounded-xl">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-slate-950 font-bold text-xs shadow-sm">
+              <div className="flex items-center gap-2.5 bg-white border border-[#18251e]/15 px-3 py-1.5 rounded-xl shadow-sm">
+                <div className="w-7 h-7 rounded-lg bg-[#5a341e] flex items-center justify-center text-white font-bold text-xs shadow-sm">
                   {currentUser.fullName.charAt(0).toUpperCase()}
                 </div>
                 <div className="hidden md:block text-left">
-                  <span className="text-xs font-bold text-[#ffedd7] block leading-none">
+                  <span className="text-xs font-bold text-[#18251e] block leading-none">
                     {currentUser.fullName}
                   </span>
-                  <span className="text-[9px] text-amber-400/90 font-medium tracking-wider">
+                  <span className="text-[9px] text-[#5a341e] font-semibold tracking-wider uppercase">
                     {currentUser.role}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="text-[#a89988] hover:text-rose-400 p-1 rounded-lg hover:bg-[#2e2118] transition-colors cursor-pointer"
+                  className="text-[#726e66] hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
                   title="Cerrar sesión"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -166,7 +166,7 @@ export default function App() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#dc5000]/10 hover:bg-[#dc5000]/20 border border-[#dc5000]/30 text-xs font-bold text-amber-300 transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-xs font-bold text-white transition-all cursor-pointer shadow-md shadow-[#5a341e]/20 active:scale-95"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Acceso Chef</span>
@@ -188,10 +188,10 @@ export default function App() {
       <JuankiAChatWidget />
 
       {/* Footer Editorial Gastronómico */}
-      <footer className="border-t border-[#40372e] bg-[#100904] py-6 px-6 text-center text-xs text-[#a89988]">
+      <footer className="border-t border-[#18251e]/10 bg-[#ebe4d5]/50 py-6 px-6 text-center text-xs text-[#524d45]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>ChefCopilot · Plataforma de Ingeniería Culinaria y Escandallos para Alta Cocina</span>
-          <span className="text-[11px] text-[#a89988]/80">Fórmula de Mermas Reutilizables & Deducción de Stock Cámara</span>
+          <span className="font-medium">ChefCopilot · Plataforma de Ingeniería Culinaria y Escandallos para Alta Cocina</span>
+          <span className="text-[11px] text-[#726e66]">Fórmula de Doble Merma Técnica & Rendimiento por Piezas Enteras</span>
         </div>
       </footer>
 

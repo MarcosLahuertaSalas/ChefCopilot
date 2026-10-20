@@ -113,21 +113,21 @@ export const EventModal: React.FC<EventModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-2xl bg-[#1c120c] border border-[#40372e] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18251e]/60 backdrop-blur-sm animate-fade-in">
+      <div className="w-full max-w-2xl bg-[#fdfbf7] border border-[#18251e]/15 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Encabezado */}
-        <div className="px-6 py-4 border-b border-[#40372e] flex items-center justify-between bg-[#100904]">
+        <div className="px-6 py-4 border-b border-[#18251e]/10 flex items-center justify-between bg-[#ebe4d5]/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-[#5a341e]/10 border border-[#5a341e]/20 flex items-center justify-center text-[#5a341e]">
               <Calendar className="w-4 h-4" />
             </div>
-            <h2 className="text-lg font-bold font-heading text-[#ffedd7]">
+            <h2 className="text-lg font-bold font-heading text-[#18251e]">
               {event ? 'Editar Plan de Banquete' : 'Nuevo Evento o Banquete'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="text-[#a89988] hover:text-[#ffedd7] p-1.5 rounded-lg hover:bg-[#40372e]/40 transition-colors"
+            className="text-[#726e66] hover:text-[#18251e] p-1.5 rounded-lg hover:bg-[#18251e]/5 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -136,15 +136,15 @@ export const EventModal: React.FC<EventModalProps> = ({
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-6 flex-1">
           {error && (
-            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800/80 text-rose-300 text-xs flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Nombre del Evento */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+            <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
               Nombre o Referencia del Banquete *
             </label>
             <input
@@ -153,14 +153,14 @@ export const EventModal: React.FC<EventModalProps> = ({
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Ej: Boda Marta & Carlos (Catering Jardín)"
-              className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-amber-500 transition-colors"
+              className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
             />
           </div>
 
           {/* Fecha y Comensales */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Fecha de Celebración *
               </label>
               <input
@@ -168,24 +168,24 @@ export const EventModal: React.FC<EventModalProps> = ({
                 required
                 value={eventDate}
                 onChange={e => setEventDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988] flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66] flex items-center justify-between">
                 <span>Número de Comensales *</span>
-                <span className="text-[10px] text-amber-400">Raciones exactas</span>
+                <span className="text-[10px] text-[#5a341e] font-semibold">Raciones exactas</span>
               </label>
               <div className="relative">
-                <Users className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a89988]" />
+                <Users className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#726e66]" />
                 <input
                   type="number"
                   min="1"
                   required
                   value={standardGuests}
                   onChange={e => setStandardGuests(parseInt(e.target.value) || 0)}
-                  className="w-full pl-10 pr-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm font-mono text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm font-mono font-bold text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm"
                 />
               </div>
             </div>
@@ -194,17 +194,17 @@ export const EventModal: React.FC<EventModalProps> = ({
           {/* Menú del Evento (Selector de Platos) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#ffedd7] flex items-center gap-1.5">
-                <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400" />
+              <label className="text-xs font-bold uppercase tracking-wider text-[#18251e] flex items-center gap-1.5">
+                <UtensilsCrossed className="w-3.5 h-3.5 text-[#5a341e]" />
                 Platos del Menú ({selectedDishIds.length} seleccionados)
               </label>
-              <span className="text-xs text-[#a89988]">
+              <span className="text-xs text-[#726e66]">
                 Se consolidarán los ingredientes comunes
               </span>
             </div>
 
             {availableDishes.length === 0 ? (
-              <div className="p-6 rounded-xl border border-dashed border-[#40372e] text-center text-xs text-[#a89988]">
+              <div className="p-6 rounded-2xl border border-dashed border-[#18251e]/20 bg-[#ebe4d5]/30 text-center text-xs text-[#726e66]">
                 No hay platos registrados en el recetario. Crea antes recetas en la pestaña "Recetario".
               </div>
             ) : (
@@ -216,23 +216,23 @@ export const EventModal: React.FC<EventModalProps> = ({
                     <div
                       key={dish.id}
                       onClick={() => handleToggleDish(dish.id)}
-                      className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-3 select-none ${
+                      className={`p-3 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 select-none shadow-sm ${
                         isSelected
-                          ? 'bg-amber-500/10 border-amber-500/50 text-[#ffedd7]'
-                          : 'bg-[#100904] border-[#40372e] text-[#a89988] hover:border-[#a89988]/50'
+                          ? 'bg-[#5a341e]/10 border-[#5a341e]/40 text-[#18251e]'
+                          : 'bg-white border-[#18251e]/10 text-[#524d45] hover:border-[#5a341e]/30'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => {}}
-                        className="mt-0.5 w-4 h-4 rounded text-amber-500 bg-[#1c120c] border-[#40372e] pointer-events-none"
+                        className="mt-0.5 w-4 h-4 rounded text-[#5a341e] border-[#18251e]/20 pointer-events-none"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-semibold truncate ${isSelected ? 'text-amber-400' : 'text-[#ffedd7]'}`}>
+                        <p className={`text-sm font-bold truncate ${isSelected ? 'text-[#5a341e]' : 'text-[#18251e]'}`}>
                           {dish.name}
                         </p>
-                        <p className="text-[11px] text-[#a89988] mt-0.5">
+                        <p className="text-[11px] text-[#726e66] mt-0.5">
                           {dish.category} • {dish.ingredients.length} ing.
                         </p>
                       </div>
@@ -245,18 +245,18 @@ export const EventModal: React.FC<EventModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#40372e] flex items-center justify-end gap-3 bg-[#100904]">
+        <div className="px-6 py-4 border-t border-[#18251e]/10 flex items-center justify-end gap-3 bg-[#ebe4d5]/60">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-[#a89988] hover:text-[#ffedd7] hover:bg-[#40372e]/30 transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-sm font-bold text-[#524d45] hover:text-[#18251e] hover:bg-[#18251e]/5 transition-colors cursor-pointer"
           >
             Cancelar
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/10 transition-all cursor-pointer disabled:opacity-50"
+            className="px-5 py-2 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white font-bold text-sm shadow-md shadow-[#5a341e]/20 transition-all cursor-pointer disabled:opacity-50 active:scale-95"
           >
             {loading ? 'Calculando...' : event ? 'Actualizar Evento' : 'Crear y Calcular Escandallo'}
           </button>

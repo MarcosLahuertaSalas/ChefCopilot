@@ -3,13 +3,24 @@
 @import "goey-toast/styles.css";
 
 @theme {
-  --color-walnut: #100904;
-  --color-walnut-surface: #1c120c;
-  --color-walnut-card: #22160e;
-  --color-cork-border: #40372e;
-  --color-driftwood: #a89988;
-  --color-warm-cream: #ffedd7;
-  --color-ember: #dc5000;
+  --color-linen: #f4efe6;
+  --color-linen-surface: #ebe4d5;
+  --color-linen-card: #ffffff;
+  --color-ink: #18251e;
+  --color-ink-muted: #524d45;
+  --color-ink-subtle: #726e66;
+  --color-terracotta: #5a341e;
+  --color-terracotta-hover: #472917;
+  --color-forest: #18241d;
+  --color-cork-border: rgba(24, 37, 30, 0.12);
+
+  /* Retrocompatibilidad para mantener armonía visual */
+  --color-walnut: #f4efe6;
+  --color-walnut-surface: #ebe4d5;
+  --color-walnut-card: #ffffff;
+  --color-driftwood: #524d45;
+  --color-warm-cream: #18251e;
+  --color-ember: #5a341e;
 
   --font-heading: 'Space Grotesk', sans-serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -17,13 +28,13 @@
 
 :root {
   font-family: var(--font-sans);
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
-  background-color: #100904;
-  color: #ffedd7;
+  background-color: #f4efe6;
+  color: #18251e;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;

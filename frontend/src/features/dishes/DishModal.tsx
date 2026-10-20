@@ -137,21 +137,21 @@ export const DishModal: React.FC<DishModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-2xl bg-[#1c120c] border border-[#40372e] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18251e]/60 backdrop-blur-sm animate-fade-in">
+      <div className="w-full max-w-2xl bg-[#fdfbf7] border border-[#18251e]/15 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Encabezado */}
-        <div className="px-6 py-4 border-b border-[#40372e] flex items-center justify-between bg-[#100904]">
+        <div className="px-6 py-4 border-b border-[#18251e]/10 flex items-center justify-between bg-[#ebe4d5]/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-8 h-8 rounded-lg bg-[#5a341e]/10 border border-[#5a341e]/20 flex items-center justify-center text-[#5a341e]">
               <UtensilsCrossed className="w-4 h-4" />
             </div>
-            <h2 className="text-lg font-bold font-heading text-[#ffedd7]">
+            <h2 className="text-lg font-bold font-heading text-[#18251e]">
               {dish ? 'Editar Ficha Técnica de Receta' : 'Nueva Ficha Técnica de Receta'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="text-[#a89988] hover:text-[#ffedd7] p-1.5 rounded-lg hover:bg-[#40372e]/40 transition-colors"
+            className="text-[#726e66] hover:text-[#18251e] p-1.5 rounded-lg hover:bg-[#18251e]/5 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -160,8 +160,8 @@ export const DishModal: React.FC<DishModalProps> = ({
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-6 flex-1">
           {error && (
-            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800/80 text-rose-300 text-xs flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
@@ -169,7 +169,7 @@ export const DishModal: React.FC<DishModalProps> = ({
           {/* Nombre y Categoría */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2 space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Nombre del Plato *
               </label>
               <input
@@ -178,18 +178,18 @@ export const DishModal: React.FC<DishModalProps> = ({
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="Ej: Solomillo Ibérico con Salsa de Oporto"
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Categoría *
               </label>
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
               >
                 <option value="Aperitivo / Cóctel">Aperitivo / Cóctel</option>
                 <option value="Entrante">Entrante</option>
@@ -204,7 +204,7 @@ export const DishModal: React.FC<DishModalProps> = ({
 
           {/* Descripción */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+            <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
               Notas de Elaboración & Presentación
             </label>
             <textarea
@@ -212,21 +212,21 @@ export const DishModal: React.FC<DishModalProps> = ({
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="Ej: Marcado a fuego vivo, reducción a fuego lento con mantequilla fría..."
-              className="w-full px-3.5 py-2 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full px-3.5 py-2 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
             />
           </div>
 
           {/* Lista de Ingredientes de la Receta */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#ffedd7] flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-emerald-400" />
+              <label className="text-xs font-bold uppercase tracking-wider text-[#18251e] flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-[#5a341e]" />
                 Ingredientes & Ración por Persona ({ingredientLines.length})
               </label>
               <button
                 type="button"
                 onClick={handleAddIngredientLine}
-                className="px-3 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                className="px-3 py-1 rounded-lg bg-[#5a341e]/10 hover:bg-[#5a341e]/20 text-[#5a341e] border border-[#5a341e]/30 text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                 Añadir Ingrediente
@@ -234,7 +234,7 @@ export const DishModal: React.FC<DishModalProps> = ({
             </div>
 
             {ingredientLines.length === 0 ? (
-              <div className="p-6 rounded-xl border border-dashed border-[#40372e] text-center text-xs text-[#a89988]">
+              <div className="p-6 rounded-2xl border border-dashed border-[#18251e]/20 bg-[#ebe4d5]/30 text-center text-xs text-[#726e66]">
                 No has añadido ningún ingrediente a esta receta. Pulsa el botón "Añadir Ingrediente" para configurar las cantidades por comensal.
               </div>
             ) : (
@@ -246,13 +246,13 @@ export const DishModal: React.FC<DishModalProps> = ({
                   return (
                     <div
                       key={idx}
-                      className="p-3 bg-[#100904] border border-[#40372e] rounded-xl flex items-center gap-3"
+                      className="p-3 bg-[#ebe4d5]/40 border border-[#18251e]/10 rounded-2xl flex items-center gap-3"
                     >
                       <div className="flex-1">
                         <select
                           value={line.ingredientId}
                           onChange={e => handleUpdateLine(idx, 'ingredientId', e.target.value)}
-                          className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-2 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm"
                         >
                           {availableIngredients.map(ai => (
                             <option key={ai.id} value={ai.id}>
@@ -269,15 +269,15 @@ export const DishModal: React.FC<DishModalProps> = ({
                           step="0.005"
                           value={line.quantity}
                           onChange={e => handleUpdateLine(idx, 'quantity', parseFloat(e.target.value) || 0)}
-                          className="w-full px-2.5 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm font-mono text-[#ffedd7] text-right focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2.5 py-2 bg-white border border-[#18251e]/15 rounded-xl text-sm font-mono font-bold text-[#18251e] text-right focus:outline-none focus:border-[#5a341e] shadow-sm"
                         />
-                        <span className="text-xs text-[#a89988] shrink-0 font-medium">{unit}</span>
+                        <span className="text-xs text-[#726e66] shrink-0 font-bold">{unit}</span>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => handleRemoveLine(idx)}
-                        className="p-2 text-[#a89988] hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 text-[#726e66] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                         title="Quitar ingrediente"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -291,18 +291,18 @@ export const DishModal: React.FC<DishModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#40372e] flex items-center justify-end gap-3 bg-[#100904]">
+        <div className="px-6 py-4 border-t border-[#18251e]/10 flex items-center justify-end gap-3 bg-[#ebe4d5]/60">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-[#a89988] hover:text-[#ffedd7] hover:bg-[#40372e]/30 transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-sm font-bold text-[#524d45] hover:text-[#18251e] hover:bg-[#18251e]/5 transition-colors cursor-pointer"
           >
             Cancelar
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/10 transition-all cursor-pointer disabled:opacity-50"
+            className="px-5 py-2 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white font-bold text-sm shadow-md shadow-[#5a341e]/20 transition-all cursor-pointer disabled:opacity-50 active:scale-95"
           >
             {loading ? 'Guardando...' : dish ? 'Actualizar Receta' : 'Guardar Receta'}
           </button>

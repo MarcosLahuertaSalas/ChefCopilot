@@ -94,11 +94,11 @@ export const DishesView: React.FC = () => {
       {/* Header y Acciones Principales */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#ffedd7] flex items-center gap-2.5">
-            <UtensilsCrossed className="w-7 h-7 text-emerald-500" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#18251e] flex items-center gap-2.5">
+            <UtensilsCrossed className="w-7 h-7 text-[#5a341e]" />
             Recetario & Fichas Técnicas
           </h1>
-          <p className="text-sm text-[#a89988] mt-1">
+          <p className="text-sm text-[#524d45] mt-1">
             Fórmulas de platos con porciones exactas por comensal para alimentar los cálculos de banquetes.
           </p>
         </div>
@@ -106,7 +106,7 @@ export const DishesView: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={loadDishes}
-            className="p-2.5 rounded-xl bg-[#1c120c] border border-[#40372e] text-[#a89988] hover:text-[#ffedd7] hover:border-emerald-500/50 transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-white border border-[#18251e]/15 text-[#524d45] hover:text-[#18251e] hover:border-[#5a341e]/50 transition-colors cursor-pointer shadow-sm"
             title="Recargar recetario"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -114,7 +114,7 @@ export const DishesView: React.FC = () => {
 
           <button
             onClick={handleOpenCreate}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+            className="px-4 py-2.5 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white font-bold text-sm shadow-md shadow-[#5a341e]/20 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             Nueva Receta
@@ -125,23 +125,23 @@ export const DishesView: React.FC = () => {
       {/* Barra de Filtros y Búsqueda */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a89988]" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#726e66]" />
           <input
             type="text"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Buscar por plato, descripción..."
-            className="w-full pl-10 pr-4 py-2 bg-[#1c120c] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/60 focus:outline-none focus:border-emerald-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
           />
         </div>
 
-        <div className="flex items-center gap-1.5 p-1 bg-[#1c120c] border border-[#40372e] rounded-xl self-start sm:self-auto overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1 bg-[#ebe4d5]/70 border border-[#18251e]/10 rounded-xl self-start sm:self-auto overflow-x-auto shadow-inner">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors whitespace-nowrap ${
-                categoryFilter === cat ? 'bg-emerald-500 text-slate-950' : 'text-[#a89988] hover:text-[#ffedd7]'
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors whitespace-nowrap ${
+                categoryFilter === cat ? 'bg-[#18241d] text-white shadow-sm' : 'text-[#524d45] hover:text-[#18251e]'
               }`}
             >
               {cat === 'all' ? 'Todas las Categorías' : cat}
@@ -152,15 +152,15 @@ export const DishesView: React.FC = () => {
 
       {/* Grid de Recetas */}
       {loading ? (
-        <div className="p-16 text-center text-[#a89988] flex flex-col items-center justify-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin text-emerald-500" />
+        <div className="p-16 text-center text-[#524d45] flex flex-col items-center justify-center gap-3">
+          <RefreshCw className="w-6 h-6 animate-spin text-[#5a341e]" />
           <p className="text-sm font-medium">Consultando recetario en MySQL...</p>
         </div>
       ) : filteredDishes.length === 0 ? (
-        <div className="p-16 text-center text-[#a89988] flex flex-col items-center justify-center gap-3 bg-[#1c120c] border border-[#40372e] rounded-2xl">
-          <UtensilsCrossed className="w-10 h-10 text-[#40372e]" />
-          <p className="text-sm font-semibold text-[#ffedd7]">No hay recetas registradas</p>
-          <p className="text-xs text-[#a89988] max-w-sm">
+        <div className="p-16 text-center text-[#524d45] flex flex-col items-center justify-center gap-3 bg-white border border-[#18251e]/10 rounded-2xl shadow-sm">
+          <UtensilsCrossed className="w-10 h-10 text-[#726e66]/40" />
+          <p className="text-sm font-semibold text-[#18251e]">No hay recetas registradas</p>
+          <p className="text-xs text-[#726e66] max-w-sm">
             Comienza dando de alta un plato y asignando sus ingredientes por ración con el botón "Nueva Receta".
           </p>
         </div>
@@ -169,24 +169,24 @@ export const DishesView: React.FC = () => {
           {filteredDishes.map(dish => (
             <div
               key={dish.id}
-              className="p-5 rounded-2xl bg-[#1c120c] border border-[#40372e] hover:border-emerald-500/40 transition-all flex flex-col justify-between group shadow-xl"
+              className="p-5 rounded-2xl bg-white border border-[#18251e]/10 hover:border-[#5a341e]/40 transition-all flex flex-col justify-between group shadow-sm hover:shadow-md"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/20">
                     {dish.category || 'Sin categoría'}
                   </span>
                   <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleOpenEdit(dish)}
-                      className="p-1.5 rounded-lg text-[#a89988] hover:text-emerald-400 hover:bg-[#40372e]/50 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg text-[#524d45] hover:text-[#5a341e] hover:bg-[#18251e]/5 transition-colors cursor-pointer"
                       title="Editar plato"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(dish.id, dish.name)}
-                      className="p-1.5 rounded-lg text-[#a89988] hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg text-[#524d45] hover:text-rose-700 hover:bg-rose-50 transition-colors cursor-pointer"
                       title="Eliminar plato"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -194,24 +194,24 @@ export const DishesView: React.FC = () => {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-bold font-heading text-[#ffedd7] group-hover:text-emerald-400 transition-colors">
+                <h3 className="text-lg font-bold font-heading text-[#18251e] group-hover:text-[#5a341e] transition-colors">
                   {dish.name}
                 </h3>
 
                 {dish.description && (
-                  <p className="text-xs text-[#a89988] line-clamp-2 mt-1.5 italic">
+                  <p className="text-xs text-[#524d45] line-clamp-2 mt-1.5 italic">
                     {dish.description}
                   </p>
                 )}
 
                 {/* Desglose de Ingredientes de la Receta */}
-                <div className="mt-4 pt-3 border-t border-[#40372e]/60 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-semibold text-[#a89988]">
+                <div className="mt-4 pt-3 border-t border-[#18251e]/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold text-[#726e66]">
                     <span className="flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5 text-emerald-400" />
+                      <Layers className="w-3.5 h-3.5 text-[#5a341e]" />
                       Composición por Ración
                     </span>
-                    <span className="text-[11px] font-mono text-emerald-400">
+                    <span className="text-[11px] font-mono text-[#5a341e]">
                       {dish.ingredients.length} {dish.ingredients.length === 1 ? 'ingrediente' : 'ingredientes'}
                     </span>
                   </div>
@@ -220,10 +220,10 @@ export const DishesView: React.FC = () => {
                     {dish.ingredients.map((ing, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between text-xs py-1 px-2 rounded-lg bg-[#100904]/70 border border-[#40372e]/50"
+                        className="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-[#ebe4d5]/40 border border-[#18251e]/8"
                       >
-                        <span className="text-[#ffedd7] truncate font-medium">{ing.ingredientName}</span>
-                        <span className="font-mono text-emerald-300 shrink-0 font-semibold">
+                        <span className="text-[#18251e] truncate font-medium">{ing.ingredientName}</span>
+                        <span className="font-mono text-[#5a341e] shrink-0 font-bold">
                           {ing.quantity}
                         </span>
                       </div>
@@ -232,10 +232,10 @@ export const DishesView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#40372e]/40 flex items-center justify-between text-[11px] text-[#a89988]">
+              <div className="mt-4 pt-3 border-t border-[#18251e]/10 flex items-center justify-between text-[11px] text-[#726e66]">
                 <span>Listo para banquetes</span>
-                <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                  <Flame className="w-3 h-3" /> Ficha Técnica Activa
+                <span className="flex items-center gap-1 text-emerald-800 font-semibold">
+                  <Flame className="w-3 h-3 text-[#5a341e]" /> Ficha Técnica Activa
                 </span>
               </div>
             </div>

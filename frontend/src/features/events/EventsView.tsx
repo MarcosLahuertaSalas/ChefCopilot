@@ -149,11 +149,11 @@ export const EventsView: React.FC = () => {
       {/* Header y Acciones */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#ffedd7] flex items-center gap-2.5">
-            <Calendar className="w-7 h-7 text-amber-500" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading text-[#18251e] flex items-center gap-2.5">
+            <Calendar className="w-7 h-7 text-[#5a341e]" />
             Banquetes & Escandallo de Compras
           </h1>
-          <p className="text-sm text-[#a89988] mt-1">
+          <p className="text-sm text-[#524d45] mt-1">
             Motor de cálculo para bodas, catering y eventos. Consolida ingredientes, descuenta stock de cámara y optimiza compras por piezas.
           </p>
         </div>
@@ -161,7 +161,7 @@ export const EventsView: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => loadEvents()}
-            className="p-2.5 rounded-xl bg-[#1c120c] border border-[#40372e] text-[#a89988] hover:text-[#ffedd7] hover:border-amber-500/50 transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-white border border-[#18251e]/15 text-[#524d45] hover:text-[#18251e] hover:border-[#5a341e]/50 transition-colors cursor-pointer shadow-sm"
             title="Recargar eventos"
           >
             <RefreshCw className={`w-4 h-4 ${loadingEvents ? 'animate-spin' : ''}`} />
@@ -169,7 +169,7 @@ export const EventsView: React.FC = () => {
 
           <button
             onClick={handleOpenCreate}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+            className="px-4 py-2.5 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white font-bold text-sm shadow-md shadow-[#5a341e]/20 flex items-center gap-2 cursor-pointer transition-all active:scale-95"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             Nuevo Banquete
@@ -178,20 +178,20 @@ export const EventsView: React.FC = () => {
       </div>
 
       {loadingEvents ? (
-        <div className="p-16 text-center text-[#a89988] flex flex-col items-center justify-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin text-amber-500" />
+        <div className="p-16 text-center text-[#524d45] flex flex-col items-center justify-center gap-3">
+          <RefreshCw className="w-6 h-6 animate-spin text-[#5a341e]" />
           <p className="text-sm font-medium">Cargando eventos desde MySQL...</p>
         </div>
       ) : events.length === 0 ? (
-        <div className="p-16 text-center text-[#a89988] flex flex-col items-center justify-center gap-3 bg-[#1c120c] border border-[#40372e] rounded-2xl">
-          <Calendar className="w-10 h-10 text-[#40372e]" />
-          <p className="text-sm font-semibold text-[#ffedd7]">No hay banquetes programados</p>
-          <p className="text-xs text-[#a89988] max-w-sm">
+        <div className="p-16 text-center text-[#524d45] flex flex-col items-center justify-center gap-3 bg-white border border-[#18251e]/10 rounded-2xl shadow-sm">
+          <Calendar className="w-10 h-10 text-[#726e66]/40" />
+          <p className="text-sm font-semibold text-[#18251e]">No hay banquetes programados</p>
+          <p className="text-xs text-[#726e66] max-w-sm">
             Crea tu primer banquete con comensales y platos del menú para ver la lista de compra consolidada.
           </p>
           <button
             onClick={handleOpenCreate}
-            className="mt-2 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs cursor-pointer"
+            className="mt-2 px-4 py-2 rounded-xl bg-[#5a341e] text-white font-bold text-xs cursor-pointer shadow-sm"
           >
             Crear Banquete
           </button>
@@ -200,7 +200,7 @@ export const EventsView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Selector lateral de eventos */}
           <div className="lg:col-span-1 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#a89988] block px-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#726e66] block px-1">
               Eventos Programados ({events.length})
             </span>
 
@@ -217,41 +217,41 @@ export const EventsView: React.FC = () => {
                   <div
                     key={evt.id}
                     onClick={() => handleSelectEvent(evt.id)}
-                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col gap-1.5 ${
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col gap-1.5 shadow-sm ${
                       isSelected
-                        ? 'bg-amber-500/10 border-amber-500/60 shadow-lg shadow-amber-500/10'
-                        : 'bg-[#1c120c] border-[#40372e] hover:border-[#a89988]/50'
+                        ? 'bg-[#5a341e]/10 border-[#5a341e]/50 shadow-md shadow-[#5a341e]/10'
+                        : 'bg-white border-[#18251e]/10 hover:border-[#5a341e]/30'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <h4 className={`text-sm font-bold truncate ${isSelected ? 'text-amber-400' : 'text-[#ffedd7]'}`}>
+                      <h4 className={`text-sm font-bold truncate ${isSelected ? 'text-[#5a341e]' : 'text-[#18251e]'}`}>
                         {evt.name}
                       </h4>
                       <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
                         <button
                           onClick={() => handleOpenEdit(evt)}
-                          className="p-1 rounded text-[#a89988] hover:text-amber-400 hover:bg-[#40372e]/50 transition-colors"
+                          className="p-1 rounded text-[#726e66] hover:text-[#5a341e] hover:bg-[#18251e]/5 transition-colors cursor-pointer"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(evt.id, evt.name)}
-                          className="p-1 rounded text-[#a89988] hover:text-rose-400 hover:bg-rose-950/40 transition-colors"
+                          className="p-1 rounded text-[#726e66] hover:text-rose-700 hover:bg-rose-50 transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs text-[#a89988]">
-                      <span className="font-medium text-[#ffedd7]/80">{dateStr}</span>
-                      <span className="inline-flex items-center gap-1 font-mono font-bold text-amber-500/90">
+                    <div className="flex items-center justify-between text-xs text-[#524d45]">
+                      <span className="font-medium text-[#18251e]/80">{dateStr}</span>
+                      <span className="inline-flex items-center gap-1 font-mono font-bold text-[#5a341e]">
                         <Users className="w-3 h-3" />
                         {evt.standardGuests} pax
                       </span>
                     </div>
 
-                    <div className="text-[11px] text-[#a89988] truncate pt-1 border-t border-[#40372e]/40">
+                    <div className="text-[11px] text-[#726e66] truncate pt-1 border-t border-[#18251e]/8">
                       {evt.menuDishes.length} {evt.menuDishes.length === 1 ? 'plato' : 'platos'}: {evt.menuDishes.map(d => d.name).join(', ')}
                     </div>
                   </div>
@@ -263,24 +263,24 @@ export const EventsView: React.FC = () => {
           {/* Panel Principal: Calculadora de Compra y Escandallo */}
           <div className="lg:col-span-3 space-y-6">
             {loadingList ? (
-              <div className="p-16 text-center text-[#a89988] flex flex-col items-center justify-center gap-3 bg-[#1c120c] border border-[#40372e] rounded-2xl">
-                <RefreshCw className="w-7 h-7 animate-spin text-amber-500" />
+              <div className="p-16 text-center text-[#524d45] flex flex-col items-center justify-center gap-3 bg-white border border-[#18251e]/10 rounded-2xl shadow-sm">
+                <RefreshCw className="w-7 h-7 animate-spin text-[#5a341e]" />
                 <p className="text-sm font-medium">Calculando escandallos, deducciones de stock y mermas...</p>
               </div>
             ) : !shoppingList ? (
-              <div className="p-16 text-center text-[#a89988] bg-[#1c120c] border border-[#40372e] rounded-2xl">
+              <div className="p-16 text-center text-[#524d45] bg-white border border-[#18251e]/10 rounded-2xl shadow-sm">
                 Selecciona un evento para ver su escandallo detallado.
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Resumen del Evento & Botonera */}
-                <div className="p-6 rounded-2xl bg-[#1c120c] border border-[#40372e] shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-6 rounded-2xl bg-white border border-[#18251e]/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                      <span className="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/20">
                         Banquete Activo
                       </span>
-                      <span className="text-xs text-[#a89988]">
+                      <span className="text-xs text-[#726e66]">
                         {new Date(shoppingList.eventDate).toLocaleDateString('es-ES', {
                           weekday: 'long',
                           year: 'numeric',
@@ -289,10 +289,10 @@ export const EventsView: React.FC = () => {
                         })}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-extrabold font-heading text-[#ffedd7] mt-1">
+                    <h2 className="text-2xl font-extrabold font-heading text-[#18251e] mt-1">
                       {shoppingList.eventName}
                     </h2>
-                    <p className="text-xs text-[#a89988] mt-1">
+                    <p className="text-xs text-[#524d45] mt-1">
                       {shoppingList.guests} comensales • {shoppingList.totalDishes} platos en menú • {shoppingList.items.length} ingredientes consolidados
                     </p>
                   </div>
@@ -300,14 +300,14 @@ export const EventsView: React.FC = () => {
                   <div className="flex items-center gap-2 self-start sm:self-auto">
                     <button
                       onClick={handleCopyOrder}
-                      className="px-3.5 py-2 rounded-xl bg-[#100904] hover:bg-[#100904]/80 text-[#ffedd7] border border-[#40372e] text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+                      className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#ebe4d5]/50 text-[#18251e] border border-[#18251e]/15 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
                     >
-                      <Copy className="w-3.5 h-3.5 text-amber-400" />
+                      <Copy className="w-3.5 h-3.5 text-[#5a341e]" />
                       Copiar Pedido
                     </button>
                     <button
                       onClick={handlePrint}
-                      className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                      className="px-3.5 py-2 rounded-xl bg-[#18241d] hover:bg-[#111a14] text-white text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
                     >
                       <Printer className="w-3.5 h-3.5" />
                       Imprimir Ficha
@@ -317,13 +317,13 @@ export const EventsView: React.FC = () => {
 
                 {/* Banner de Alertas si hay ingredientes con stock bajo */}
                 {shoppingList.totalStockAlerts > 0 && (
-                  <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800/80 text-rose-300 text-xs flex items-start gap-3 animate-fade-in">
-                    <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                  <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-3 animate-fade-in shadow-sm">
+                    <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                     <div>
-                      <strong className="block font-bold text-sm">
+                      <strong className="block font-bold text-sm text-rose-900">
                         ¡Atención! {shoppingList.totalStockAlerts} {shoppingList.totalStockAlerts === 1 ? 'ingrediente tiene' : 'ingredientes tienen'} alerta de stock crítico
                       </strong>
-                      <p className="mt-0.5 text-rose-200/80">
+                      <p className="mt-0.5 text-rose-700">
                         El stock disponible en cámara es insuficiente para cubrir la elaboración del evento sin caer por debajo del umbral mínimo de seguridad.
                       </p>
                     </div>
@@ -332,54 +332,54 @@ export const EventsView: React.FC = () => {
 
                 {/* Métricas Culinarias Destacadas */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-xl bg-[#100904] border border-[#40372e]">
-                    <span className="text-xs text-[#a89988] font-semibold uppercase tracking-wider block">Comensales</span>
-                    <span className="text-2xl font-bold font-heading text-[#ffedd7] mt-1 block">
+                  <div className="p-4 rounded-2xl bg-white border border-[#18251e]/10 shadow-sm">
+                    <span className="text-xs text-[#726e66] font-bold uppercase tracking-wider block">Comensales</span>
+                    <span className="text-2xl font-bold font-heading text-[#18251e] mt-1 block">
                       {shoppingList.guests} pax
                     </span>
-                    <span className="text-[11px] text-[#a89988] mt-1 block">1 ración por comensal</span>
+                    <span className="text-[11px] text-[#726e66] mt-1 block">1 ración por comensal</span>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-[#100904] border border-emerald-500/30">
-                    <span className="text-xs text-emerald-400 font-semibold uppercase tracking-wider block flex items-center gap-1.5">
+                  <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 shadow-sm">
+                    <span className="text-xs text-emerald-800 font-bold uppercase tracking-wider block flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       Merma Reutilizable Estimada
                     </span>
-                    <span className="text-2xl font-bold font-heading text-emerald-300 mt-1 block">
+                    <span className="text-2xl font-bold font-heading text-emerald-900 mt-1 block">
                       +{shoppingList.totalEstimatedReusableTrimmings.toFixed(2)} Kg
                     </span>
-                    <span className="text-[11px] text-[#a89988] mt-1 block">
+                    <span className="text-[11px] text-emerald-700 mt-1 block">
                       Subproducto limpio para albóndigas / caldos
                     </span>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-[#100904] border border-[#40372e]">
-                    <span className="text-xs text-[#a89988] font-semibold uppercase tracking-wider block">
+                  <div className="p-4 rounded-2xl bg-white border border-[#18251e]/10 shadow-sm">
+                    <span className="text-xs text-[#726e66] font-bold uppercase tracking-wider block">
                       Artículos a Proveedor
                     </span>
-                    <span className="text-2xl font-bold font-heading text-amber-400 mt-1 block">
+                    <span className="text-2xl font-bold font-heading text-[#5a341e] mt-1 block">
                       {shoppingList.items.filter(i => i.quantityToBuy > 0 || (i.isPurchasedByPiece && (i.piecesToBuy ?? 0) > 0)).length}
                     </span>
-                    <span className="text-[11px] text-[#a89988] mt-1 block">Con necesidad de compra</span>
+                    <span className="text-[11px] text-[#726e66] mt-1 block">Con necesidad de compra</span>
                   </div>
                 </div>
 
                 {/* Tabla de Compra y Escandallos */}
-                <div className="bg-[#1c120c] border border-[#40372e] rounded-2xl overflow-hidden shadow-2xl">
-                  <div className="px-6 py-3.5 border-b border-[#40372e] bg-[#100904] flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#ffedd7] flex items-center gap-2">
-                      <ShoppingCart className="w-4 h-4 text-amber-400" />
+                <div className="bg-white border border-[#18251e]/10 rounded-2xl overflow-hidden shadow-sm">
+                  <div className="px-6 py-3.5 border-b border-[#18251e]/10 bg-[#ebe4d5]/60 flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#18251e] flex items-center gap-2">
+                      <ShoppingCart className="w-4 h-4 text-[#5a341e]" />
                       Hoja de Pedido Técnica & Aprovechamiento
                     </span>
-                    <span className="text-xs text-[#a89988]">
-                      Fórmula: <strong className="text-[#ffedd7]">Bruto = Neto / (1 - Mermas)</strong>
+                    <span className="text-xs text-[#524d45]">
+                      Fórmula: <strong className="text-[#18251e]">Bruto = Neto / (1 - Mermas)</strong>
                     </span>
                   </div>
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-sm">
                       <thead>
-                        <tr className="border-b border-[#40372e] bg-[#100904]/50 text-[#a89988] text-[11px] uppercase tracking-wider font-semibold">
+                        <tr className="border-b border-[#18251e]/10 bg-[#ebe4d5]/40 text-[#18251e]/75 text-[11px] uppercase tracking-wider font-bold">
                           <th className="py-3 px-4">Ingrediente & Recetas</th>
                           <th className="py-3 px-4">Consumo Neto</th>
                           <th className="py-3 px-4">Mermas (Técnica / Subproducto)</th>
@@ -388,32 +388,32 @@ export const EventsView: React.FC = () => {
                           <th className="py-3 px-4">Rendimiento Pieza (Regla del Chef)</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#40372e]/60">
+                      <tbody className="divide-y divide-[#18251e]/8">
                         {shoppingList.items.map(item => {
                           const needsBuy = item.quantityToBuy > 0 || (item.isPurchasedByPiece && (item.piecesToBuy ?? 0) > 0)
 
                           return (
-                            <tr key={item.ingredientId} className={`hover:bg-[#100904]/40 transition-colors ${item.isLowStockAlert ? 'bg-rose-950/10' : ''}`}>
+                            <tr key={item.ingredientId} className={`hover:bg-[#ebe4d5]/25 transition-colors ${item.isLowStockAlert ? 'bg-rose-50/50' : ''}`}>
                               {/* Ingrediente y Platos */}
                               <td className="py-3.5 px-4">
-                                <div className="font-bold text-[#ffedd7] flex items-center gap-2">
+                                <div className="font-bold text-[#18251e] flex items-center gap-2">
                                   {item.ingredientName}
                                   {item.isLowStockAlert && (
-                                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" title={item.lowStockMessage || 'Stock crítico'} />
+                                    <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse" title={item.lowStockMessage || 'Stock crítico'} />
                                   )}
                                 </div>
-                                <div className="text-[11px] text-[#a89988] mt-0.5">
-                                  Proveedor: <strong className="text-[#ffedd7]/80">{item.defaultProvider}</strong>
+                                <div className="text-[11px] text-[#524d45] mt-0.5">
+                                  Proveedor: <strong className="text-[#18251e]">{item.defaultProvider}</strong>
                                 </div>
-                                <div className="text-[10px] text-amber-400/80 mt-1 flex flex-wrap gap-1">
+                                <div className="text-[10px] text-[#5a341e] mt-1 flex flex-wrap gap-1">
                                   {item.usedInDishes.map(d => (
-                                    <span key={d} className="px-1.5 py-0.2 rounded bg-[#100904] border border-[#40372e]">
+                                    <span key={d} className="px-1.5 py-0.5 rounded bg-[#ebe4d5]/60 border border-[#18251e]/10 font-medium">
                                       {d}
                                     </span>
                                   ))}
                                 </div>
                                 {item.isLowStockAlert && item.lowStockMessage && (
-                                  <div className="text-[10px] text-rose-300 mt-1 italic">
+                                  <div className="text-[10px] text-rose-700 mt-1 italic font-medium">
                                     ⚠️ {item.lowStockMessage}
                                   </div>
                                 )}
@@ -421,33 +421,33 @@ export const EventsView: React.FC = () => {
 
                               {/* Consumo Neto */}
                               <td className="py-3.5 px-4 font-mono">
-                                <span className="font-semibold text-[#ffedd7]">
+                                <span className="font-bold text-[#18251e]">
                                   {item.totalNetQuantity} {item.unitOfMeasure}
                                 </span>
-                                <div className="text-[10px] text-[#a89988]">Consumo exacto en plato</div>
+                                <div className="text-[10px] text-[#726e66]">Consumo exacto en plato</div>
                               </td>
 
                               {/* Mermas */}
                               <td className="py-3.5 px-4 text-xs">
-                                <div className="text-rose-400/90 font-medium">
+                                <div className="text-rose-700 font-medium">
                                   🗑 {(item.wastePercentage * 100).toFixed(0)}% basura ({item.estimatedNetTrashQuantity} {item.unitOfMeasure})
                                 </div>
                                 {item.reusableWastePercentage > 0 && (
-                                  <div className="text-emerald-400 font-bold mt-0.5 flex items-center gap-1">
+                                  <div className="text-emerald-800 font-bold mt-0.5 flex items-center gap-1">
                                     ♻️ +{(item.reusableWastePercentage * 100).toFixed(0)}% ({item.estimatedReusableQuantity} {item.unitOfMeasure} para albóndigas)
                                   </div>
                                 )}
-                                <div className="text-[10px] text-[#a89988] mt-1 font-mono">
+                                <div className="text-[10px] text-[#726e66] mt-1 font-mono">
                                   Bruto total requerido: {item.totalGrossQuantityRequired} {item.unitOfMeasure}
                                 </div>
                               </td>
 
                               {/* Stock en Cámara */}
                               <td className="py-3.5 px-4 text-xs font-mono">
-                                <div className={`${item.currentStock <= item.minimumStock ? 'text-rose-400 font-bold' : 'text-[#ffedd7]'}`}>
+                                <div className={`${item.currentStock <= item.minimumStock ? 'text-rose-700 font-bold' : 'text-[#18251e]'}`}>
                                   {item.currentStock} {item.unitOfMeasure}
                                 </div>
-                                <div className="text-[10px] text-[#a89988]">
+                                <div className="text-[10px] text-[#726e66]">
                                   Mín. seguridad: {item.minimumStock} {item.unitOfMeasure}
                                 </div>
                               </td>
@@ -456,22 +456,22 @@ export const EventsView: React.FC = () => {
                               <td className="py-3.5 px-4">
                                 {item.isPurchasedByPiece ? (
                                   <div>
-                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-sm font-bold bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/25">
                                       {item.piecesToBuy} Piezas
                                     </span>
-                                    <div className="text-[10px] text-[#a89988] mt-0.5">
+                                    <div className="text-[10px] text-[#726e66] mt-0.5">
                                       Equiv. a {item.quantityToBuy} {item.unitOfMeasure}
                                     </div>
                                   </div>
                                 ) : needsBuy ? (
                                   <div className="font-mono">
-                                    <span className="text-base font-extrabold text-[#dc5000]">
+                                    <span className="text-base font-extrabold text-[#5a341e]">
                                       {item.quantityToBuy} {item.unitOfMeasure}
                                     </span>
-                                    <div className="text-[10px] text-[#a89988]">Faltante tras stock</div>
+                                    <div className="text-[10px] text-[#726e66]">Faltante tras stock</div>
                                   </div>
                                 ) : (
-                                  <div className="inline-flex items-center gap-1 text-emerald-400 font-semibold text-xs">
+                                  <div className="inline-flex items-center gap-1 text-emerald-800 font-bold text-xs">
                                     <CheckCircle2 className="w-3.5 h-3.5" />
                                     0 {item.unitOfMeasure} (Cubierto en cámara)
                                   </div>
@@ -481,21 +481,21 @@ export const EventsView: React.FC = () => {
                               {/* Rendimiento Pieza (Regla del Chef) */}
                               <td className="py-3.5 px-4 text-xs">
                                 {item.isPurchasedByPiece && item.minPortionsPerPiece ? (
-                                  <div className="p-2 rounded-lg bg-[#100904] border border-amber-500/30 space-y-1">
-                                    <div className="font-bold text-amber-300">
+                                  <div className="p-2.5 rounded-xl bg-[#ebe4d5]/40 border border-[#18251e]/10 space-y-1">
+                                    <div className="font-bold text-[#5a341e]">
                                       {item.minPortionsPerPiece} a {item.maxPortionsPerPiece ?? item.minPortionsPerPiece} rac./pieza
                                     </div>
-                                    <div className="text-[10px] text-[#a89988]">
-                                      Rendimiento: <strong className="text-[#ffedd7]">{item.estimatedMinPortionsYield} a {item.estimatedMaxPortionsYield} raciones</strong>
+                                    <div className="text-[10px] text-[#524d45]">
+                                      Rendimiento: <strong className="text-[#18251e]">{item.estimatedMinPortionsYield} a {item.estimatedMaxPortionsYield} raciones</strong>
                                     </div>
                                     {item.estimatedSurplusPortions !== null && item.estimatedSurplusPortions !== undefined && item.estimatedSurplusPortions > 0 && (
-                                      <div className="text-[10px] text-emerald-400 font-semibold">
+                                      <div className="text-[10px] text-emerald-800 font-bold">
                                         🛡 Colchón seguridad: +{item.estimatedSurplusPortions} raciones extra
                                       </div>
                                     )}
                                   </div>
                                 ) : (
-                                  <span className="text-xs text-[#a89988] italic">A granel ({item.unitOfMeasure})</span>
+                                  <span className="text-xs text-[#726e66] italic">A granel ({item.unitOfMeasure})</span>
                                 )}
                               </td>
                             </tr>

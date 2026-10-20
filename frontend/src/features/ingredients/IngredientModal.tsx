@@ -194,21 +194,21 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
   const totalWaste = numWaste + numReusable
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-2xl bg-[#1c120c] border border-[#40372e] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#18251e]/60 backdrop-blur-sm animate-fade-in">
+      <div className="w-full max-w-2xl bg-[#fdfbf7] border border-[#18251e]/15 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Encabezado */}
-        <div className="px-6 py-4 border-b border-[#40372e] flex items-center justify-between bg-[#100904]">
+        <div className="px-6 py-4 border-b border-[#18251e]/10 flex items-center justify-between bg-[#ebe4d5]/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-[#5a341e]/10 border border-[#5a341e]/20 flex items-center justify-center text-[#5a341e]">
               <Scale className="w-4 h-4" />
             </div>
-            <h2 className="text-lg font-bold font-heading text-[#ffedd7]">
+            <h2 className="text-lg font-bold font-heading text-[#18251e]">
               {ingredient ? 'Editar Ficha de Ingrediente' : 'Nuevo Ingrediente en Despensa'}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="text-[#a89988] hover:text-[#ffedd7] p-1.5 rounded-lg hover:bg-[#40372e]/40 transition-colors"
+            className="text-[#726e66] hover:text-[#18251e] p-1.5 rounded-lg hover:bg-[#18251e]/5 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -217,8 +217,8 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-6 flex-1">
           {error && (
-            <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800/80 text-rose-300 text-xs flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
@@ -226,7 +226,7 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           {/* Nombre y Unidad */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2 space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Nombre del Ingrediente *
               </label>
               <input
@@ -235,17 +235,17 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="Ej: Solomillo de Ternera, Pechuga de pollo..."
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-amber-500 transition-colors"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Unidad Base *
               </label>
               <select
                 value={unitOfMeasure}
                 onChange={e => setUnitOfMeasure(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500 transition-colors"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm transition-colors"
               >
                 <option value="Kg">Kilogramos (Kg)</option>
                 <option value="g">Gramos (g)</option>
@@ -258,22 +258,22 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           </div>
 
           {/* Sección de Mermas Gastronómicas */}
-          <div className="p-4 rounded-xl bg-[#100904] border border-[#40372e] space-y-4">
+          <div className="p-4 rounded-2xl bg-[#ebe4d5]/40 border border-[#18251e]/10 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#5a341e] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 Ingeniería de Mermas & Subproductos
               </span>
-              <span className="text-xs text-[#a89988]">
-                Merma Total: <strong className="text-[#ffedd7]">{totalWaste.toFixed(1)}%</strong>
+              <span className="text-xs text-[#524d45]">
+                Merma Total: <strong className="text-[#18251e]">{totalWaste.toFixed(1)}%</strong>
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs text-[#a89988] flex items-center justify-between">
+                <label className="text-xs text-[#524d45] flex items-center justify-between font-medium">
                   <span>Desperdicio Técnico (%)</span>
-                  <span className="text-[10px] text-rose-400">Basura neta (grasa/piel)</span>
+                  <span className="text-[10px] text-rose-700 font-semibold">Basura neta (grasa/piel)</span>
                 </label>
                 <input
                   type="number"
@@ -283,14 +283,14 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                   placeholder="0"
                   value={wastePercentage}
                   onChange={e => setWastePercentage(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-white border border-[#18251e]/15 rounded-lg text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs text-[#a89988] flex items-center justify-between">
+                <label className="text-xs text-[#524d45] flex items-center justify-between font-medium">
                   <span>Merma Aprovechable (%)</span>
-                  <span className="text-[10px] text-emerald-400">Recortes / Caldos</span>
+                  <span className="text-[10px] text-emerald-800 font-semibold">Recortes / Caldos</span>
                 </label>
                 <input
                   type="number"
@@ -300,12 +300,12 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                   placeholder="0"
                   value={reusableWastePercentage}
                   onChange={e => setReusableWastePercentage(e.target.value)}
-                  className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3 py-2 bg-white border border-[#18251e]/15 rounded-lg text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-emerald-600 shadow-sm"
                 />
               </div>
             </div>
 
-            <p className="text-[11px] text-[#a89988] italic">
+            <p className="text-[11px] text-[#726e66] italic">
               * El desperdicio va a la basura. La merma aprovechable se cuantificará automáticamente para reutilizarse en albóndigas, fondos o guisos.
             </p>
           </div>
@@ -313,7 +313,7 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           {/* Inventario & Stock */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Stock Físico en Cámara ({unitOfMeasure})
               </label>
               <input
@@ -323,12 +323,12 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 placeholder="0"
                 value={currentStock}
                 onChange={e => setCurrentStock(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Stock Mínimo de Seguridad ({unitOfMeasure})
               </label>
               <input
@@ -338,29 +338,29 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 placeholder="0"
                 value={minimumStock}
                 onChange={e => setMinimumStock(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
               />
             </div>
           </div>
 
           {/* Compra por Piezas Enteras (Regla del Chef) */}
-          <div className="p-4 rounded-xl bg-[#100904] border border-[#40372e] space-y-3">
+          <div className="p-4 rounded-2xl bg-[#ebe4d5]/40 border border-[#18251e]/10 space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#ffedd7] flex items-center gap-2 cursor-pointer">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#18251e] flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isPurchasedByPiece}
                   onChange={e => setIsPurchasedByPiece(e.target.checked)}
-                  className="w-4 h-4 rounded text-amber-500 bg-[#1c120c] border-[#40372e] focus:ring-0 focus:outline-none cursor-pointer"
+                  className="w-4 h-4 rounded text-[#5a341e] border-[#18251e]/20 focus:ring-0 focus:outline-none cursor-pointer"
                 />
                 ¿Se adquiere por piezas enteras? (Solomillo, Pescado entero...)
               </label>
             </div>
 
             {isPurchasedByPiece && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-[#40372e]/60 animate-fade-in">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-[#18251e]/10 animate-fade-in">
                 <div className="space-y-1">
-                  <label className="text-xs text-[#a89988]">
+                  <label className="text-xs text-[#524d45] font-medium">
                     Raciones Mínimas Garantizadas / Pieza *
                   </label>
                   <input
@@ -369,13 +369,13 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                     placeholder="Ej: 8 raciones (pesimista)"
                     value={minPortionsPerPiece}
                     onChange={e => setMinPortionsPerPiece(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-white border border-[#18251e]/15 rounded-lg text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
                   />
-                  <span className="text-[10px] text-[#a89988]">Chef Copilot comprará basándose en este mínimo para que nunca falte.</span>
+                  <span className="text-[10px] text-[#726e66]">Chef Copilot comprará basándose en este mínimo para que nunca falte.</span>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs text-[#a89988]">
+                  <label className="text-xs text-[#524d45] font-medium">
                     Raciones Máximas Estimadas / Pieza
                   </label>
                   <input
@@ -384,9 +384,9 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                     placeholder="Ej: 10 raciones (ideal)"
                     value={maxPortionsPerPiece}
                     onChange={e => setMaxPortionsPerPiece(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#1c120c] border border-[#40372e] rounded-lg text-sm text-[#ffedd7] placeholder-[#a89988]/40 focus:outline-none focus:border-amber-500"
+                    className="w-full px-3 py-2 bg-white border border-[#18251e]/15 rounded-lg text-sm text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
                   />
-                  <span className="text-[10px] text-[#a89988]">Permite calcular el colchón de seguridad sobrante.</span>
+                  <span className="text-[10px] text-[#726e66]">Permite calcular el colchón de seguridad sobrante.</span>
                 </div>
               </div>
             )}
@@ -395,7 +395,7 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           {/* Proveedor y Dietas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Proveedor Habitual
               </label>
               <input
@@ -403,30 +403,30 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                 value={defaultProvider}
                 onChange={e => setDefaultProvider(e.target.value)}
                 placeholder="Ej: Cárnicas Sierra, Makro..."
-                className="w-full px-3.5 py-2.5 bg-[#100904] border border-[#40372e] rounded-xl text-sm text-[#ffedd7] focus:outline-none focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm"
               />
             </div>
 
             <div className="space-y-2 pt-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#a89988]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#726e66]">
                 Preferencias Dietéticas
               </label>
               <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 text-xs text-[#ffedd7] cursor-pointer">
+                <label className="flex items-center gap-2 text-xs text-[#18251e] font-medium cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isVegetarian}
                     onChange={e => setIsVegetarian(e.target.checked)}
-                    className="w-4 h-4 rounded text-emerald-500 bg-[#100904] border-[#40372e]"
+                    className="w-4 h-4 rounded text-emerald-600 border-[#18251e]/20"
                   />
                   Vegetariano
                 </label>
-                <label className="flex items-center gap-2 text-xs text-[#ffedd7] cursor-pointer">
+                <label className="flex items-center gap-2 text-xs text-[#18251e] font-medium cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isVegan}
                     onChange={e => setIsVegan(e.target.checked)}
-                    className="w-4 h-4 rounded text-emerald-500 bg-[#100904] border-[#40372e]"
+                    className="w-4 h-4 rounded text-emerald-600 border-[#18251e]/20"
                   />
                   Vegano
                 </label>
@@ -435,12 +435,12 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
           </div>
 
           {/* Alérgenos con Selector Rápido de los 14 Oficiales + Personalizados */}
-          <div className="space-y-3 p-4 rounded-xl bg-[#100904] border border-[#40372e]">
+          <div className="space-y-3 p-4 rounded-2xl bg-[#ebe4d5]/40 border border-[#18251e]/10">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#ffedd7]">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#18251e]">
                 Alérgenos (14 Oficiales UE & Personalizados)
               </label>
-              <span className="text-[11px] text-[#a89988]">
+              <span className="text-[11px] text-[#726e66]">
                 {allergens.length} {allergens.length === 1 ? 'seleccionado' : 'seleccionados'}
               </span>
             </div>
@@ -456,8 +456,8 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                     onClick={() => handleToggleCommonAllergen(allergen)}
                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer select-none ${
                       isSelected
-                        ? 'bg-amber-500 text-slate-950 font-bold shadow-sm shadow-amber-500/30'
-                        : 'bg-[#1c120c] border border-[#40372e] text-[#a89988] hover:text-[#ffedd7] hover:border-[#a89988]/50'
+                        ? 'bg-[#5a341e] text-white font-bold shadow-sm'
+                        : 'bg-white border border-[#18251e]/12 text-[#524d45] hover:text-[#18251e] hover:border-[#5a341e]/40 shadow-sm'
                     }`}
                   >
                     {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
@@ -468,8 +468,8 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
             </div>
 
             {/* Añadir alérgeno personalizado */}
-            <div className="pt-2 border-t border-[#40372e]/60 space-y-2">
-              <span className="text-[11px] text-[#a89988] block">¿Otro alérgeno o intolerancia que no esté en la lista?</span>
+            <div className="pt-2 border-t border-[#18251e]/10 space-y-2">
+              <span className="text-[11px] text-[#726e66] block">¿Otro alérgeno o intolerancia que no esté en la lista?</span>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -477,12 +477,12 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                   onChange={e => setAllergenInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddCustomAllergen())}
                   placeholder="Ej: Fructosa, Histamina, Cilantro..."
-                  className="flex-1 px-3 py-1.5 bg-[#1c120c] border border-[#40372e] rounded-lg text-xs text-[#ffedd7] placeholder-[#a89988]/50 focus:outline-none focus:border-amber-500"
+                  className="flex-1 px-3 py-1.5 bg-white border border-[#18251e]/15 rounded-lg text-xs text-[#18251e] placeholder-[#18251e]/40 focus:outline-none focus:border-[#5a341e] shadow-sm"
                 />
                 <button
                   type="button"
                   onClick={handleAddCustomAllergen}
-                  className="px-3 py-1.5 bg-[#40372e] hover:bg-[#40372e]/80 text-[#ffedd7] rounded-lg text-xs font-semibold cursor-pointer"
+                  className="px-3 py-1.5 bg-[#18241d] hover:bg-[#111a14] text-white rounded-lg text-xs font-bold cursor-pointer transition-colors shadow-sm"
                 >
                   Añadir
                 </button>
@@ -494,13 +494,13 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
                   {allergens.filter(a => !COMMON_ALLERGENS.includes(a)).map(a => (
                     <span
                       key={a}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/20 font-semibold"
                     >
                       {a}
                       <button
                         type="button"
                         onClick={() => handleRemoveAllergen(a)}
-                        className="hover:text-rose-400 font-bold ml-0.5 cursor-pointer"
+                        className="hover:text-rose-600 font-bold ml-0.5 cursor-pointer"
                       >
                         ×
                       </button>
@@ -513,18 +513,18 @@ export const IngredientModal: React.FC<IngredientModalProps> = ({
         </form>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-[#40372e] flex items-center justify-end gap-3 bg-[#100904]">
+        <div className="px-6 py-4 border-t border-[#18251e]/10 flex items-center justify-end gap-3 bg-[#ebe4d5]/60">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-[#a89988] hover:text-[#ffedd7] hover:bg-[#40372e]/30 transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-sm font-bold text-[#524d45] hover:text-[#18251e] hover:bg-[#18251e]/5 transition-colors cursor-pointer"
           >
             Cancelar
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/10 transition-all cursor-pointer disabled:opacity-50"
+            className="px-5 py-2 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white font-bold text-sm shadow-md shadow-[#5a341e]/20 transition-all cursor-pointer disabled:opacity-50 active:scale-95"
           >
             {loading ? 'Guardando...' : ingredient ? 'Actualizar Ingrediente' : 'Guardar en Despensa'}
           </button>
