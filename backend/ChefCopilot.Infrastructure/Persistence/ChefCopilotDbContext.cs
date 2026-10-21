@@ -15,6 +15,7 @@ public class ChefCopilotDbContext : DbContext, IApplicationDbContext
     public DbSet<Dish> Dishes { get; set; } = null!;
     public DbSet<DishIngredient> DishIngredients { get; set; } = null!;
     public DbSet<Event> Events { get; set; } = null!;
+    public DbSet<EventDietaryRequirement> EventDietaryRequirements { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,5 +39,27 @@ public class ChefCopilotDbContext : DbContext, IApplicationDbContext
             .HasMany(e => e.MenuDishes)
             .WithMany()
             .UsingEntity(j => j.ToTable("EventDishes"));
+
+        // Excepciones dietéticas y menús especiales por banquete
+        modelBuilder.Entity<EventDietaryRequirement>(entity =>
+        {
+            entity.HasOne(edr => edr.Event)
+                  .WithMany(e => e.DietaryRequirements)
+                  .HasForeignKey(edr => edr.EventId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(edr => edr.ReplacedDish)
+                  .WithMany()
+                  .HasForeignKey(edr => edr.ReplacedDishId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(edr => edr.SubstituteDish)
+                  .WithMany()
+                  .HasForeignKey(edr => edr.SubstituteDishId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Property(edr => edr.RequirementName).HasMaxLength(150).IsRequired();
+            entity.Property(edr => edr.Notes).HasMaxLength(500);
+        });
     }
 }

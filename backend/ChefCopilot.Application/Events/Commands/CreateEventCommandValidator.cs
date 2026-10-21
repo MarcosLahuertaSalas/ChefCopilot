@@ -15,5 +15,20 @@ public class CreateEventCommandValidator : AbstractValidator<CreateEventCommand>
 
         RuleFor(v => v.DishIds)
             .NotEmpty().WithMessage("El evento debe incluir al menos un plato en su menú.");
+
+        RuleForEach(v => v.DietaryRequirements).ChildRules(req =>
+        {
+            req.RuleFor(r => r.RequirementName)
+                .NotEmpty().WithMessage("El nombre de la condición dietética es obligatorio (ej: Celíaco, Vegano).")
+                .MaximumLength(100).WithMessage("El nombre de la condición no puede superar los 100 caracteres.");
+
+            req.RuleFor(r => r.GuestCount)
+                .GreaterThan(0).WithMessage("El número de comensales para una condición dietética debe ser mayor que cero.");
+        });
+
+        RuleFor(v => v)
+            .Must(v => v.DietaryRequirements.Sum(r => r.GuestCount) <= v.StandardGuests)
+            .WithMessage("El total de comensales con excepciones dietéticas no puede superar el total de comensales del evento.")
+            .When(v => v.DietaryRequirements.Any() && v.StandardGuests > 0);
     }
 }

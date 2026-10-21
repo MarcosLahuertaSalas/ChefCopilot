@@ -15,7 +15,11 @@ import {
   Copy, 
   Printer, 
   CheckCircle2, 
-  RefreshCw
+  RefreshCw,
+  UtensilsCrossed,
+  ShieldAlert,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 
 export const EventsView: React.FC = () => {
@@ -26,6 +30,7 @@ export const EventsView: React.FC = () => {
   const [loadingList, setLoadingList] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | null>(null)
+  const [showPassSheet, setShowPassSheet] = useState(true)
 
   const loadEvents = async (autoSelectId?: string) => {
     setLoadingEvents(true)
@@ -87,13 +92,13 @@ export const EventsView: React.FC = () => {
     if ('id' in data) {
       await eventsApi.update(data.id, data as UpdateEventRequest)
       gooeyToast.success('Banquete actualizado', {
-        description: `Menú y comensales recalculados para "${data.name}".`,
+        description: `Menú, excepciones dietéticas y comensales recalculados para "${data.name}".`,
       })
       await loadEvents(data.id)
     } else {
       const createdId = await eventsApi.create(data as CreateEventRequest)
       gooeyToast.success('Banquete programado', {
-        description: `Escandallo generado para ${data.standardGuests} comensales.`,
+        description: `Escandallo generado para ${data.standardGuests} comensales con sus excepciones.`,
       })
       await loadEvents(createdId)
     }
@@ -117,10 +122,36 @@ export const EventsView: React.FC = () => {
   const handleCopyOrder = () => {
     if (!shoppingList) return
 
-    let text = `📋 PEDIDO DE COMPRA - ${shoppingList.eventName}\n`
-    text += `📅 Fecha: ${new Date(shoppingList.eventDate).toLocaleDateString()} | Comensales: ${shoppingList.guests}\n`
+    let text = `📋 PEDIDO DE COMPRA & PASE DE COCINA - ${shoppingList.eventName}\n`
+    text += `📅 Fecha: ${new Date(shoppingList.eventDate).toLocaleDateString('es-ES')} | Comensales: ${shoppingList.guests} (${shoppingList.standardGuests} estándar + ${shoppingList.dietaryGuests} especiales)\n`
     text += `--------------------------------------------------\n`
 
+    if (shoppingList.dietaryRequirements && shoppingList.dietaryRequirements.length > 0) {
+      text += `\n🌾 MENÚS ESPECIALES & ALERGIAS:\n`
+      shoppingList.dietaryRequirements.forEach(req => {
+        text += `• ${req.requirementName}: ${req.guestCount} pax`
+        if (req.substituteDishName) {
+          text += ` -> Preparar: ${req.substituteDishName}`
+        }
+        if (req.notes) {
+          text += ` (${req.notes})`
+        }
+        text += `\n`
+      })
+    }
+
+    if (shoppingList.dishBreakdown && shoppingList.dishBreakdown.length > 0) {
+      text += `\n🍽 FICHA DE PASE DE COCINA (RACIONES EXACTAS):\n`
+      shoppingList.dishBreakdown.forEach(d => {
+        text += `• ${d.dishName}: ${d.totalPortionsToCook} raciones (${d.category})`
+        if (!d.isMenuDish) {
+          text += ` [PLATO ESPECIAL SUSTITUTO]`
+        }
+        text += `\n`
+      })
+    }
+
+    text += `\n🛒 PEDIDO A PROVEEDORES:\n`
     shoppingList.items.forEach(item => {
       if (item.isPurchasedByPiece && item.piecesToBuy) {
         text += `• ${item.ingredientName}: PEDIR ${item.piecesToBuy} PIEZAS (Mínimo garantizado: ${item.minPortionsPerPiece} rac./pieza) - Prov: ${item.defaultProvider}\n`
@@ -135,7 +166,7 @@ export const EventsView: React.FC = () => {
     }
 
     navigator.clipboard.writeText(text)
-    gooeyToast.success('Lista de compra copiada', {
+    gooeyToast.success('Lista de compra y pase copiada', {
       description: 'El resumen formateado está en tu portapapeles listo para enviar por WhatsApp o email.',
     })
   }
@@ -154,7 +185,7 @@ export const EventsView: React.FC = () => {
             Banquetes & Escandallo de Compras
           </h1>
           <p className="text-sm text-[#524d45] mt-1">
-            Motor de cálculo para bodas, catering y eventos. Consolida ingredientes, descuenta stock de cámara y optimiza compras por piezas.
+            Motor de cálculo para bodas, catering y eventos. Consolida ingredientes, descuenta stock de cámara y gestiona excepciones dietéticas en vivo.
           </p>
         </div>
 
@@ -187,7 +218,7 @@ export const EventsView: React.FC = () => {
           <Calendar className="w-10 h-10 text-[#726e66]/40" />
           <p className="text-sm font-semibold text-[#18251e]">No hay banquetes programados</p>
           <p className="text-xs text-[#726e66] max-w-sm">
-            Crea tu primer banquete con comensales y platos del menú para ver la lista de compra consolidada.
+            Crea tu primer banquete con comensales, platos y menús especiales para ver la lista de compra consolidada.
           </p>
           <button
             onClick={handleOpenCreate}
@@ -212,6 +243,7 @@ export const EventsView: React.FC = () => {
                   month: 'short',
                   year: 'numeric'
                 })
+                const specialDiners = evt.dietaryRequirements?.reduce((sum, r) => sum + r.guestCount, 0) || 0
 
                 return (
                   <div
@@ -231,12 +263,14 @@ export const EventsView: React.FC = () => {
                         <button
                           onClick={() => handleOpenEdit(evt)}
                           className="p-1 rounded text-[#726e66] hover:text-[#5a341e] hover:bg-[#18251e]/5 transition-colors cursor-pointer"
+                          title="Editar evento y excepciones"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(evt.id, evt.name)}
                           className="p-1 rounded text-[#726e66] hover:text-rose-700 hover:bg-rose-50 transition-colors cursor-pointer"
+                          title="Eliminar evento"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -250,6 +284,14 @@ export const EventsView: React.FC = () => {
                         {evt.standardGuests} pax
                       </span>
                     </div>
+
+                    {/* Badge de excepciones si existen */}
+                    {specialDiners > 0 && (
+                      <div className="flex items-center gap-1 text-[10px] text-[#5a341e] font-semibold bg-[#ebe4d5]/80 px-2 py-0.5 rounded-md border border-[#5a341e]/15">
+                        <ShieldAlert className="w-2.5 h-2.5 shrink-0" />
+                        <span>{specialDiners} pax con menú especial</span>
+                      </div>
+                    )}
 
                     <div className="text-[11px] text-[#726e66] truncate pt-1 border-t border-[#18251e]/8">
                       {evt.menuDishes.length} {evt.menuDishes.length === 1 ? 'plato' : 'platos'}: {evt.menuDishes.map(d => d.name).join(', ')}
@@ -265,7 +307,7 @@ export const EventsView: React.FC = () => {
             {loadingList ? (
               <div className="p-16 text-center text-[#524d45] flex flex-col items-center justify-center gap-3 bg-white border border-[#18251e]/10 rounded-2xl shadow-sm">
                 <RefreshCw className="w-7 h-7 animate-spin text-[#5a341e]" />
-                <p className="text-sm font-medium">Calculando escandallos, deducciones de stock y mermas...</p>
+                <p className="text-sm font-medium">Calculando escandallos, deducciones de stock y raciones de menús especiales...</p>
               </div>
             ) : !shoppingList ? (
               <div className="p-16 text-center text-[#524d45] bg-white border border-[#18251e]/10 rounded-2xl shadow-sm">
@@ -293,7 +335,7 @@ export const EventsView: React.FC = () => {
                       {shoppingList.eventName}
                     </h2>
                     <p className="text-xs text-[#524d45] mt-1">
-                      {shoppingList.guests} comensales • {shoppingList.totalDishes} platos en menú • {shoppingList.items.length} ingredientes consolidados
+                      <strong>{shoppingList.guests} comensales totales</strong> ({shoppingList.standardGuests} menú estándar + {shoppingList.dietaryGuests} dietas especiales) • {shoppingList.totalDishes} platos en menú • {shoppingList.items.length} ingredientes consolidados
                     </p>
                   </div>
 
@@ -303,7 +345,7 @@ export const EventsView: React.FC = () => {
                       className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#ebe4d5]/50 text-[#18251e] border border-[#18251e]/15 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
                     >
                       <Copy className="w-3.5 h-3.5 text-[#5a341e]" />
-                      Copiar Pedido
+                      Copiar Pedido & Pase
                     </button>
                     <button
                       onClick={handlePrint}
@@ -314,6 +356,54 @@ export const EventsView: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Banner de Excepciones Dietéticas si existen */}
+                {shoppingList.dietaryRequirements && shoppingList.dietaryRequirements.length > 0 && (
+                  <div className="p-4 rounded-2xl bg-[#ebe4d5]/60 border border-[#18251e]/15 shadow-sm space-y-2.5 animate-fade-in">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#18251e] flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4 text-[#5a341e]" />
+                        Excepciones Dietéticas & Alergias ({shoppingList.dietaryGuests} comensales especiales)
+                      </span>
+                      <span className="text-[11px] text-[#726e66]">
+                        {shoppingList.dietaryRequirements.length} {shoppingList.dietaryRequirements.length === 1 ? 'condición registrada' : 'condiciones registradas'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                      {shoppingList.dietaryRequirements.map((req, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3 rounded-xl bg-white border border-[#18251e]/10 shadow-xs flex flex-col gap-1"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-xs text-[#18251e] truncate">
+                              {req.requirementName}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-[#5a341e]/10 text-[#5a341e] font-mono font-bold text-xs">
+                              {req.guestCount} pax
+                            </span>
+                          </div>
+                          {req.replacedDishName && (
+                            <div className="text-[11px] text-rose-700">
+                              ⛔ NO toman: <strong>{req.replacedDishName}</strong>
+                            </div>
+                          )}
+                          {req.substituteDishName && (
+                            <div className="text-[11px] text-emerald-800 font-medium">
+                              🍽 Sustituto: <strong>{req.substituteDishName}</strong>
+                            </div>
+                          )}
+                          {req.notes && (
+                            <div className="text-[10px] text-[#726e66] italic mt-0.5 border-t border-[#18251e]/8 pt-1">
+                              💬 {req.notes}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Banner de Alertas si hay ingredientes con stock bajo */}
                 {shoppingList.totalStockAlerts > 0 && (
@@ -337,7 +427,9 @@ export const EventsView: React.FC = () => {
                     <span className="text-2xl font-bold font-heading text-[#18251e] mt-1 block">
                       {shoppingList.guests} pax
                     </span>
-                    <span className="text-[11px] text-[#726e66] mt-1 block">1 ración por comensal</span>
+                    <span className="text-[11px] text-[#726e66] mt-1 block">
+                      {shoppingList.standardGuests} estándar • {shoppingList.dietaryGuests} especiales
+                    </span>
                   </div>
 
                   <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 shadow-sm">
@@ -363,6 +455,89 @@ export const EventsView: React.FC = () => {
                     <span className="text-[11px] text-[#726e66] mt-1 block">Con necesidad de compra</span>
                   </div>
                 </div>
+
+                {/* NUEVA SECCIÓN: Ficha de Pase de Partida & Producción de Cocina */}
+                {shoppingList.dishBreakdown && shoppingList.dishBreakdown.length > 0 && (
+                  <div className="bg-white border border-[#18251e]/10 rounded-2xl overflow-hidden shadow-sm">
+                    <div 
+                      onClick={() => setShowPassSheet(!showPassSheet)}
+                      className="px-6 py-3.5 border-b border-[#18251e]/10 bg-[#ebe4d5]/60 flex items-center justify-between cursor-pointer select-none"
+                    >
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#18251e] flex items-center gap-2">
+                        <UtensilsCrossed className="w-4 h-4 text-[#5a341e]" />
+                        Ficha de Pase de Partida & Raciones a Emplatar ({shoppingList.dishBreakdown.length} recetas)
+                      </span>
+                      <div className="flex items-center gap-2 text-xs text-[#524d45]">
+                        <span>{showPassSheet ? 'Ocultar' : 'Mostrar'}</span>
+                        {showPassSheet ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </div>
+                    </div>
+
+                    {showPassSheet && (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-sm">
+                          <thead>
+                            <tr className="border-b border-[#18251e]/10 bg-[#ebe4d5]/30 text-[#18251e]/75 text-[11px] uppercase tracking-wider font-bold">
+                              <th className="py-3 px-4">Plato & Categoría</th>
+                              <th className="py-3 px-4">Tipo</th>
+                              <th className="py-3 px-4">Raciones a Cocinar</th>
+                              <th className="py-3 px-4">Ajustes & Excepciones Dietéticas</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#18251e]/8">
+                            {shoppingList.dishBreakdown.map(dish => (
+                              <tr key={dish.dishId} className="hover:bg-[#ebe4d5]/20 transition-colors">
+                                <td className="py-3 px-4">
+                                  <div className="font-bold text-[#18251e]">{dish.dishName}</div>
+                                  <div className="text-[11px] text-[#726e66]">{dish.category}</div>
+                                </td>
+                                <td className="py-3 px-4">
+                                  {dish.isMenuDish ? (
+                                    <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#18251e]/8 text-[#18251e]">
+                                      Menú Principal
+                                    </span>
+                                  ) : (
+                                    <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/20">
+                                      Sustituto Especial
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-3 px-4">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-base font-extrabold font-mono text-[#5a341e]">
+                                      {dish.totalPortionsToCook} rac.
+                                    </span>
+                                    {dish.isMenuDish && dish.substitutedOutPortions > 0 && (
+                                      <span className="text-[11px] text-[#726e66] font-mono">
+                                        ({dish.standardPortions} base - {dish.substitutedOutPortions} sustituidas)
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="py-3 px-4 text-xs">
+                                  {dish.specialRequirementNotes.length > 0 ? (
+                                    <div className="space-y-1">
+                                      {dish.specialRequirementNotes.map((note, idx) => (
+                                        <div key={idx} className="flex items-center gap-1.5 text-[#524d45]">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-[#5a341e]" />
+                                          <span>{note}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <span className="text-[#726e66] text-xs italic">
+                                      Sin modificaciones (100% de comensales estándar)
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Tabla de Compra y Escandallos */}
                 <div className="bg-white border border-[#18251e]/10 rounded-2xl overflow-hidden shadow-sm">

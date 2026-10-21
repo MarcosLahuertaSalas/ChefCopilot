@@ -123,21 +123,34 @@
 - **Autenticación en Frontend**: `frontend/src/features/auth/AuthModal.tsx` conectado a .NET 9 + MySQL.
 
 
+### Módulo de Excepciones Dietéticas & Menús Especiales por Banquete (Completo) ✅
+- `EventDietaryRequirement`: `RequirementName` (Celíaco, Vegano, Alergia), `GuestCount`, `ReplacedDishId` (plato omitido del menú), `SubstituteDishId` (plato alternativo a preparar) y `Notes` específicas de pase/sala.
+- **Relaciones EF Core 9 & Migración MySQL**:
+  - `20261021192039_AddEventDietaryRequirements` aplicada en MySQL (`EventDietaryRequirements` con Cascade delete sobre Event y SetNull sobre Dish).
+- **Lógica de Escandallado Dinámico de Partida**:
+  - `GetEventShoppingListQuery`: desglosa comensales totales en estándar y especiales.
+  - Descuenta comensales de los platos reemplazados: $\text{Raciones Plato Estándar} = \max(0, \text{Comensales Base} - \text{Comensales Reemplazados})$.
+  - Suma raciones de platos sustitutos: $\text{Raciones Plato Sustituto} = \text{Comensales Especiales}$.
+  - Resuelve platos sustitutos aunque no formen parte del menú general del evento y consolida sus ingredientes con mermas técnicas, subproducto reutilizable y compras por piezas enteras.
+- **Ficha de Pase de Partida (Kitchen Brigade Pass Sheet)**:
+  - Nueva tabla interactiva desplegable en frontend con raciones exactas a cocinar por plato, notas de cocina y advertencias de sustitución.
+- **Modal de Gestión Reactivo (`EventModal.tsx`)**:
+  - Presets de 1 clic: *🌾 Celíaco / Sin Gluten*, *🌿 Vegano*, *🥛 Sin Lactosa*, *🥜 Alergia Frutos Secos*, *🦐 Alergia Mariscos*.
+  - Balanza de comensales en vivo con distribución: *X estándar + Y especiales = Total pax*.
+  - Selectores inteligentes: platos del menú para omitir y recetario completo para sustituir.
+- **Exportación a Sala / WhatsApp**:
+  - Botón "Copiar Pedido & Pase" formatea el desglose de comensales especiales, ficha de pase de cocina y pedido a proveedores listo para enviar.
+
 ---
 
 ## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Prioritario) 🎯
 
-1. **Gestión de Excepciones Dietéticas & Menús Especiales por Banquete** *(Valor Clave de Negocio)*:
-   - Desglose de los $N$ comensales en el banquete (ej: *80 total: 72 menú estándar, 5 celíacos, 3 veganos*).
-   - Asignación de platos sustitutos / alternativos por comensal especial.
-   - Recálculo inteligente del escandallo y la lista de compra en vivo considerando exclusiones y reemplazos de ingredientes.
-
-2. **Cierre de Evento & Registro de Mermas Reales (Post-Mortem Culinario)**:
+1. **Cierre de Evento & Registro de Mermas Reales (Post-Mortem Culinario)**:
    - Marcar eventos como "Finalizado/Ejecutado" tras el banquete.
    - Formulario de auditoría post-servicio: registrar kilos reales de merma bruta descartada y subproducto limpio rescatado (ej: "Se obtuvieron 3.8 Kg de carne para croquetas/fondos").
    - Comparativa Previsión vs. Realidad con desviación porcentual y alimentación del coeficiente histórico de merma técnica de la despensa.
 
-3. **Ciclo Completo de Autenticación, JWT & Sesión Multi-restaurante en Frontend**:
+2. **Ciclo Completo de Autenticación, JWT & Sesión Multi-restaurante en Frontend**:
    - Backend ya listo con PBKDF2 SHA-256 (`AuthController.cs`, `User`, MySQL).
    - Generación de token JWT en el backend y persistencia en React.
    - Protección de vistas y aislamiento de datos por `RestaurantId`.

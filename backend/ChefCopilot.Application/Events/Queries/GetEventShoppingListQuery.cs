@@ -1,8 +1,22 @@
 using ChefCopilot.Application.Common.Interfaces;
+using ChefCopilot.Application.Events.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChefCopilot.Application.Events.Queries;
+
+public class DishPortionBreakdownDto
+{
+    public Guid DishId { get; set; }
+    public string DishName { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+    public bool IsMenuDish { get; set; }
+    public int StandardPortions { get; set; }
+    public int SubstitutedOutPortions { get; set; }
+    public int SpecialPortions { get; set; }
+    public int TotalPortionsToCook { get; set; }
+    public List<string> SpecialRequirementNotes { get; set; } = new();
+}
 
 public class EventShoppingListDto
 {
@@ -10,9 +24,13 @@ public class EventShoppingListDto
     public string EventName { get; set; } = string.Empty;
     public DateTime EventDate { get; set; }
     public int Guests { get; set; }
+    public int StandardGuests { get; set; }
+    public int DietaryGuests { get; set; }
     public int TotalDishes { get; set; }
     public int TotalStockAlerts { get; set; }
     public decimal TotalEstimatedReusableTrimmings { get; set; }
+    public List<EventDietaryRequirementDto> DietaryRequirements { get; set; } = new();
+    public List<DishPortionBreakdownDto> DishBreakdown { get; set; } = new();
     public List<ShoppingListItemDto> Items { get; set; } = new();
 }
 
@@ -94,11 +112,17 @@ public class GetEventShoppingListQueryHandler : IRequestHandler<GetEventShopping
 
     public async Task<EventShoppingListDto?> Handle(GetEventShoppingListQuery request, CancellationToken cancellationToken)
     {
-        // 1. Cargamos el evento con todos sus platos, las recetas de cada plato y sus ingredientes
+        // 1. Cargamos el evento con su menú, recetas e ingredientes, más los requerimientos dietéticos y sus platos sustitutos
         var @event = await _context.Events
             .Include(e => e.MenuDishes)
                 .ThenInclude(d => d.Ingredients)
                     .ThenInclude(di => di.Ingredient)
+            .Include(e => e.DietaryRequirements)
+                .ThenInclude(dr => dr.ReplacedDish)
+            .Include(e => e.DietaryRequirements)
+                .ThenInclude(dr => dr.SubstituteDish)
+                    .ThenInclude(sd => sd!.Ingredients)
+                        .ThenInclude(sdi => sdi.Ingredient)
             .AsNoTracking()
             .FirstOrDefaultAsync(e => e.Id == request.EventId, cancellationToken);
 
@@ -107,16 +131,99 @@ public class GetEventShoppingListQueryHandler : IRequestHandler<GetEventShopping
             return null;
         }
 
+        var dietaryGuests = @event.DietaryRequirements.Sum(dr => dr.GuestCount);
+        var standardGuests = Math.Max(0, @event.StandardGuests - dietaryGuests);
+
         var shoppingList = new EventShoppingListDto
         {
             EventId = @event.Id,
             EventName = @event.Name,
             EventDate = @event.EventDate,
             Guests = @event.StandardGuests,
-            TotalDishes = @event.MenuDishes.Count
+            StandardGuests = standardGuests,
+            DietaryGuests = dietaryGuests,
+            TotalDishes = @event.MenuDishes.Count,
+            DietaryRequirements = @event.DietaryRequirements.Select(dr => new EventDietaryRequirementDto
+            {
+                Id = dr.Id,
+                RequirementName = dr.RequirementName,
+                GuestCount = dr.GuestCount,
+                ReplacedDishId = dr.ReplacedDishId,
+                ReplacedDishName = dr.ReplacedDish?.Name,
+                SubstituteDishId = dr.SubstituteDishId,
+                SubstituteDishName = dr.SubstituteDish?.Name,
+                Notes = dr.Notes
+            }).ToList()
         };
 
-        // 2. Diccionario temporal para consolidar ingredientes repetidos entre distintos platos
+        // 2. Reunimos todos los platos involucrados (menú estándar + platos sustitutos especiales)
+        var allDishesMap = new Dictionary<Guid, (Domain.Entities.Dish Dish, bool IsMenuDish)>();
+        foreach (var dish in @event.MenuDishes)
+        {
+            allDishesMap[dish.Id] = (dish, true);
+        }
+
+        foreach (var dr in @event.DietaryRequirements)
+        {
+            if (dr.SubstituteDish != null && !allDishesMap.ContainsKey(dr.SubstituteDish.Id))
+            {
+                allDishesMap[dr.SubstituteDish.Id] = (dr.SubstituteDish, false);
+            }
+        }
+
+        // 3. Calculamos la Ficha de Pase de Partida (DishPortionBreakdown) para cada plato
+        var dishPortionsToCook = new Dictionary<Guid, int>();
+
+        foreach (var kvp in allDishesMap)
+        {
+            var dish = kvp.Value.Dish;
+            var isMenuDish = kvp.Value.IsMenuDish;
+
+            int stdPortions = isMenuDish ? @event.StandardGuests : 0;
+            int replacedPortions = isMenuDish
+                ? @event.DietaryRequirements.Where(dr => dr.ReplacedDishId == dish.Id).Sum(dr => dr.GuestCount)
+                : 0;
+
+            int specialPortions = @event.DietaryRequirements
+                .Where(dr => dr.SubstituteDishId == dish.Id)
+                .Sum(dr => dr.GuestCount);
+
+            int totalPortions = Math.Max(0, stdPortions - replacedPortions) + specialPortions;
+            dishPortionsToCook[dish.Id] = totalPortions;
+
+            var notes = new List<string>();
+            foreach (var dr in @event.DietaryRequirements.Where(dr => dr.ReplacedDishId == dish.Id))
+            {
+                notes.Add($"Reemplazado por {dr.GuestCount} pax ({dr.RequirementName})");
+            }
+            foreach (var dr in @event.DietaryRequirements.Where(dr => dr.SubstituteDishId == dish.Id))
+            {
+                var extra = string.IsNullOrWhiteSpace(dr.Notes) ? "" : $" ({dr.Notes})";
+                notes.Add($"Menú especial para {dr.GuestCount} pax ({dr.RequirementName}){extra}");
+            }
+
+            shoppingList.DishBreakdown.Add(new DishPortionBreakdownDto
+            {
+                DishId = dish.Id,
+                DishName = dish.Name,
+                Category = dish.Category,
+                IsMenuDish = isMenuDish,
+                StandardPortions = stdPortions,
+                SubstitutedOutPortions = replacedPortions,
+                SpecialPortions = specialPortions,
+                TotalPortionsToCook = totalPortions,
+                SpecialRequirementNotes = notes
+            });
+        }
+
+        // Ordenamos el desglose de platos: primero platos de menú, luego sustitutos especiales
+        shoppingList.DishBreakdown = shoppingList.DishBreakdown
+            .OrderByDescending(d => d.IsMenuDish)
+            .ThenBy(d => d.Category)
+            .ThenBy(d => d.DishName)
+            .ToList();
+
+        // 4. Consolidamos ingredientes considerando las porciones reales a cocinar
         var ingredientAggregates = new Dictionary<Guid, (
             Domain.Entities.Ingredient Ingredient,
             decimal TotalNetQuantity,
@@ -124,28 +231,31 @@ public class GetEventShoppingListQueryHandler : IRequestHandler<GetEventShopping
             HashSet<string> Dishes
         )>();
 
-        foreach (var dish in @event.MenuDishes)
+        foreach (var kvp in allDishesMap)
         {
+            var dish = kvp.Value.Dish;
+            int portions = dishPortionsToCook[dish.Id];
+            if (portions <= 0) continue;
+
             foreach (var dishIngredient in dish.Ingredients)
             {
                 var ingredient = dishIngredient.Ingredient;
                 if (ingredient == null) continue;
 
-                // Cantidad neta requerida para este plato = porción por persona * número de comensales
-                var dishNetQuantity = dishIngredient.Quantity * @event.StandardGuests;
-                var dishPortions = @event.StandardGuests;
+                var dishNetQuantity = dishIngredient.Quantity * portions;
+                var dishLabel = $"{dish.Name} ({portions} rac.)";
 
                 if (ingredientAggregates.TryGetValue(ingredient.Id, out var existing))
                 {
                     existing.TotalNetQuantity += dishNetQuantity;
-                    existing.TotalPortionsCount += dishPortions;
-                    existing.Dishes.Add(dish.Name);
+                    existing.TotalPortionsCount += portions;
+                    existing.Dishes.Add(dishLabel);
                     ingredientAggregates[ingredient.Id] = existing;
                 }
                 else
                 {
-                    var dishesSet = new HashSet<string> { dish.Name };
-                    ingredientAggregates[ingredient.Id] = (ingredient, dishNetQuantity, dishPortions, dishesSet);
+                    var dishesSet = new HashSet<string> { dishLabel };
+                    ingredientAggregates[ingredient.Id] = (ingredient, dishNetQuantity, portions, dishesSet);
                 }
             }
         }
@@ -153,7 +263,7 @@ public class GetEventShoppingListQueryHandler : IRequestHandler<GetEventShopping
         decimal totalReusableTrimmings = 0;
         int totalAlerts = 0;
 
-        // 3. Calculamos mermas, stock disponible y rendimiento por piezas enteras
+        // 5. Calculamos mermas, stock disponible y rendimiento por piezas enteras
         foreach (var kvp in ingredientAggregates)
         {
             var ingredient = kvp.Value.Ingredient;

@@ -11,6 +11,7 @@ public class UpdateEventCommand : IRequest
     public DateTime EventDate { get; set; }
     public int StandardGuests { get; set; }
     public List<Guid> DishIds { get; set; } = new();
+    public List<Common.CreateEventDietaryRequirementDto> DietaryRequirements { get; set; } = new();
 }
 
 public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand>
@@ -26,6 +27,7 @@ public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand>
     {
         var entity = await _context.Events
             .Include(e => e.MenuDishes)
+            .Include(e => e.DietaryRequirements)
             .FirstOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
 
         if (entity == null)
@@ -37,7 +39,7 @@ public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand>
         entity.EventDate = request.EventDate;
         entity.StandardGuests = request.StandardGuests;
 
-        // Actualizamos los platos asignados al menú
+        // 1. Actualizamos los platos asignados al menú
         var dishes = await _context.Dishes
             .Where(d => request.DishIds.Contains(d.Id))
             .ToListAsync(cancellationToken);
@@ -46,6 +48,24 @@ public class UpdateEventCommandHandler : IRequestHandler<UpdateEventCommand>
         foreach (var dish in dishes)
         {
             entity.MenuDishes.Add(dish);
+        }
+
+        // 2. Actualizamos las excepciones dietéticas de forma segura en EF Core
+        _context.EventDietaryRequirements.RemoveRange(entity.DietaryRequirements);
+
+        foreach (var dr in request.DietaryRequirements)
+        {
+            var reqEntity = new Domain.Entities.EventDietaryRequirement
+            {
+                Id = Guid.NewGuid(),
+                EventId = entity.Id,
+                RequirementName = dr.RequirementName.Trim(),
+                GuestCount = dr.GuestCount,
+                ReplacedDishId = dr.ReplacedDishId,
+                SubstituteDishId = dr.SubstituteDishId,
+                Notes = dr.Notes?.Trim()
+            };
+            _context.EventDietaryRequirements.Add(reqEntity);
         }
 
         await _context.SaveChangesAsync(cancellationToken);

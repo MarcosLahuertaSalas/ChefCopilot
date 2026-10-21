@@ -4,12 +4,44 @@ export interface EventDish {
   category: string
 }
 
+export interface EventDietaryRequirement {
+  id: string
+  requirementName: string
+  guestCount: number
+  replacedDishId?: string | null
+  replacedDishName?: string | null
+  substituteDishId?: string | null
+  substituteDishName?: string | null
+  notes?: string | null
+}
+
+export interface CreateEventDietaryRequirementRequest {
+  requirementName: string
+  guestCount: number
+  replacedDishId?: string | null
+  substituteDishId?: string | null
+  notes?: string | null
+}
+
+export interface DishPortionBreakdown {
+  dishId: string
+  dishName: string
+  category: string
+  isMenuDish: boolean
+  standardPortions: number
+  substitutedOutPortions: number
+  specialPortions: number
+  totalPortionsToCook: number
+  specialRequirementNotes: string[]
+}
+
 export interface Event {
   id: string
   name: string
   eventDate: string
   standardGuests: number
   menuDishes: EventDish[]
+  dietaryRequirements?: EventDietaryRequirement[]
 }
 
 export interface CreateEventRequest {
@@ -17,6 +49,7 @@ export interface CreateEventRequest {
   eventDate: string
   standardGuests: number
   dishIds: string[]
+  dietaryRequirements?: CreateEventDietaryRequirementRequest[]
 }
 
 export interface UpdateEventRequest {
@@ -25,6 +58,7 @@ export interface UpdateEventRequest {
   eventDate: string
   standardGuests: number
   dishIds: string[]
+  dietaryRequirements?: CreateEventDietaryRequirementRequest[]
 }
 
 export interface ShoppingListItem {
@@ -64,8 +98,12 @@ export interface EventShoppingList {
   eventName: string
   eventDate: string
   guests: number
+  standardGuests: number
+  dietaryGuests: number
   totalDishes: number
   totalStockAlerts: number
   totalEstimatedReusableTrimmings: number
+  dietaryRequirements: EventDietaryRequirement[]
+  dishBreakdown: DishPortionBreakdown[]
   items: ShoppingListItem[]
 }

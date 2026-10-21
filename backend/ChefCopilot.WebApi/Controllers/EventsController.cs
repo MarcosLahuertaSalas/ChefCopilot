@@ -1,4 +1,5 @@
 using ChefCopilot.Application.Events.Commands;
+using ChefCopilot.Application.Events.Common;
 using ChefCopilot.Application.Events.Queries;
 using Microsoft.AspNetCore.Mvc;
 

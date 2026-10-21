@@ -17,7 +17,6 @@ public class Event
     // (En base de datos esto generará una tabla intermedia EventDish automáticamente)
     public List<Dish> MenuDishes { get; set; } = new();
     
-    // Aquí más adelante podremos meter las excepciones:
-    // Ej: 3 invitados Veganos, 2 Sin Gluten, 1 que no puede comer Pollo.
-    // public List<EventDietaryRequirement> SpecialRequirements { get; set; } = new();
+    // Excepciones dietéticas y menús especiales (celíacos, veganos, etc.)
+    public List<EventDietaryRequirement> DietaryRequirements { get; set; } = new();
 }

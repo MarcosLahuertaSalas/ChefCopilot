@@ -90,6 +90,44 @@ namespace ChefCopilot.Infrastructure.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("ChefCopilot.Domain.Entities.EventDietaryRequirement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("GuestCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<Guid?>("ReplacedDishId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("RequirementName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<Guid?>("SubstituteDishId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("ReplacedDishId");
+
+                    b.HasIndex("SubstituteDishId");
+
+                    b.ToTable("EventDietaryRequirements");
+                });
+
             modelBuilder.Entity("ChefCopilot.Domain.Entities.Ingredient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -219,6 +257,31 @@ namespace ChefCopilot.Infrastructure.Migrations
                     b.Navigation("Ingredient");
                 });
 
+            modelBuilder.Entity("ChefCopilot.Domain.Entities.EventDietaryRequirement", b =>
+                {
+                    b.HasOne("ChefCopilot.Domain.Entities.Event", "Event")
+                        .WithMany("DietaryRequirements")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChefCopilot.Domain.Entities.Dish", "ReplacedDish")
+                        .WithMany()
+                        .HasForeignKey("ReplacedDishId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ChefCopilot.Domain.Entities.Dish", "SubstituteDish")
+                        .WithMany()
+                        .HasForeignKey("SubstituteDishId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Event");
+
+                    b.Navigation("ReplacedDish");
+
+                    b.Navigation("SubstituteDish");
+                });
+
             modelBuilder.Entity("DishEvent", b =>
                 {
                     b.HasOne("ChefCopilot.Domain.Entities.Event", null)
@@ -237,6 +300,11 @@ namespace ChefCopilot.Infrastructure.Migrations
             modelBuilder.Entity("ChefCopilot.Domain.Entities.Dish", b =>
                 {
                     b.Navigation("Ingredients");
+                });
+
+            modelBuilder.Entity("ChefCopilot.Domain.Entities.Event", b =>
+                {
+                    b.Navigation("DietaryRequirements");
                 });
 #pragma warning restore 612, 618
         }

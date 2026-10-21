@@ -12,6 +12,7 @@ public interface IApplicationDbContext
     DbSet<Dish> Dishes { get; }
     DbSet<DishIngredient> DishIngredients { get; }
     DbSet<Event> Events { get; }
+    DbSet<EventDietaryRequirement> EventDietaryRequirements { get; }
     DbSet<User> Users { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

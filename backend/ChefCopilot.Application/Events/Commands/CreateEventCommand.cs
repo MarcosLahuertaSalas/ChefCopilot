@@ -18,6 +18,9 @@ public class CreateEventCommand : IRequest<Guid>
 
     // IDs de los platos que componen el menú de este banquete
     public List<Guid> DishIds { get; set; } = new();
+
+    // Excepciones dietéticas y menús especiales (celíacos, veganos, etc.)
+    public List<Common.CreateEventDietaryRequirementDto> DietaryRequirements { get; set; } = new();
 }
 
 public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Guid>
@@ -40,19 +43,31 @@ public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, Gui
                 .ToListAsync(cancellationToken);
         }
 
-        // 2. Creamos el nuevo evento con su menú asignado
+        // 2. Mapeamos las excepciones dietéticas
+        var dietaryRequirements = request.DietaryRequirements.Select(dr => new EventDietaryRequirement
+        {
+            Id = Guid.NewGuid(),
+            RequirementName = dr.RequirementName.Trim(),
+            GuestCount = dr.GuestCount,
+            ReplacedDishId = dr.ReplacedDishId,
+            SubstituteDishId = dr.SubstituteDishId,
+            Notes = dr.Notes?.Trim()
+        }).ToList();
+
+        // 3. Creamos el nuevo evento con su menú y requerimientos asignados
         var @event = new Event
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
             EventDate = request.EventDate,
             StandardGuests = request.StandardGuests,
-            MenuDishes = dishes
+            MenuDishes = dishes,
+            DietaryRequirements = dietaryRequirements
         };
 
         _context.Events.Add(@event);
 
-        // 3. Guardamos en la base de datos (se creará el evento y las filas en EventDishes)
+        // 4. Guardamos en la base de datos
         await _context.SaveChangesAsync(cancellationToken);
 
         return @event.Id;
