@@ -33,8 +33,8 @@ interface FormItemState {
   plannedWasteQuantity: number
   plannedReusablePercentage: number
   plannedReusableQuantity: number
-  actualWasteQuantity: number
-  actualReusableQuantity: number
+  actualWasteQuantity: string | number
+  actualReusableQuantity: string | number
   applyToPantry: boolean
   notes: string
 }
@@ -74,8 +74,8 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
         plannedWasteQuantity: item.plannedWasteQuantity,
         plannedReusablePercentage: item.plannedReusablePercentage,
         plannedReusableQuantity: item.plannedReusableQuantity,
-        actualWasteQuantity: item.actualWasteQuantity,
-        actualReusableQuantity: item.actualReusableQuantity,
+        actualWasteQuantity: item.actualWasteQuantity !== undefined && item.actualWasteQuantity !== null ? item.actualWasteQuantity : 0,
+        actualReusableQuantity: item.actualReusableQuantity !== undefined && item.actualReusableQuantity !== null ? item.actualReusableQuantity : 0,
         applyToPantry: item.appliedToPantry || false,
         notes: item.notes || '',
       }))
@@ -96,9 +96,9 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
 
   // Cálculos en vivo para KPIs de cabecera
   const totalPlannedWaste = items.reduce((s, i) => s + (Number(i.plannedWasteQuantity) || 0), 0)
-  const totalActualWaste = items.reduce((s, i) => s + (Number(i.actualWasteQuantity) || 0), 0)
+  const totalActualWaste = items.reduce((s, i) => s + (parseFloat(String(i.actualWasteQuantity)) || 0), 0)
   const totalPlannedReusable = items.reduce((s, i) => s + (Number(i.plannedReusableQuantity) || 0), 0)
-  const totalActualReusable = items.reduce((s, i) => s + (Number(i.actualReusableQuantity) || 0), 0)
+  const totalActualReusable = items.reduce((s, i) => s + (parseFloat(String(i.actualReusableQuantity)) || 0), 0)
 
   const wasteDiff = totalActualWaste - totalPlannedWaste
   const reusableDiff = totalActualReusable - totalPlannedReusable
@@ -115,8 +115,8 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
         items: items.map(
           (i): CloseEventPostMortemItemRequest => ({
             ingredientId: i.ingredientId,
-            actualWasteQuantity: Number(i.actualWasteQuantity) || 0,
-            actualReusableQuantity: Number(i.actualReusableQuantity) || 0,
+            actualWasteQuantity: parseFloat(String(i.actualWasteQuantity)) || 0,
+            actualReusableQuantity: parseFloat(String(i.actualReusableQuantity)) || 0,
             applyToPantry: i.applyToPantry,
             notes: i.notes.trim() || null,
           })
@@ -278,7 +278,7 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
               <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
                 {items.map((item, idx) => {
                   const gross = item.plannedGrossQuantity
-                  const actualWaste = Number(item.actualWasteQuantity) || 0
+                  const actualWaste = parseFloat(String(item.actualWasteQuantity)) || 0
                   const actualWastePct = gross > 0 ? (actualWaste / gross) * 100 : 0
                   const plannedWastePct = item.plannedWastePercentage * 100
                   const devPct = actualWastePct - plannedWastePct
@@ -317,9 +317,9 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
                         {/* Merma Inútil (Basura) */}
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold uppercase tracking-wider text-rose-800 flex items-center justify-between">
+                          <label className="text-[10px] font-bold uppercase tracking-wider text-rose-800 flex items-center justify-between h-4">
                             <span>Merma Descartada (Basura)</span>
-                            <span className="text-[#726e66] font-normal">
+                            <span className="text-[#726e66] font-normal font-mono">
                               Previsto: {item.plannedWasteQuantity} {item.unitOfMeasure} ({plannedWastePct.toFixed(0)}%)
                             </span>
                           </label>
@@ -328,14 +328,14 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
                               type="number"
                               step="0.01"
                               min="0"
-                              required
                               value={item.actualWasteQuantity}
                               onChange={e =>
-                                handleItemChange(idx, 'actualWasteQuantity', parseFloat(e.target.value) || 0)
+                                handleItemChange(idx, 'actualWasteQuantity', e.target.value)
                               }
-                              className="w-full px-3 py-1.5 bg-[#fdfbf7] border border-[#18251e]/15 rounded-xl text-xs font-mono font-bold text-[#18251e] focus:outline-none focus:border-[#5a341e]"
+                              onFocus={e => e.target.select()}
+                              className="w-full h-9 px-3 bg-[#fdfbf7] border border-[#18251e]/15 rounded-xl text-xs font-mono font-bold text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-xs"
                             />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[#726e66]">
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[#726e66] pointer-events-none">
                               {item.unitOfMeasure} ({actualWastePct.toFixed(1)}%)
                             </span>
                           </div>
@@ -343,9 +343,9 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
 
                         {/* Subproducto Reutilizable */}
                         <div className="space-y-1">
-                          <label className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center justify-between">
+                          <label className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center justify-between h-4">
                             <span>Subproducto Rescatado</span>
-                            <span className="text-[#726e66] font-normal">
+                            <span className="text-[#726e66] font-normal font-mono">
                               Previsto: {item.plannedReusableQuantity} {item.unitOfMeasure}
                             </span>
                           </label>
@@ -354,35 +354,43 @@ export const PostMortemModal: React.FC<PostMortemModalProps> = ({
                               type="number"
                               step="0.01"
                               min="0"
-                              required
                               value={item.actualReusableQuantity}
                               onChange={e =>
-                                handleItemChange(idx, 'actualReusableQuantity', parseFloat(e.target.value) || 0)
+                                handleItemChange(idx, 'actualReusableQuantity', e.target.value)
                               }
-                              className="w-full px-3 py-1.5 bg-[#fdfbf7] border border-[#18251e]/15 rounded-xl text-xs font-mono font-bold text-emerald-900 focus:outline-none focus:border-[#5a341e]"
+                              onFocus={e => e.target.select()}
+                              className="w-full h-9 px-3 bg-[#fdfbf7] border border-[#18251e]/15 rounded-xl text-xs font-mono font-bold text-emerald-900 focus:outline-none focus:border-[#5a341e] shadow-xs"
                             />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-emerald-700">
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-emerald-700 pointer-events-none">
                               {item.unitOfMeasure}
                             </span>
                           </div>
                         </div>
 
                         {/* Checkbox para actualizar la despensa */}
-                        <div className="flex flex-col justify-end sm:col-span-2 lg:col-span-1">
-                          <label className="flex items-center gap-2 p-2 rounded-xl bg-[#ebe4d5]/40 border border-[#18251e]/10 cursor-pointer hover:bg-[#ebe4d5]/60 transition-colors select-none">
+                        <div className="space-y-1 sm:col-span-2 lg:col-span-1">
+                          <label className="text-[10px] font-bold uppercase tracking-wider text-[#5a341e] flex items-center justify-between h-4">
+                            <span className="flex items-center gap-1">
+                              <Database className="w-3 h-3 text-[#5a341e]" />
+                              Calibrar Despensa
+                            </span>
+                            <span className="text-[#726e66] font-normal font-mono">
+                              Futuros Escandallos
+                            </span>
+                          </label>
+                          <label className="flex items-center gap-2.5 h-9 px-3 rounded-xl bg-[#ebe4d5]/40 border border-[#18251e]/15 cursor-pointer hover:bg-[#ebe4d5]/70 transition-colors select-none shadow-xs">
                             <input
                               type="checkbox"
                               checked={item.applyToPantry}
                               onChange={e => handleItemChange(idx, 'applyToPantry', e.target.checked)}
-                              className="w-4 h-4 rounded text-[#5a341e] border-[#18251e]/20"
+                              className="w-4 h-4 rounded text-[#5a341e] border-[#18251e]/20 cursor-pointer accent-[#5a341e]"
                             />
-                            <div className="text-[11px]">
-                              <span className="font-bold text-[#18251e] flex items-center gap-1">
-                                <Database className="w-3 h-3 text-[#5a341e]" />
+                            <div className="flex items-center justify-between flex-1 min-w-0">
+                              <span className="text-xs font-bold text-[#18251e] truncate">
                                 Actualizar Despensa
                               </span>
-                              <span className="text-[10px] text-[#726e66] block">
-                                Calibra futuros escandallos con este %
+                              <span className="text-[10px] text-[#726e66] font-medium ml-1 shrink-0">
+                                (Aplica % real)
                               </span>
                             </div>
                           </label>

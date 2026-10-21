@@ -14,7 +14,7 @@ interface EventModalProps {
 interface DietaryFormItem {
   id?: string
   requirementName: string
-  guestCount: number
+  guestCount: number | string
   replacedDishId: string
   substituteDishId: string
   notes: string
@@ -36,7 +36,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 }) => {
   const [name, setName] = useState('')
   const [eventDate, setEventDate] = useState('')
-  const [standardGuests, setStandardGuests] = useState<number>(80)
+  const [standardGuests, setStandardGuests] = useState<number | string>(80)
   const [selectedDishIds, setSelectedDishIds] = useState<string[]>([])
   const [dietaryRequirements, setDietaryRequirements] = useState<DietaryFormItem[]>([])
   const [availableDishes, setAvailableDishes] = useState<Dish[]>([])
@@ -117,10 +117,11 @@ export const EventModal: React.FC<EventModalProps> = ({
   }
 
   const totalSpecialGuests = dietaryRequirements.reduce(
-    (sum, item) => sum + (Number(item.guestCount) || 0),
+    (sum, item) => sum + (parseInt(String(item.guestCount), 10) || 0),
     0
   )
-  const netStandardGuests = Math.max(0, standardGuests - totalSpecialGuests)
+  const numStandardGuests = parseInt(String(standardGuests), 10) || 0
+  const netStandardGuests = Math.max(0, numStandardGuests - totalSpecialGuests)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -136,7 +137,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       return
     }
 
-    if (standardGuests <= 0) {
+    if (numStandardGuests <= 0) {
       setError('El número de comensales debe ser mayor que 0.')
       return
     }
@@ -146,20 +147,21 @@ export const EventModal: React.FC<EventModalProps> = ({
       return
     }
 
-    if (totalSpecialGuests > standardGuests) {
+    if (totalSpecialGuests > numStandardGuests) {
       setError(
-        `El número de comensales especiales (${totalSpecialGuests}) no puede superar el total de comensales del evento (${standardGuests}).`
+        `El número de comensales especiales (${totalSpecialGuests}) no puede superar el total de comensales del evento (${numStandardGuests}).`
       )
       return
     }
 
     for (let i = 0; i < dietaryRequirements.length; i++) {
       const req = dietaryRequirements[i]
+      const count = parseInt(String(req.guestCount), 10) || 0
       if (!req.requirementName.trim()) {
         setError(`La excepción dietética #${i + 1} debe tener un nombre o descripción (ej: Celíaco).`)
         return
       }
-      if (req.guestCount <= 0) {
+      if (count <= 0) {
         setError(`El número de comensales para "${req.requirementName}" debe ser al menos 1.`)
         return
       }
@@ -170,7 +172,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       const formattedDate = new Date(eventDate).toISOString()
       const formattedRequirements = dietaryRequirements.map(dr => ({
         requirementName: dr.requirementName.trim(),
-        guestCount: Number(dr.guestCount),
+        guestCount: parseInt(String(dr.guestCount), 10) || 1,
         replacedDishId: dr.replacedDishId || null,
         substituteDishId: dr.substituteDishId || null,
         notes: dr.notes.trim() || null,
@@ -181,7 +183,7 @@ export const EventModal: React.FC<EventModalProps> = ({
           id: event.id,
           name: name.trim(),
           eventDate: formattedDate,
-          standardGuests: Number(standardGuests),
+          standardGuests: numStandardGuests,
           dishIds: selectedDishIds,
           dietaryRequirements: formattedRequirements,
         } as UpdateEventRequest)
@@ -286,7 +288,8 @@ export const EventModal: React.FC<EventModalProps> = ({
                   min="1"
                   required
                   value={standardGuests}
-                  onChange={e => setStandardGuests(parseInt(e.target.value) || 0)}
+                  onChange={e => setStandardGuests(e.target.value)}
+                  onFocus={e => e.target.select()}
                   className="w-full pl-10 pr-3.5 py-2.5 bg-white border border-[#18251e]/15 rounded-xl text-sm font-mono font-bold text-[#18251e] focus:outline-none focus:border-[#5a341e] shadow-sm"
                 />
               </div>
@@ -443,10 +446,11 @@ export const EventModal: React.FC<EventModalProps> = ({
                           <input
                             type="number"
                             min="1"
-                            max={standardGuests}
+                            max={numStandardGuests || undefined}
                             required
                             value={req.guestCount}
-                            onChange={e => handleUpdateRequirement(idx, 'guestCount', parseInt(e.target.value) || 1)}
+                            onChange={e => handleUpdateRequirement(idx, 'guestCount', e.target.value)}
+                            onFocus={e => e.target.select()}
                             className="w-12 text-center text-xs font-mono font-bold text-[#18251e] bg-white rounded border border-[#18251e]/15 py-0.5 focus:outline-none focus:border-[#5a341e]"
                           />
                         </div>

@@ -156,8 +156,8 @@
   - Insignia de estado interactiva en la lista de banquetes (*Planificado* vs. *Finalizado / Auditado*).
   - Botón "Cerrar Banquete & Auditoría" con modal de pesaje en tiempo real.
   - KPIs en vivo con semáforos de ahorro de merma o exceso de desperdicio.
-  - Casilla para actualizar los coeficientes de la despensa alimentando futuros escandallos con datos empíricos de servicio.
   - Banner en la ficha de banquete con las notas y fecha de cierre del chef, más opciones de "Ver Auditoría Post-Mortem" y "Reabrir".
+  - Alineación visual 100% simétrica de 3 columnas (Merma Descartada, Subproducto Rescatado, Calibrar Despensa) y edición de inputs numéricos sin bloqueos de ceros (`onFocus select` y limpieza libre con Backspace en `PostMortemModal`, `EventModal` y `DishModal`).
 
 ---
 

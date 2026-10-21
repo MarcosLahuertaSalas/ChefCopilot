@@ -13,7 +13,7 @@ interface DishModalProps {
 
 interface IngredientLine {
   ingredientId: string
-  quantity: number
+  quantity: number | string
 }
 
 export const DishModal: React.FC<DishModalProps> = ({
@@ -91,11 +91,12 @@ export const DishModal: React.FC<DishModalProps> = ({
 
     // Comprobar que no haya cantidades a 0 o repetidos
     for (const line of ingredientLines) {
+      const q = parseFloat(String(line.quantity)) || 0
       if (!line.ingredientId) {
         setError('Selecciona un ingrediente válido en cada línea.')
         return
       }
-      if (line.quantity <= 0) {
+      if (q <= 0) {
         setError('La cantidad de cada ingrediente debe ser mayor que 0.')
         return
       }
@@ -105,7 +106,7 @@ export const DishModal: React.FC<DishModalProps> = ({
     try {
       const payloadIngredients: CreateDishIngredientDto[] = ingredientLines.map(l => ({
         ingredientId: l.ingredientId,
-        quantity: Number(l.quantity),
+        quantity: parseFloat(String(l.quantity)) || 0,
       }))
 
       if (dish) {
@@ -268,7 +269,8 @@ export const DishModal: React.FC<DishModalProps> = ({
                           min="0.001"
                           step="0.005"
                           value={line.quantity}
-                          onChange={e => handleUpdateLine(idx, 'quantity', parseFloat(e.target.value) || 0)}
+                          onChange={e => handleUpdateLine(idx, 'quantity', e.target.value)}
+                          onFocus={e => e.target.select()}
                           className="w-full px-2.5 py-2 bg-white border border-[#18251e]/15 rounded-xl text-sm font-mono font-bold text-[#18251e] text-right focus:outline-none focus:border-[#5a341e] shadow-sm"
                         />
                         <span className="text-xs text-[#726e66] shrink-0 font-bold">{unit}</span>
