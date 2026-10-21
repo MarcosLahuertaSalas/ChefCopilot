@@ -61,4 +61,34 @@ public class EventsController : BaseController
         }
         return Ok(shoppingList);
     }
+
+    [HttpPost("{id}/close")]
+    public async Task<ActionResult> Close(Guid id, CloseEventCommand command)
+    {
+        if (id != command.EventId)
+        {
+            return BadRequest("El ID de la ruta no coincide con el del comando.");
+        }
+
+        await Mediator.Send(command);
+        return NoContent();
+    }
+
+    [HttpPost("{id}/reopen")]
+    public async Task<ActionResult> Reopen(Guid id)
+    {
+        await Mediator.Send(new ReopenEventCommand { EventId = id });
+        return NoContent();
+    }
+
+    [HttpGet("{id}/post-mortem")]
+    public async Task<ActionResult<EventPostMortemReportDto>> GetPostMortem(Guid id)
+    {
+        var report = await Mediator.Send(new GetEventPostMortemQuery { EventId = id });
+        if (report == null)
+        {
+            return NotFound($"No se encontró ningún evento con el ID: {id}");
+        }
+        return Ok(report);
+    }
 }

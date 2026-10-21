@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { eventsApi } from '../../api/events'
 import type { Event, CreateEventRequest, UpdateEventRequest, EventShoppingList } from '../../types/event'
 import { EventModal } from './EventModal'
+import { PostMortemModal } from './PostMortemModal'
 import { gooeyToast } from 'goey-toast'
 import { 
   Calendar, 
@@ -19,7 +20,10 @@ import {
   UtensilsCrossed,
   ShieldAlert,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Scale,
+  RotateCcw,
+  FileText
 } from 'lucide-react'
 
 export const EventsView: React.FC = () => {
@@ -29,6 +33,7 @@ export const EventsView: React.FC = () => {
   const [loadingEvents, setLoadingEvents] = useState(true)
   const [loadingList, setLoadingList] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isPostMortemOpen, setIsPostMortemOpen] = useState(false)
   const [editingEvent, setEditingEvent] = useState<Event | null>(null)
   const [showPassSheet, setShowPassSheet] = useState(true)
 
@@ -86,6 +91,27 @@ export const EventsView: React.FC = () => {
   const handleOpenEdit = (evt: Event) => {
     setEditingEvent(evt)
     setIsModalOpen(true)
+  }
+
+  const handleOpenPostMortem = () => {
+    setIsPostMortemOpen(true)
+  }
+
+  const handleReopen = async (id: string, name: string) => {
+    if (!confirm(`¿Reabrir el banquete "${name}" a estado Planificado? Podrás modificar su menú y volver a auditarlo.`)) {
+      return
+    }
+    try {
+      await eventsApi.reopenEvent(id)
+      gooeyToast.success('Banquete reabierto', {
+        description: `"${name}" vuelve a estar en fase de planificación.`,
+      })
+      await loadEvents(id)
+    } catch (err: unknown) {
+      gooeyToast.error('No se pudo reabrir el banquete', {
+        description: err instanceof Error ? err.message : 'Ocurrió un error inesperado.',
+      })
+    }
   }
 
   const handleSave = async (data: CreateEventRequest | UpdateEventRequest) => {
@@ -175,6 +201,9 @@ export const EventsView: React.FC = () => {
     window.print()
   }
 
+  const currentEvent = events.find(e => e.id === selectedEventId)
+  const isCompleted = currentEvent?.status === 'Completed'
+
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header y Acciones */}
@@ -185,7 +214,7 @@ export const EventsView: React.FC = () => {
             Banquetes & Escandallo de Compras
           </h1>
           <p className="text-sm text-[#524d45] mt-1">
-            Motor de cálculo para bodas, catering y eventos. Consolida ingredientes, descuenta stock de cámara y gestiona excepciones dietéticas en vivo.
+            Motor de cálculo para bodas, catering y eventos. Consolida ingredientes, descuenta stock de cámara y audita mermas reales post-servicio.
           </p>
         </div>
 
@@ -244,12 +273,13 @@ export const EventsView: React.FC = () => {
                   year: 'numeric'
                 })
                 const specialDiners = evt.dietaryRequirements?.reduce((sum, r) => sum + r.guestCount, 0) || 0
+                const evtCompleted = evt.status === 'Completed'
 
                 return (
                   <div
                     key={evt.id}
                     onClick={() => handleSelectEvent(evt.id)}
-                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col gap-1.5 shadow-sm ${
+                    className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col gap-2 shadow-sm ${
                       isSelected
                         ? 'bg-[#5a341e]/10 border-[#5a341e]/50 shadow-md shadow-[#5a341e]/10'
                         : 'bg-white border-[#18251e]/10 hover:border-[#5a341e]/30'
@@ -277,6 +307,27 @@ export const EventsView: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Estado del Banquete */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {evtCompleted ? (
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#18241d] text-emerald-300 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          Finalizado / Auditado
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#ebe4d5] text-[#5a341e] border border-[#5a341e]/20">
+                          Planificado
+                        </span>
+                      )}
+
+                      {specialDiners > 0 && (
+                        <span className="flex items-center gap-1 text-[10px] text-[#5a341e] font-semibold bg-[#5a341e]/10 px-1.5 py-0.5 rounded-md border border-[#5a341e]/15">
+                          <ShieldAlert className="w-2.5 h-2.5 shrink-0" />
+                          {specialDiners} pax dieta esp.
+                        </span>
+                      )}
+                    </div>
+
                     <div className="flex items-center justify-between text-xs text-[#524d45]">
                       <span className="font-medium text-[#18251e]/80">{dateStr}</span>
                       <span className="inline-flex items-center gap-1 font-mono font-bold text-[#5a341e]">
@@ -284,14 +335,6 @@ export const EventsView: React.FC = () => {
                         {evt.standardGuests} pax
                       </span>
                     </div>
-
-                    {/* Badge de excepciones si existen */}
-                    {specialDiners > 0 && (
-                      <div className="flex items-center gap-1 text-[10px] text-[#5a341e] font-semibold bg-[#ebe4d5]/80 px-2 py-0.5 rounded-md border border-[#5a341e]/15">
-                        <ShieldAlert className="w-2.5 h-2.5 shrink-0" />
-                        <span>{specialDiners} pax con menú especial</span>
-                      </div>
-                    )}
 
                     <div className="text-[11px] text-[#726e66] truncate pt-1 border-t border-[#18251e]/8">
                       {evt.menuDishes.length} {evt.menuDishes.length === 1 ? 'plato' : 'platos'}: {evt.menuDishes.map(d => d.name).join(', ')}
@@ -318,10 +361,18 @@ export const EventsView: React.FC = () => {
                 {/* Resumen del Evento & Botonera */}
                 <div className="p-6 rounded-2xl bg-white border border-[#18251e]/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/20">
-                        Banquete Activo
-                      </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {isCompleted ? (
+                        <span className="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-[#18241d] text-emerald-300 flex items-center gap-1.5 shadow-sm">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          Banquete Finalizado & Auditado
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-[#5a341e]/10 text-[#5a341e] border border-[#5a341e]/20">
+                          Banquete en Planificación
+                        </span>
+                      )}
+
                       <span className="text-xs text-[#726e66]">
                         {new Date(shoppingList.eventDate).toLocaleDateString('es-ES', {
                           weekday: 'long',
@@ -331,7 +382,8 @@ export const EventsView: React.FC = () => {
                         })}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-extrabold font-heading text-[#18251e] mt-1">
+
+                    <h2 className="text-2xl font-extrabold font-heading text-[#18251e] mt-1.5">
                       {shoppingList.eventName}
                     </h2>
                     <p className="text-xs text-[#524d45] mt-1">
@@ -339,23 +391,75 @@ export const EventsView: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                  {/* Botonera de Acciones (Auditoría, Copiar y Reabrir) */}
+                  <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+                    {/* Botón Auditoría Post-Servicio */}
+                    {isCompleted ? (
+                      <>
+                        <button
+                          onClick={handleOpenPostMortem}
+                          className="px-3.5 py-2 rounded-xl bg-[#18241d] hover:bg-[#111a14] text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                          title="Ver o editar el informe de mermas reales"
+                        >
+                          <Scale className="w-3.5 h-3.5 text-emerald-400" />
+                          Ver Auditoría Post-Mortem
+                        </button>
+
+                        <button
+                          onClick={() => currentEvent && handleReopen(currentEvent.id, currentEvent.name)}
+                          className="px-3 py-2 rounded-xl bg-white hover:bg-[#ebe4d5]/50 text-[#726e66] hover:text-[#18251e] border border-[#18251e]/15 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                          title="Volver a poner el banquete en estado de planificación"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          Reabrir
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={handleOpenPostMortem}
+                        className="px-3.5 py-2 rounded-xl bg-[#5a341e] hover:bg-[#472917] text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm active:scale-95"
+                        title="Registrar los kilos de merma reales y cerrar el banquete"
+                      >
+                        <Scale className="w-3.5 h-3.5" />
+                        Cerrar Banquete & Auditoría
+                      </button>
+                    )}
+
                     <button
                       onClick={handleCopyOrder}
                       className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#ebe4d5]/50 text-[#18251e] border border-[#18251e]/15 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
                     >
                       <Copy className="w-3.5 h-3.5 text-[#5a341e]" />
-                      Copiar Pedido & Pase
+                      Copiar Pedido
                     </button>
+
                     <button
                       onClick={handlePrint}
-                      className="px-3.5 py-2 rounded-xl bg-[#18241d] hover:bg-[#111a14] text-white text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
+                      className="px-3.5 py-2 rounded-xl bg-[#ebe4d5] hover:bg-[#ded4c1] text-[#18251e] text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
                     >
                       <Printer className="w-3.5 h-3.5" />
-                      Imprimir Ficha
+                      Imprimir
                     </button>
                   </div>
                 </div>
+
+                {/* Banner de Observaciones Post-Mortem si el evento está finalizado */}
+                {isCompleted && currentEvent?.postMortemNotes && (
+                  <div className="p-4 rounded-2xl bg-[#ebe4d5]/40 border border-[#18251e]/15 shadow-sm space-y-1 animate-fade-in">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#5a341e] flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5" />
+                      Observaciones de Cierre de Cocina
+                    </span>
+                    <p className="text-xs text-[#18251e] italic">
+                      "{currentEvent.postMortemNotes}"
+                    </p>
+                    {currentEvent.completedAt && (
+                      <span className="text-[10px] text-[#726e66] block pt-1">
+                        Auditado el {new Date(currentEvent.completedAt).toLocaleString('es-ES')}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 {/* Banner de Excepciones Dietéticas si existen */}
                 {shoppingList.dietaryRequirements && shoppingList.dietaryRequirements.length > 0 && (
@@ -456,7 +560,7 @@ export const EventsView: React.FC = () => {
                   </div>
                 </div>
 
-                {/* NUEVA SECCIÓN: Ficha de Pase de Partida & Producción de Cocina */}
+                {/* Ficha de Pase de Partida & Producción de Cocina */}
                 {shoppingList.dishBreakdown && shoppingList.dishBreakdown.length > 0 && (
                   <div className="bg-white border border-[#18251e]/10 rounded-2xl overflow-hidden shadow-sm">
                     <div 
@@ -693,6 +797,19 @@ export const EventsView: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
       />
+
+      {/* Modal de Auditoría Post-Mortem */}
+      {isPostMortemOpen && selectedEventId && currentEvent && (
+        <PostMortemModal
+          isOpen={isPostMortemOpen}
+          eventId={selectedEventId}
+          eventName={currentEvent.name}
+          onClose={() => setIsPostMortemOpen(false)}
+          onSaved={async () => {
+            await loadEvents(selectedEventId)
+          }}
+        />
+      )}
     </div>
   )
 }

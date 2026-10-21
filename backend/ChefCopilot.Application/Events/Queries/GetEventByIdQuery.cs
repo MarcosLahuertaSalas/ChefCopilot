@@ -34,6 +34,9 @@ public class GetEventByIdQueryHandler : IRequestHandler<GetEventByIdQuery, Event
                 Name = e.Name,
                 EventDate = e.EventDate,
                 StandardGuests = e.StandardGuests,
+                Status = e.Status.ToString(),
+                CompletedAt = e.CompletedAt,
+                PostMortemNotes = e.PostMortemNotes,
                 MenuDishes = e.MenuDishes.Select(d => new EventDishDto
                 {
                     Id = d.Id,

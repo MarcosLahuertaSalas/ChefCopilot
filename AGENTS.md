@@ -93,7 +93,7 @@
 
 ### Módulo de Autenticación & Usuarios (Backend Completo)
 - `User`: Id, Email (único), PasswordHash, FullName, RestaurantName, Role, CreatedAt.
-- **Hashing Criptográfico**: `PasswordHasher.cs` con PBKDF2 SHA-256 (100.000 iteraciones, salt de 128 bits) y comparación en tiempo constante (*fixed-time*) para prevenir timing attacks.
+- **Hashing Criptográfico**: `PasswordHasher.cs` con PBKDF2 SHA-256 (100.000 iteraciones, salt de 128 bits) y comparación en tiempo constante  (*fixed-time*) para prevenir timing attacks.
 - **CQRS**: `RegisterUserCommand`, `RegisterUserCommandValidator`, `LoginUserCommand`, `LoginUserCommandValidator`.
 - **Endpoints**: `POST /api/auth/register`, `POST /api/auth/login` en `AuthController.cs`.
 - Migración aplicada: `20261018191500_AddUserEntity` en MySQL.
@@ -141,22 +141,35 @@
 - **Exportación a Sala / WhatsApp**:
   - Botón "Copiar Pedido & Pase" formatea el desglose de comensales especiales, ficha de pase de cocina y pedido a proveedores listo para enviar.
 
+### Módulo de Cierre de Banquete & Auditoría de Mermas Reales (Post-Mortem Culinario) (Completo) ✅
+- **Entidades & Modelo de Dominio**:
+  - `Event.Status`: Enum `EventStatus` (`Planned`, `Completed`).
+  - `Event.CompletedAt` y `Event.PostMortemNotes`.
+  - `EventPostMortemItem`: Auditoría por ingrediente con consumo bruto planificado, merma teórica prevista vs. merma real descartada (basura), subproducto teórico previsto vs. subproducto real rescatado (aprovechado), desviación porcentual, notas de partida y bandera `AppliedToPantry`.
+- **Relaciones EF Core 9 & Migración MySQL**:
+  - `20261021194655_AddEventPostMortemAudit` aplicada en MySQL.
+- **CQRS en Backend (.NET 9 + FluentValidation)**:
+  - `CloseEventCommand` y `CloseEventCommandValidator`: registra los pesajes reales de cocina, calcula desviaciones matemáticas y, si el chef lo indica, actualiza en vivo los coeficientes técnicos de la despensa (`Ingredient.WastePercentage` y `ReusableWastePercentage`).
+  - `ReopenEventCommand`: permite reabrir un banquete a estado `Planned` ante correcciones.
+  - `GetEventPostMortemQuery`: genera el informe post-mortem con Kilos de basura reales, Kilos de subproducto rescatado y el **Índice de Control Técnico del Chef (%)**.
+- **Frontend & Auditoría Interactiva (`PostMortemModal.tsx` + `EventsView.tsx`)**:
+  - Insignia de estado interactiva en la lista de banquetes (*Planificado* vs. *Finalizado / Auditado*).
+  - Botón "Cerrar Banquete & Auditoría" con modal de pesaje en tiempo real.
+  - KPIs en vivo con semáforos de ahorro de merma o exceso de desperdicio.
+  - Casilla para actualizar los coeficientes de la despensa alimentando futuros escandallos con datos empíricos de servicio.
+  - Banner en la ficha de banquete con las notas y fecha de cierre del chef, más opciones de "Ver Auditoría Post-Mortem" y "Reabrir".
+
 ---
 
 ## 4. Trabajo Pendiente / Próximos Pasos (Roadmap Prioritario) 🎯
 
-1. **Cierre de Evento & Registro de Mermas Reales (Post-Mortem Culinario)**:
-   - Marcar eventos como "Finalizado/Ejecutado" tras el banquete.
-   - Formulario de auditoría post-servicio: registrar kilos reales de merma bruta descartada y subproducto limpio rescatado (ej: "Se obtuvieron 3.8 Kg de carne para croquetas/fondos").
-   - Comparativa Previsión vs. Realidad con desviación porcentual y alimentación del coeficiente histórico de merma técnica de la despensa.
-
-2. **Ciclo Completo de Autenticación, JWT & Sesión Multi-restaurante en Frontend**:
+1. **Ciclo Completo de Autenticación, JWT & Sesión Multi-restaurante en Frontend**:
    - Backend ya listo con PBKDF2 SHA-256 (`AuthController.cs`, `User`, MySQL).
    - Generación de token JWT en el backend y persistencia en React.
    - Protección de vistas y aislamiento de datos por `RestaurantId`.
    - Asignación y gestión de roles culinarios (Chef Ejecutivo, Sous-Chef, Encargado de Compras).
 
-4. **Conexión de JuankiA con Asistente LLM en Streaming**:
+2. **Conexión de JuankiA con Asistente LLM en Streaming**:
    - Conectar el widget interactivo `JuankiAChatWidget.tsx` a un endpoint de streaming en tiempo real (Server-Sent Events / SSE o WebSockets).
    - Prompt de sistema especializado como Sous-Chef Ejecutivo: experto en conversiones de unidades culinarias, puntos de cocción, sustitución de alérgenos y rescate de mermas.
 

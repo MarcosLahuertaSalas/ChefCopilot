@@ -40,6 +40,9 @@ export interface Event {
   name: string
   eventDate: string
   standardGuests: number
+  status: 'Planned' | 'Completed'
+  completedAt?: string | null
+  postMortemNotes?: string | null
   menuDishes: EventDish[]
   dietaryRequirements?: EventDietaryRequirement[]
 }
@@ -106,4 +109,53 @@ export interface EventShoppingList {
   dietaryRequirements: EventDietaryRequirement[]
   dishBreakdown: DishPortionBreakdown[]
   items: ShoppingListItem[]
+}
+
+// Tipos para el Post-Mortem Culinario
+export interface EventPostMortemItem {
+  id: string
+  ingredientId: string
+  ingredientName: string
+  unitOfMeasure: string
+  plannedGrossQuantity: number
+  plannedWastePercentage: number
+  plannedWasteQuantity: number
+  plannedReusablePercentage: number
+  plannedReusableQuantity: number
+  actualWasteQuantity: number
+  actualReusableQuantity: number
+  actualWastePercentage: number
+  actualReusablePercentage: number
+  wasteDeviationPercentage: number
+  appliedToPantry: boolean
+  notes?: string | null
+}
+
+export interface CloseEventPostMortemItemRequest {
+  ingredientId: string
+  actualWasteQuantity: number
+  actualReusableQuantity: number
+  applyToPantry: boolean
+  notes?: string | null
+}
+
+export interface CloseEventRequest {
+  eventId: string
+  postMortemNotes?: string | null
+  items: CloseEventPostMortemItemRequest[]
+}
+
+export interface EventPostMortemReport {
+  eventId: string
+  eventName: string
+  eventDate: string
+  status: 'Planned' | 'Completed'
+  completedAt?: string | null
+  postMortemNotes?: string | null
+  totalPlannedWasteQuantity: number
+  totalActualWasteQuantity: number
+  totalPlannedReusableQuantity: number
+  totalActualReusableQuantity: number
+  overallEfficiencyPercentage: number
+  items: EventPostMortemItem[]
 }

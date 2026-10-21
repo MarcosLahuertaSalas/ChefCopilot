@@ -75,6 +75,9 @@ namespace ChefCopilot.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("EventDate")
                         .HasColumnType("datetime(6)");
 
@@ -82,8 +85,19 @@ namespace ChefCopilot.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PostMortemNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
                     b.Property<int>("StandardGuests")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)")
+                        .HasDefaultValue("Planned");
 
                     b.HasKey("Id");
 
@@ -126,6 +140,74 @@ namespace ChefCopilot.Infrastructure.Migrations
                     b.HasIndex("SubstituteDishId");
 
                     b.ToTable("EventDietaryRequirements");
+                });
+
+            modelBuilder.Entity("ChefCopilot.Domain.Entities.EventPostMortemItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("ActualReusablePercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("ActualReusableQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("ActualWastePercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("ActualWasteQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<bool>("AppliedToPantry")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("IngredientId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<decimal>("PlannedGrossQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("PlannedReusablePercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("PlannedReusableQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("PlannedWastePercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("PlannedWasteQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("WasteDeviationPercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("EventPostMortemItems");
                 });
 
             modelBuilder.Entity("ChefCopilot.Domain.Entities.Ingredient", b =>
@@ -282,6 +364,25 @@ namespace ChefCopilot.Infrastructure.Migrations
                     b.Navigation("SubstituteDish");
                 });
 
+            modelBuilder.Entity("ChefCopilot.Domain.Entities.EventPostMortemItem", b =>
+                {
+                    b.HasOne("ChefCopilot.Domain.Entities.Event", "Event")
+                        .WithMany("PostMortemItems")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChefCopilot.Domain.Entities.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Ingredient");
+                });
+
             modelBuilder.Entity("DishEvent", b =>
                 {
                     b.HasOne("ChefCopilot.Domain.Entities.Event", null)
@@ -305,6 +406,8 @@ namespace ChefCopilot.Infrastructure.Migrations
             modelBuilder.Entity("ChefCopilot.Domain.Entities.Event", b =>
                 {
                     b.Navigation("DietaryRequirements");
+
+                    b.Navigation("PostMortemItems");
                 });
 #pragma warning restore 612, 618
         }
